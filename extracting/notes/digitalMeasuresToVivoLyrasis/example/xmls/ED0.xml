@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EduRecords>
+   <EduRecord>
+      <edId>1011001</edId>
+      <edUri>http://vivo.cornell.edu/individual/EX-1011001</edUri>
+      <edDeg>Masters</edDeg>
+      <edMajor>Oriental Art History</edMajor>
+      <edYear>1985</edYear>
+      <edSchoolUri>http://vivo.cornell.edu/individual/individual15671</edSchoolUri>
+      <edSchool>University of Kansas</edSchool>
+      <fn>David</fn>
+      <mn>augustus</mn>
+      <ln>Green</ln>
+      <nid>dag065</nid>
+      <personUri/>
+   </EduRecord>
+   <EduRecord>
+      <edId>1011003</edId>
+      <edUri>http://vivo.cornell.edu/individual/EX-1011003</edUri>
+      <edDeg>Bachelor</edDeg>
+      <edMajor>Architecture</edMajor>
+      <edYear>1996</edYear>
+      <edSchoolUri>http://vivo.cornell.edu/individual/AI-0203133080BF000000A8</edSchoolUri>
+      <edSchool>Smith College</edSchool>
+      <fn>Don</fn>
+      <mn>A</mn>
+      <ln>Horsham</ln>
+      <nid>dah3507</nid>
+      <personUri/>
+   </EduRecord>
+   <EduRecord>
+      <edId>1011004</edId>
+      <edUri>http://vivo.cornell.edu/individual/EX-1011004</edUri>
+      <edDeg>Master</edDeg>
+      <edMajor>Vocational Technical Education</edMajor>
+      <edYear>1992</edYear>
+      <edSchoolUri>http://vivo.cornell.edu/individual/AI-0203133080BF0000FAA1</edSchoolUri>
+      <edSchool>SUNY OSwego</edSchool>
+      <fn>Denise</fn>
+      <mn>H</mn>
+      <ln>Valencia</ln>
+      <nid>dhv010</nid>
+      <personUri>http://vivo.cornell.edu/individual/dhv010</personUri>
+   </EduRecord>
+   <EduRecord>
+      <edId>1011005</edId>
+      <edUri>http://vivo.cornell.edu/individual/EX-1011005</edUri>
+      <edDeg>Bachelor</edDeg>
+      <edMajor>Education</edMajor>
+      <edYear>1988</edYear>
+      <edSchoolUri>http://vivo.cornell.edu/individual/AI-PROR-0203DF692B300006E80</edSchoolUri>
+      <edSchool>SUNY Cortland</edSchool>
+      <fn>Denise</fn>
+      <mn>Hortense</mn>
+      <ln>Valencia</ln>
+      <nid/>
+      <personUri/>
+   </EduRecord>
+   <EduRecord>
+      <edId>1011006</edId>
+      <edUri>http://vivo.cornell.edu/individual/EX-1011006</edUri>
+      <edDeg>Bachelor</edDeg>
+      <edMajor>Studio Art</edMajor>
+      <edYear>1980</edYear>
+      <edSchoolUri/>
+      <edSchool>State University at Albany</edSchool>
+      <fn>David</fn>
+      <mn>Augustus</mn>
+      <ln>Green</ln>
+      <nid>dag065</nid>
+      <personUri/>
+   </EduRecord>
+   <EduRecord>
+      <edId>1011007</edId>
+      <edUri>http://vivo.cornell.edu/individual/EX-1011007</edUri>
+      <edDeg>Bachelor</edDeg>
+      <edMajor>Environmental and Organismal Biology</edMajor>
+      <edYear>1999</edYear>
+      <edSchoolUri>http://vivo.cornell.edu/individual/AI-0203133080BF0000FAA1</edSchoolUri>
+      <edSchool>SUNY Oswego</edSchool>
+      <fn>Cathrine</fn>
+      <mn>a</mn>
+      <ln>Dale</ln>
+      <nid>cad2616</nid>
+      <personUri/>
+   </EduRecord>
+   <EduRecord>
+      <edId>1011008</edId>
+      <edUri>http://vivo.cornell.edu/individual/EX-1011008</edUri>
+      <edDeg>Associate</edDeg>
+      <edMajor>Liberal Arts and Sciences</edMajor>
+      <edYear>1995</edYear>
+      <edSchoolUri/>
+      <edSchool>Tompkins Cortland Community College</edSchool>
+      <fn>Cathrine</fn>
+      <mn>A</mn>
+      <ln>Dale</ln>
+      <nid>cad2616</nid>
+      <personUri/>
+   </EduRecord>
+   <EduRecord>
+      <edId>1011009</edId>
+      <edUri>http://vivo.cornell.edu/individual/EX-1011009</edUri>
+      <edDeg>Bachelor</edDeg>
+      <edMajor>Animal Science</edMajor>
+      <edYear>2004</edYear>
+      <edSchoolUri>http://vivo.cornell.edu/individual/individual181</edSchoolUri>
+      <edSchool>Cornell University</edSchool>
+      <fn>Andrea</fn>
+      <mn>S</mn>
+      <ln>Killian</ln>
+      <nid>ask317</nid>
+      <personUri>http://vivo.cornell.edu/individual/ask317</personUri>
+   </EduRecord>
+   <EduRecord>
+      <edId>1011010</edId>
+      <edUri>http://vivo.cornell.edu/individual/EX-1011010</edUri>
+      <edDeg>Master</edDeg>
+      <edMajor>Business Administration</edMajor>
+      <edYear>2012</edYear>
+      <edSchoolUri>http://vivo.cornell.edu/individual/AI-0203F0900BA00000ED7</edSchoolUri>
+      <edSchool>Pennsylvania State University</edSchool>
+      <fn>Andrea</fn>
+      <mn>S</mn>
+      <ln>Killian</ln>
+      <nid>ask317</nid>
+      <personUri>http://vivo.cornell.edu/individual/ask317</personUri>
+   </EduRecord>
+   <EduRecord>
+      <edId>1011011</edId>
+      <edUri>http://vivo.cornell.edu/individual/EX-1011011</edUri>
+      <edDeg>Master</edDeg>
+      <edMajor>Youth Development</edMajor>
+      <edYear>2006</edYear>
+      <edSchoolUri/>
+      <edSchool>Michigan State</edSchool>
+      <fn>Andrea</fn>
+      <mn>S</mn>
+      <ln>Killian</ln>
+      <nid/>
+      <personUri/>
+   </EduRecord>
+   <EduRecord>
+      <edId>1011012</edId>
+      <edUri>http://vivo.cornell.edu/individual/EX-1011012</edUri>
+      <edDeg>Master</edDeg>
+      <edMajor>Public Administration</edMajor>
+      <edYear>2009</edYear>
+      <edSchoolUri/>
+      <edSchool>Kansas State University</edSchool>
+      <fn>Arthur</fn>
+      <mn>R</mn>
+      <ln>Fuller</ln>
+      <nid>arf72</nid>
+      <personUri/>
+   </EduRecord>
+   <EduRecord>
+      <edId>1011013</edId>
+      <edUri>http://vivo.cornell.edu/individual/EX-1011013</edUri>
+      <edDeg>Associate</edDeg>
+      <edMajor>Liberal Arts</edMajor>
+      <edYear>1992</edYear>
+      <edSchoolUri/>
+      <edSchool>Tompkins Cortland Community College</edSchool>
+      <fn>Suzy</fn>
+      <mn/>
+      <ln>Beltaine</ln>
+      <nid>sb016</nid>
+      <personUri/>
+   </EduRecord>
+   <EduRecord>
+      <edId>1011015</edId>
+      <edUri>http://vivo.cornell.edu/individual/EX-1011015</edUri>
+      <edDeg>Bachelor</edDeg>
+      <edMajor>Animal Husbandry</edMajor>
+      <edYear>2004</edYear>
+      <edSchoolUri/>
+      <edSchool>Kansas State University</edSchool>
+      <fn>Arthur</fn>
+      <mn>R</mn>
+      <ln>Fuller</ln>
+      <nid/>
+      <personUri/>
+   </EduRecord>
+   <EduRecord>
+      <edId>1011016</edId>
+      <edUri>http://vivo.cornell.edu/individual/EX-1011016</edUri>
+      <edDeg>Bachelor</edDeg>
+      <edMajor>Animal Husbandry</edMajor>
+      <edYear>2004</edYear>
+      <edSchoolUri/>
+      <edSchool>Kansas State University</edSchool>
+      <fn>Arthur</fn>
+      <mn>R</mn>
+      <ln>Fuller</ln>
+      <nid>arf27</nid>
+      <personUri/>
+   </EduRecord>
+   <EduRecord>
+      <edId>1011017</edId>
+      <edUri>http://vivo.cornell.edu/individual/EX-1011017</edUri>
+      <edDeg>Master</edDeg>
+      <edMajor>Animal Husbandry</edMajor>
+      <edYear>2006</edYear>
+      <edSchoolUri/>
+      <edSchool>Kansas State University</edSchool>
+      <fn>Arthur</fn>
+      <mn>R</mn>
+      <ln>Fuller</ln>
+      <nid>arf33</nid>
+      <personUri/>
+   </EduRecord>
+   <EduRecord>
+      <edId>1011018</edId>
+      <edUri>http://vivo.cornell.edu/individual/EX-1011018</edUri>
+      <edDeg>Bachelor</edDeg>
+      <edMajor>Oriental Art History</edMajor>
+      <edYear>1990</edYear>
+      <edSchoolUri/>
+      <edSchool>Smyth College</edSchool>
+      <fn>Don</fn>
+      <mn>A</mn>
+      <ln>Horsham</ln>
+      <nid>dah256</nid>
+      <personUri/>
+   </EduRecord>
+</EduRecords>

@@ -1,0 +1,446 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:vivo="http://vivoweb.org/ontology/core#"
+         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:bibo="http://purl.org/ontology/bibo/"
+         xmlns:foaf="http://xmlns.com/foaf/0.1/"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:acti="http://vivoweb.org/ontology/activity-insight#"
+         xmlns:core="http://vivoweb.org/ontology/core#"
+         xmlns:local="http://vivo.cornell.edu/ontology/local#">
+   
+   <!--EduRec 1-->
+   <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-1011001">
+      <rdf:type rdf:resource="http://vivoweb.org/ontology/core#EducationalTraining"/>
+      <local:degreeLevel>Masters</local:degreeLevel>
+      <rdfs:label>Masters, Oriental Art History</rdfs:label>
+      <core:majorField>Oriental Art History</core:majorField>
+      <core:dateTimeInterval>
+         <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-1011001-DTV">
+            <rdf:type rdf:resource="http://vivoweb.org/ontology/core#DateTimeInterval"/>
+            <core:end>
+               <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-1011001-DTV-E">
+                  <rdf:type rdf:resource="http://vivoweb.org/ontology/core#DateTimeValue"/>
+                  <core:dateTime rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">1985-01-01T00:00:00</core:dateTime>
+                  <core:dateTimePrecision rdf:resource="http://vivoweb.org/ontology/core#yearPrecision"/>
+               </rdf:Description>
+            </core:end>
+         </rdf:Description>
+      </core:dateTimeInterval>
+      <core:trainingAtOrganization><!--University of Kansas-->
+         <rdf:Description rdf:about="http://vivo.cornell.edu/individual/individual15671"/>
+      </core:trainingAtOrganization>
+      <core:educationalTrainingOf><!--Green, David augustus (dag065)-->
+         <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-0203100180D400000000">
+            <core:educationalTraining rdf:resource="http://vivo.cornell.edu/individual/EX-1011001"/>
+         </rdf:Description>
+      </core:educationalTrainingOf>
+   </rdf:Description>
+   <!--EduRec 2-->
+   <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-1011003">
+      <rdf:type rdf:resource="http://vivoweb.org/ontology/core#EducationalTraining"/>
+      <local:degreeLevel>Bachelor</local:degreeLevel>
+      <rdfs:label>Bachelor, Architecture</rdfs:label>
+      <core:majorField>Architecture</core:majorField>
+      <core:dateTimeInterval>
+         <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-1011003-DTV">
+            <rdf:type rdf:resource="http://vivoweb.org/ontology/core#DateTimeInterval"/>
+            <core:end>
+               <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-1011003-DTV-E">
+                  <rdf:type rdf:resource="http://vivoweb.org/ontology/core#DateTimeValue"/>
+                  <core:dateTime rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">1996-01-01T00:00:00</core:dateTime>
+                  <core:dateTimePrecision rdf:resource="http://vivoweb.org/ontology/core#yearPrecision"/>
+               </rdf:Description>
+            </core:end>
+         </rdf:Description>
+      </core:dateTimeInterval>
+      <core:trainingAtOrganization><!--Smith College-->
+         <rdf:Description rdf:about="http://vivo.cornell.edu/individual/AI-0203133080BF000000A8"/>
+      </core:trainingAtOrganization>
+      <core:educationalTrainingOf><!--Horsham, Don A (dah3507)-->
+         <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-0203100180D400000001">
+            <core:educationalTraining rdf:resource="http://vivo.cornell.edu/individual/EX-1011003"/>
+         </rdf:Description>
+      </core:educationalTrainingOf>
+   </rdf:Description>
+   <!--EduRec 3-->
+   <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-1011004">
+      <rdf:type rdf:resource="http://vivoweb.org/ontology/core#EducationalTraining"/>
+      <local:degreeLevel>Master</local:degreeLevel>
+      <rdfs:label>Master, Vocational Technical Education</rdfs:label>
+      <core:majorField>Vocational Technical Education</core:majorField>
+      <core:dateTimeInterval>
+         <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-1011004-DTV">
+            <rdf:type rdf:resource="http://vivoweb.org/ontology/core#DateTimeInterval"/>
+            <core:end>
+               <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-1011004-DTV-E">
+                  <rdf:type rdf:resource="http://vivoweb.org/ontology/core#DateTimeValue"/>
+                  <core:dateTime rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">1992-01-01T00:00:00</core:dateTime>
+                  <core:dateTimePrecision rdf:resource="http://vivoweb.org/ontology/core#yearPrecision"/>
+               </rdf:Description>
+            </core:end>
+         </rdf:Description>
+      </core:dateTimeInterval>
+      <core:trainingAtOrganization><!--SUNY OSwego-->
+         <rdf:Description rdf:about="http://vivo.cornell.edu/individual/AI-0203133080BF0000FAA1"/>
+      </core:trainingAtOrganization>
+      <core:educationalTrainingOf><!--Valencia, Denise H (dhv010)-->
+         <rdf:Description rdf:about="http://vivo.cornell.edu/individual/dhv010">
+            <core:educationalTraining rdf:resource="http://vivo.cornell.edu/individual/EX-1011004"/>
+         </rdf:Description>
+      </core:educationalTrainingOf>
+   </rdf:Description>
+   <!--EduRec 4-->
+   <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-1011005">
+      <rdf:type rdf:resource="http://vivoweb.org/ontology/core#EducationalTraining"/>
+      <local:degreeLevel>Bachelor</local:degreeLevel>
+      <local:weakAttribution>true</local:weakAttribution>
+      <rdfs:label>Bachelor, Education</rdfs:label>
+      <core:majorField>Education</core:majorField>
+      <core:dateTimeInterval>
+         <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-1011005-DTV">
+            <rdf:type rdf:resource="http://vivoweb.org/ontology/core#DateTimeInterval"/>
+            <core:end>
+               <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-1011005-DTV-E">
+                  <rdf:type rdf:resource="http://vivoweb.org/ontology/core#DateTimeValue"/>
+                  <core:dateTime rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">1988-01-01T00:00:00</core:dateTime>
+                  <core:dateTimePrecision rdf:resource="http://vivoweb.org/ontology/core#yearPrecision"/>
+               </rdf:Description>
+            </core:end>
+         </rdf:Description>
+      </core:dateTimeInterval>
+      <core:trainingAtOrganization><!--SUNY Cortland-->
+         <rdf:Description rdf:about="http://vivo.cornell.edu/individual/AI-PROR-0203DF692B300006E80"/>
+      </core:trainingAtOrganization>
+      <core:educationalTrainingOf><!--Valencia, Denise Hortense ()-->
+         <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-0203100180D400000003">
+            <core:educationalTraining rdf:resource="http://vivo.cornell.edu/individual/EX-1011005"/>
+         </rdf:Description>
+      </core:educationalTrainingOf>
+   </rdf:Description>
+   <!--EduRec 5-->
+   <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-1011006">
+      <rdf:type rdf:resource="http://vivoweb.org/ontology/core#EducationalTraining"/>
+      <local:degreeLevel>Bachelor</local:degreeLevel>
+      <rdfs:label>Bachelor, Studio Art</rdfs:label>
+      <core:majorField>Studio Art</core:majorField>
+      <core:dateTimeInterval>
+         <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-1011006-DTV">
+            <rdf:type rdf:resource="http://vivoweb.org/ontology/core#DateTimeInterval"/>
+            <core:end>
+               <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-1011006-DTV-E">
+                  <rdf:type rdf:resource="http://vivoweb.org/ontology/core#DateTimeValue"/>
+                  <core:dateTime rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">1980-01-01T00:00:00</core:dateTime>
+                  <core:dateTimePrecision rdf:resource="http://vivoweb.org/ontology/core#yearPrecision"/>
+               </rdf:Description>
+            </core:end>
+         </rdf:Description>
+      </core:dateTimeInterval>
+      <core:trainingAtOrganization><!--State University at Albany-->
+         <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-0203100180D40000000B"/>
+      </core:trainingAtOrganization>
+      <core:educationalTrainingOf><!--Green, David Augustus (dag065)-->
+         <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-0203100180D400000000">
+            <core:educationalTraining rdf:resource="http://vivo.cornell.edu/individual/EX-1011006"/>
+         </rdf:Description>
+      </core:educationalTrainingOf>
+   </rdf:Description>
+   <!--EduRec 6-->
+   <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-1011007">
+      <rdf:type rdf:resource="http://vivoweb.org/ontology/core#EducationalTraining"/>
+      <local:degreeLevel>Bachelor</local:degreeLevel>
+      <rdfs:label>Bachelor, Environmental and Organismal Biology</rdfs:label>
+      <core:majorField>Environmental and Organismal Biology</core:majorField>
+      <core:dateTimeInterval>
+         <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-1011007-DTV">
+            <rdf:type rdf:resource="http://vivoweb.org/ontology/core#DateTimeInterval"/>
+            <core:end>
+               <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-1011007-DTV-E">
+                  <rdf:type rdf:resource="http://vivoweb.org/ontology/core#DateTimeValue"/>
+                  <core:dateTime rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">1999-01-01T00:00:00</core:dateTime>
+                  <core:dateTimePrecision rdf:resource="http://vivoweb.org/ontology/core#yearPrecision"/>
+               </rdf:Description>
+            </core:end>
+         </rdf:Description>
+      </core:dateTimeInterval>
+      <core:trainingAtOrganization><!--SUNY Oswego-->
+         <rdf:Description rdf:about="http://vivo.cornell.edu/individual/AI-0203133080BF0000FAA1"/>
+      </core:trainingAtOrganization>
+      <core:educationalTrainingOf><!--Dale, Cathrine a (cad2616)-->
+         <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-0203100180D400000004">
+            <core:educationalTraining rdf:resource="http://vivo.cornell.edu/individual/EX-1011007"/>
+         </rdf:Description>
+      </core:educationalTrainingOf>
+   </rdf:Description>
+   <!--EduRec 7-->
+   <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-1011008">
+      <rdf:type rdf:resource="http://vivoweb.org/ontology/core#EducationalTraining"/>
+      <local:degreeLevel>Associate</local:degreeLevel>
+      <rdfs:label>Associate, Liberal Arts and Sciences</rdfs:label>
+      <core:majorField>Liberal Arts and Sciences</core:majorField>
+      <core:dateTimeInterval>
+         <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-1011008-DTV">
+            <rdf:type rdf:resource="http://vivoweb.org/ontology/core#DateTimeInterval"/>
+            <core:end>
+               <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-1011008-DTV-E">
+                  <rdf:type rdf:resource="http://vivoweb.org/ontology/core#DateTimeValue"/>
+                  <core:dateTime rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">1995-01-01T00:00:00</core:dateTime>
+                  <core:dateTimePrecision rdf:resource="http://vivoweb.org/ontology/core#yearPrecision"/>
+               </rdf:Description>
+            </core:end>
+         </rdf:Description>
+      </core:dateTimeInterval>
+      <core:trainingAtOrganization><!--Tompkins Cortland Community College-->
+         <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-0203100180D40000000C"/>
+      </core:trainingAtOrganization>
+      <core:educationalTrainingOf><!--Dale, Cathrine A (cad2616)-->
+         <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-0203100180D400000004">
+            <core:educationalTraining rdf:resource="http://vivo.cornell.edu/individual/EX-1011008"/>
+         </rdf:Description>
+      </core:educationalTrainingOf>
+   </rdf:Description>
+   <!--EduRec 8-->
+   <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-1011009">
+      <rdf:type rdf:resource="http://vivoweb.org/ontology/core#EducationalTraining"/>
+      <local:degreeLevel>Bachelor</local:degreeLevel>
+      <rdfs:label>Bachelor, Animal Science</rdfs:label>
+      <core:majorField>Animal Science</core:majorField>
+      <core:dateTimeInterval>
+         <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-1011009-DTV">
+            <rdf:type rdf:resource="http://vivoweb.org/ontology/core#DateTimeInterval"/>
+            <core:end>
+               <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-1011009-DTV-E">
+                  <rdf:type rdf:resource="http://vivoweb.org/ontology/core#DateTimeValue"/>
+                  <core:dateTime rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2004-01-01T00:00:00</core:dateTime>
+                  <core:dateTimePrecision rdf:resource="http://vivoweb.org/ontology/core#yearPrecision"/>
+               </rdf:Description>
+            </core:end>
+         </rdf:Description>
+      </core:dateTimeInterval>
+      <core:trainingAtOrganization><!--Cornell University-->
+         <rdf:Description rdf:about="http://vivo.cornell.edu/individual/individual181"/>
+      </core:trainingAtOrganization>
+      <core:educationalTrainingOf><!--Killian, Andrea S (ask317)-->
+         <rdf:Description rdf:about="http://vivo.cornell.edu/individual/ask317">
+            <core:educationalTraining rdf:resource="http://vivo.cornell.edu/individual/EX-1011009"/>
+         </rdf:Description>
+      </core:educationalTrainingOf>
+   </rdf:Description>
+   <!--EduRec 9-->
+   <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-1011010">
+      <rdf:type rdf:resource="http://vivoweb.org/ontology/core#EducationalTraining"/>
+      <local:degreeLevel>Master</local:degreeLevel>
+      <rdfs:label>Master, Business Administration</rdfs:label>
+      <core:majorField>Business Administration</core:majorField>
+      <core:dateTimeInterval>
+         <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-1011010-DTV">
+            <rdf:type rdf:resource="http://vivoweb.org/ontology/core#DateTimeInterval"/>
+            <core:end>
+               <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-1011010-DTV-E">
+                  <rdf:type rdf:resource="http://vivoweb.org/ontology/core#DateTimeValue"/>
+                  <core:dateTime rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2012-01-01T00:00:00</core:dateTime>
+                  <core:dateTimePrecision rdf:resource="http://vivoweb.org/ontology/core#yearPrecision"/>
+               </rdf:Description>
+            </core:end>
+         </rdf:Description>
+      </core:dateTimeInterval>
+      <core:trainingAtOrganization><!--Pennsylvania State University-->
+         <rdf:Description rdf:about="http://vivo.cornell.edu/individual/AI-0203F0900BA00000ED7"/>
+      </core:trainingAtOrganization>
+      <core:educationalTrainingOf><!--Killian, Andrea S (ask317)-->
+         <rdf:Description rdf:about="http://vivo.cornell.edu/individual/ask317">
+            <core:educationalTraining rdf:resource="http://vivo.cornell.edu/individual/EX-1011010"/>
+         </rdf:Description>
+      </core:educationalTrainingOf>
+   </rdf:Description>
+   <!--EduRec 10-->
+   <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-1011011">
+      <rdf:type rdf:resource="http://vivoweb.org/ontology/core#EducationalTraining"/>
+      <local:degreeLevel>Master</local:degreeLevel>
+      <local:weakAttribution>true</local:weakAttribution>
+      <rdfs:label>Master, Youth Development</rdfs:label>
+      <core:majorField>Youth Development</core:majorField>
+      <core:dateTimeInterval>
+         <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-1011011-DTV">
+            <rdf:type rdf:resource="http://vivoweb.org/ontology/core#DateTimeInterval"/>
+            <core:end>
+               <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-1011011-DTV-E">
+                  <rdf:type rdf:resource="http://vivoweb.org/ontology/core#DateTimeValue"/>
+                  <core:dateTime rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2006-01-01T00:00:00</core:dateTime>
+                  <core:dateTimePrecision rdf:resource="http://vivoweb.org/ontology/core#yearPrecision"/>
+               </rdf:Description>
+            </core:end>
+         </rdf:Description>
+      </core:dateTimeInterval>
+      <core:trainingAtOrganization><!--Michigan State-->
+         <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-0203100180D40000000D"/>
+      </core:trainingAtOrganization>
+      <core:educationalTrainingOf><!--Killian, Andrea S ()-->
+         <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-0203100180D400000005">
+            <core:educationalTraining rdf:resource="http://vivo.cornell.edu/individual/EX-1011011"/>
+         </rdf:Description>
+      </core:educationalTrainingOf>
+   </rdf:Description>
+   <!--EduRec 11-->
+   <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-1011012">
+      <rdf:type rdf:resource="http://vivoweb.org/ontology/core#EducationalTraining"/>
+      <local:degreeLevel>Master</local:degreeLevel>
+      <rdfs:label>Master, Public Administration</rdfs:label>
+      <core:majorField>Public Administration</core:majorField>
+      <core:dateTimeInterval>
+         <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-1011012-DTV">
+            <rdf:type rdf:resource="http://vivoweb.org/ontology/core#DateTimeInterval"/>
+            <core:end>
+               <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-1011012-DTV-E">
+                  <rdf:type rdf:resource="http://vivoweb.org/ontology/core#DateTimeValue"/>
+                  <core:dateTime rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2009-01-01T00:00:00</core:dateTime>
+                  <core:dateTimePrecision rdf:resource="http://vivoweb.org/ontology/core#yearPrecision"/>
+               </rdf:Description>
+            </core:end>
+         </rdf:Description>
+      </core:dateTimeInterval>
+      <core:trainingAtOrganization><!--Kansas State University-->
+         <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-0203100180D40000000E"/>
+      </core:trainingAtOrganization>
+      <core:educationalTrainingOf><!--Fuller, Arthur R (arf72)-->
+         <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-0203100180D400000006">
+            <core:educationalTraining rdf:resource="http://vivo.cornell.edu/individual/EX-1011012"/>
+         </rdf:Description>
+      </core:educationalTrainingOf>
+   </rdf:Description>
+   <!--EduRec 12-->
+   <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-1011013">
+      <rdf:type rdf:resource="http://vivoweb.org/ontology/core#EducationalTraining"/>
+      <local:degreeLevel>Associate</local:degreeLevel>
+      <rdfs:label>Associate, Liberal Arts</rdfs:label>
+      <core:majorField>Liberal Arts</core:majorField>
+      <core:dateTimeInterval>
+         <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-1011013-DTV">
+            <rdf:type rdf:resource="http://vivoweb.org/ontology/core#DateTimeInterval"/>
+            <core:end>
+               <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-1011013-DTV-E">
+                  <rdf:type rdf:resource="http://vivoweb.org/ontology/core#DateTimeValue"/>
+                  <core:dateTime rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">1992-01-01T00:00:00</core:dateTime>
+                  <core:dateTimePrecision rdf:resource="http://vivoweb.org/ontology/core#yearPrecision"/>
+               </rdf:Description>
+            </core:end>
+         </rdf:Description>
+      </core:dateTimeInterval>
+      <core:trainingAtOrganization><!--Tompkins Cortland Community College-->
+         <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-0203100180D40000000C"/>
+      </core:trainingAtOrganization>
+      <core:educationalTrainingOf><!--Beltaine, Suzy  (sb016)-->
+         <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-0203100180D40000000A">
+            <core:educationalTraining rdf:resource="http://vivo.cornell.edu/individual/EX-1011013"/>
+         </rdf:Description>
+      </core:educationalTrainingOf>
+   </rdf:Description>
+   <!--EduRec 13-->
+   <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-1011015">
+      <rdf:type rdf:resource="http://vivoweb.org/ontology/core#EducationalTraining"/>
+      <local:degreeLevel>Bachelor</local:degreeLevel>
+      <local:weakAttribution>true</local:weakAttribution>
+      <rdfs:label>Bachelor, Animal Husbandry</rdfs:label>
+      <core:majorField>Animal Husbandry</core:majorField>
+      <core:dateTimeInterval>
+         <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-1011015-DTV">
+            <rdf:type rdf:resource="http://vivoweb.org/ontology/core#DateTimeInterval"/>
+            <core:end>
+               <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-1011015-DTV-E">
+                  <rdf:type rdf:resource="http://vivoweb.org/ontology/core#DateTimeValue"/>
+                  <core:dateTime rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2004-01-01T00:00:00</core:dateTime>
+                  <core:dateTimePrecision rdf:resource="http://vivoweb.org/ontology/core#yearPrecision"/>
+               </rdf:Description>
+            </core:end>
+         </rdf:Description>
+      </core:dateTimeInterval>
+      <core:trainingAtOrganization><!--Kansas State University-->
+         <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-0203100180D40000000E"/>
+      </core:trainingAtOrganization>
+      <core:educationalTrainingOf><!--Fuller, Arthur R ()-->
+         <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-0203100180D400000007">
+            <core:educationalTraining rdf:resource="http://vivo.cornell.edu/individual/EX-1011015"/>
+         </rdf:Description>
+      </core:educationalTrainingOf>
+   </rdf:Description>
+   <!--EduRec 14-->
+   <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-1011016">
+      <rdf:type rdf:resource="http://vivoweb.org/ontology/core#EducationalTraining"/>
+      <local:degreeLevel>Bachelor</local:degreeLevel>
+      <rdfs:label>Bachelor, Animal Husbandry</rdfs:label>
+      <core:majorField>Animal Husbandry</core:majorField>
+      <core:dateTimeInterval>
+         <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-1011016-DTV">
+            <rdf:type rdf:resource="http://vivoweb.org/ontology/core#DateTimeInterval"/>
+            <core:end>
+               <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-1011016-DTV-E">
+                  <rdf:type rdf:resource="http://vivoweb.org/ontology/core#DateTimeValue"/>
+                  <core:dateTime rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2004-01-01T00:00:00</core:dateTime>
+                  <core:dateTimePrecision rdf:resource="http://vivoweb.org/ontology/core#yearPrecision"/>
+               </rdf:Description>
+            </core:end>
+         </rdf:Description>
+      </core:dateTimeInterval>
+      <core:trainingAtOrganization><!--Kansas State University-->
+         <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-0203100180D40000000E"/>
+      </core:trainingAtOrganization>
+      <core:educationalTrainingOf><!--Fuller, Arthur R (arf27)-->
+         <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-0203100180D400000008">
+            <core:educationalTraining rdf:resource="http://vivo.cornell.edu/individual/EX-1011016"/>
+         </rdf:Description>
+      </core:educationalTrainingOf>
+   </rdf:Description>
+   <!--EduRec 15-->
+   <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-1011017">
+      <rdf:type rdf:resource="http://vivoweb.org/ontology/core#EducationalTraining"/>
+      <local:degreeLevel>Master</local:degreeLevel>
+      <rdfs:label>Master, Animal Husbandry</rdfs:label>
+      <core:majorField>Animal Husbandry</core:majorField>
+      <core:dateTimeInterval>
+         <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-1011017-DTV">
+            <rdf:type rdf:resource="http://vivoweb.org/ontology/core#DateTimeInterval"/>
+            <core:end>
+               <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-1011017-DTV-E">
+                  <rdf:type rdf:resource="http://vivoweb.org/ontology/core#DateTimeValue"/>
+                  <core:dateTime rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2006-01-01T00:00:00</core:dateTime>
+                  <core:dateTimePrecision rdf:resource="http://vivoweb.org/ontology/core#yearPrecision"/>
+               </rdf:Description>
+            </core:end>
+         </rdf:Description>
+      </core:dateTimeInterval>
+      <core:trainingAtOrganization><!--Kansas State University-->
+         <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-0203100180D40000000E"/>
+      </core:trainingAtOrganization>
+      <core:educationalTrainingOf><!--Fuller, Arthur R (arf33)-->
+         <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-0203100180D400000009">
+            <core:educationalTraining rdf:resource="http://vivo.cornell.edu/individual/EX-1011017"/>
+         </rdf:Description>
+      </core:educationalTrainingOf>
+   </rdf:Description>
+   <!--EduRec 16-->
+   <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-1011018">
+      <rdf:type rdf:resource="http://vivoweb.org/ontology/core#EducationalTraining"/>
+      <local:degreeLevel>Bachelor</local:degreeLevel>
+      <rdfs:label>Bachelor, Oriental Art History</rdfs:label>
+      <core:majorField>Oriental Art History</core:majorField>
+      <core:dateTimeInterval>
+         <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-1011018-DTV">
+            <rdf:type rdf:resource="http://vivoweb.org/ontology/core#DateTimeInterval"/>
+            <core:end>
+               <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-1011018-DTV-E">
+                  <rdf:type rdf:resource="http://vivoweb.org/ontology/core#DateTimeValue"/>
+                  <core:dateTime rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">1990-01-01T00:00:00</core:dateTime>
+                  <core:dateTimePrecision rdf:resource="http://vivoweb.org/ontology/core#yearPrecision"/>
+               </rdf:Description>
+            </core:end>
+         </rdf:Description>
+      </core:dateTimeInterval>
+      <core:trainingAtOrganization><!--Smyth College-->
+         <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-0203100180D40000000F"/>
+      </core:trainingAtOrganization>
+      <core:educationalTrainingOf><!--Horsham, Don A (dah256)-->
+         <rdf:Description rdf:about="http://vivo.cornell.edu/individual/EX-0203100180D400000002">
+            <core:educationalTraining rdf:resource="http://vivo.cornell.edu/individual/EX-1011018"/>
+         </rdf:Description>
+      </core:educationalTrainingOf>
+   </rdf:Description>
+</rdf:RDF>

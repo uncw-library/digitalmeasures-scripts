@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ROWS>
+<ROW id='1011001'>
+        <NETID>dag065</NETID>
+        <FNAME>David</FNAME>
+        <MNAME>augustus</MNAME>
+        <LNAME>Green</LNAME>
+        <DEGREE>Masters</DEGREE>
+        <YEAR>1985</YEAR>
+        <INSTITUTION>University of Kansas</INSTITUTION>
+        <MAJOR>Oriental Art History</MAJOR>
+        <MINOR></MINOR>
+        <LAST_UPDATED>2012-10-24 13:10:59.0</LAST_UPDATED>
+</ROW>
+<ROW id='1011002'>
+        <NETID>dah3507</NETID>
+        <FNAME>Don</FNAME>
+        <MNAME>A</MNAME>
+        <LNAME>Horsham</LNAME>
+        <DEGREE>Master</DEGREE>
+        <YEAR>2005</YEAR>
+        <INSTITUTION>Cornell University</INSTITUTION>
+        <MAJOR></MAJOR>
+        <MINOR></MINOR>
+        <LAST_UPDATED>2012-08-29 17:09:42.0</LAST_UPDATED>
+</ROW>
+<ROW id='1011003'>
+        <NETID>dah3507</NETID>
+        <FNAME>Don</FNAME>
+        <MNAME>A</MNAME>
+        <LNAME>Horsham</LNAME>
+        <DEGREE>Bachelor</DEGREE>
+        <YEAR>1996</YEAR>
+        <INSTITUTION>Smith College</INSTITUTION>
+        <MAJOR>Architecture</MAJOR>
+        <MINOR>Italian Language</MINOR>
+        <LAST_UPDATED>2012-08-29 17:10:40.0</LAST_UPDATED>
+</ROW>
+<ROW id='1011004'>
+        <NETID>dhv010</NETID>
+        <FNAME>Denise</FNAME>
+        <MNAME>H</MNAME>
+        <LNAME>Valencia</LNAME>
+        <DEGREE>Master</DEGREE>
+        <YEAR>1992</YEAR>
+        <INSTITUTION>SUNY OSwego</INSTITUTION>
+        <MAJOR>Vocational Technical Education</MAJOR>
+        <MINOR></MINOR>
+        <LAST_UPDATED>2012-07-03 13:56:40.0</LAST_UPDATED>
+</ROW>
+<ROW id='1011005'>
+        <NETID></NETID>
+        <FNAME>Denise</FNAME>
+        <MNAME>Hortense</MNAME>
+        <LNAME>Valencia</LNAME>
+        <DEGREE>Bachelor</DEGREE>
+        <YEAR>1988</YEAR>
+        <INSTITUTION>SUNY Cortland</INSTITUTION>
+        <MAJOR>Education</MAJOR>
+        <MINOR></MINOR>
+        <LAST_UPDATED>2012-07-03 13:56:40.0</LAST_UPDATED>
+</ROW>
+<ROW id='1011006'>
+        <NETID>dag065</NETID>
+        <FNAME>David</FNAME>
+        <MNAME>Augustus</MNAME>
+        <LNAME>Green</LNAME>
+        <DEGREE>Bachelor</DEGREE>
+        <YEAR>1980</YEAR>
+        <INSTITUTION>State University at Albany</INSTITUTION>
+        <MAJOR>Studio Art</MAJOR>
+        <MINOR>English</MINOR>
+        <LAST_UPDATED>2012-10-24 13:10:59.0</LAST_UPDATED>
+</ROW>
+<ROW id='1011007'>
+        <NETID>cad2616</NETID>
+        <FNAME>Cathrine</FNAME>
+        <MNAME>a</MNAME>
+        <LNAME>Dale</LNAME>
+        <DEGREE>Bachelor</DEGREE>
+        <YEAR>1999</YEAR>
+        <INSTITUTION>SUNY Oswego</INSTITUTION>
+        <MAJOR>Environmental and Organismal Biology</MAJOR>
+        <MINOR>Business Administration</MINOR>
+        <LAST_UPDATED>2012-12-07 12:18:49.0</LAST_UPDATED>
+</ROW>
+<ROW id='1011008'>
+        <NETID>cad2616</NETID>
+        <FNAME>Cathrine</FNAME>
+        <MNAME>A</MNAME>
+        <LNAME>Dale</LNAME>
+        <DEGREE>Associate</DEGREE>
+        <YEAR>1995</YEAR>
+        <INSTITUTION>Tompkins Cortland   Community College</INSTITUTION>
+        <MAJOR>Liberal Arts and Sciences</MAJOR>
+        <MINOR></MINOR>
+        <LAST_UPDATED>2012-12-07 12:19:17.0</LAST_UPDATED>
+</ROW>
+<ROW id='1011009'>
+        <NETID>ask317</NETID>
+        <FNAME>Andrea</FNAME>
+        <MNAME>S</MNAME>
+        <LNAME>Killian</LNAME>
+        <DEGREE>Bachelor</DEGREE>
+        <YEAR>2004</YEAR>
+        <INSTITUTION>Cornell University</INSTITUTION>
+        <MAJOR>Animal Science</MAJOR>
+        <MINOR></MINOR>
+        <LAST_UPDATED>2012-09-10 08:17:53.0</LAST_UPDATED>
+</ROW>
+<ROW id='1011010'>
+        <NETID>ask317</NETID>
+        <FNAME>Andrea  </FNAME>
+        <MNAME>S</MNAME>
+        <LNAME>Killian</LNAME>
+        <DEGREE>Master</DEGREE>
+        <YEAR>2012</YEAR>
+        <INSTITUTION>Pennsylvania State University</INSTITUTION>
+        <MAJOR>Business Administration</MAJOR>
+        <MINOR></MINOR>
+        <LAST_UPDATED>2012-09-10 08:17:27.0</LAST_UPDATED>
+</ROW>
+<ROW id='1011011'>
+        <NETID></NETID>
+        <FNAME>Andrea</FNAME>
+        <MNAME>S</MNAME>
+        <LNAME>Killian</LNAME>
+        <DEGREE>Master</DEGREE>
+        <YEAR>2006</YEAR>
+        <INSTITUTION>Michigan State</INSTITUTION>
+        <MAJOR>Youth Development</MAJOR>
+        <MINOR></MINOR>
+        <LAST_UPDATED>2012-09-10 08:15:56.0</LAST_UPDATED>
+</ROW>
+<ROW id='1011012'>
+        <NETID>arf72</NETID>
+        <FNAME>Arthur</FNAME>
+        <MNAME>R</MNAME>
+        <LNAME>Fuller</LNAME>
+        <DEGREE>Master</DEGREE>
+        <YEAR>2009</YEAR>
+        <INSTITUTION>Kansas State University</INSTITUTION>
+        <MAJOR>Public Administration</MAJOR>
+        <MINOR></MINOR>
+        <LAST_UPDATED>2012-12-04 11:05:12.0</LAST_UPDATED>
+</ROW>
+<ROW id='1011013'>
+        <NETID>sb016</NETID>
+        <FNAME>Suzy</FNAME>
+        <MNAME></MNAME>
+        <LNAME>Beltaine</LNAME>
+        <DEGREE>Associate</DEGREE>
+        <YEAR>1992</YEAR>
+        <INSTITUTION>Tompkins Cortland Community College</INSTITUTION>
+        <MAJOR>Liberal Arts</MAJOR>
+        <MINOR></MINOR>
+        <LAST_UPDATED>2012-07-03 13:56:40.0</LAST_UPDATED>
+</ROW>
+<ROW id='1011014'>
+        <NETID>arf72</NETID>
+        <FNAME>Arthur</FNAME>
+        <MNAME>R</MNAME>
+        <LNAME>Fuller</LNAME>
+        <DEGREE>Bachelor</DEGREE>
+        <YEAR>2004</YEAR>
+        <INSTITUTION>Kansas State University</INSTITUTION>
+        <MAJOR></MAJOR>
+        <MINOR></MINOR>
+        <LAST_UPDATED>2012-12-04 11:05:12.0</LAST_UPDATED>
+</ROW>
+<ROW id='1011015'>
+        <NETID></NETID>
+        <FNAME>Arthur</FNAME>
+        <MNAME>R</MNAME>
+        <LNAME>Fuller</LNAME>
+        <DEGREE>Bachelor</DEGREE>
+        <YEAR>2004</YEAR>
+        <INSTITUTION>Kansas State University</INSTITUTION>
+        <MAJOR>Animal Husbandry</MAJOR>
+        <MINOR></MINOR>
+        <LAST_UPDATED>2012-12-04 11:05:12.0</LAST_UPDATED>
+</ROW>
+<ROW id='1011016'>
+        <NETID>arf27</NETID>
+        <FNAME>Arthur</FNAME>
+        <MNAME>R</MNAME>
+        <LNAME>Fuller</LNAME>
+        <DEGREE>Bachelor</DEGREE>
+        <YEAR>2004</YEAR>
+        <INSTITUTION>Kansas State University</INSTITUTION>
+        <MAJOR>Animal Husbandry</MAJOR>
+        <MINOR></MINOR>
+        <LAST_UPDATED>2012-12-04 11:05:12.0</LAST_UPDATED>
+</ROW>
+<ROW id='1011017'>
+        <NETID>arf33</NETID>
+        <FNAME>Arthur</FNAME>
+        <MNAME>R</MNAME>
+        <LNAME>Fuller</LNAME>
+        <DEGREE>Master</DEGREE>
+        <YEAR>2006</YEAR>
+        <INSTITUTION>Kansas State University</INSTITUTION>
+        <MAJOR>Animal Husbandry</MAJOR>
+        <MINOR></MINOR>
+        <LAST_UPDATED>2012-12-04 11:05:12.0</LAST_UPDATED>
+</ROW>
+<ROW id='1011018'>
+        <NETID>dah256</NETID>
+        <FNAME>Don</FNAME>
+        <MNAME>A</MNAME>
+        <LNAME>Horsham</LNAME>
+        <DEGREE>Bachelor</DEGREE>
+        <YEAR>1990</YEAR>
+        <INSTITUTION>Smyth College</INSTITUTION>
+        <MAJOR>Oriental Art History</MAJOR>
+        <MINOR>Farsi</MINOR>
+        <LAST_UPDATED>2012-08-29 17:10:40.0</LAST_UPDATED>
+</ROW>
+</ROWS>
