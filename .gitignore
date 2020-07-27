@@ -1,3 +1,6 @@
 extracting/output/*
 extracting/userpass.*
 .ipynb_checkpoints
+vivo-sample-data
+errors/
+csv_input/
