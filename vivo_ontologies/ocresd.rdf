@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?><rdf:RDF
+    xmlns:ns="http://www.w3.org/2003/06/sw-vocab-status/ns#"
+    xmlns:scires="http://vivoweb.org/ontology/scientific-research#"
+    xmlns:ocresst="http://purl.org/net/OCRe/statistics.owl#"
+    xmlns:ocresd="http://purl.org/net/OCRe/study_design.owl#"
+    xmlns:dcterms="http://purl.org/dc/terms/"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:obo="http://purl.obolibrary.org/obo/"
+    xmlns:geo="http://aims.fao.org/aos/geopolitical.owl#"
+    xmlns:c4o="http://purl.org/spar/c4o/"
+    xmlns:event="http://purl.org/NET/c4dm/event.owl#"
+    xmlns:ro="http://purl.obolibrary.org/obo/ro.owl#"
+    xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+    xmlns:skos2="http://www.w3.org/2008/05/skos#"
+    xmlns:vann="http://purl.org/vocab/vann/"
+    xmlns:vivo="http://vivoweb.org/ontology/core#"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:vitro-public="http://vitro.mannlib.cornell.edu/ns/vitro/public#"
+    xmlns:vitro="http://vitro.mannlib.cornell.edu/ns/vitro/0.7#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:cito="http://purl.org/spar/cito/"
+    xmlns:swo="http://www.ebi.ac.uk/efo/swo/"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:ocresp="http://purl.org/net/OCRe/study_protocol.owl#"
+    xmlns:ocrer="http://purl.org/net/OCRe/research.owl#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:vcard="http://www.w3.org/2006/vcard/ns#"
+    xmlns:bibo="http://purl.org/ontology/bibo/"
+    xmlns:fabio="http://purl.org/spar/fabio/"
+    xmlns:foaf="http://xmlns.com/foaf/0.1/">
+  <owl:Ontology rdf:about="http://purl.org/net/OCRe/study_design.owl">
+    <vitro:ontologyPrefixAnnot>ocresd</vitro:ontologyPrefixAnnot>
+    <rdfs:label xml:lang="en-US">OCRe Study Design</rdfs:label>
+  </owl:Ontology>
+  <owl:Class rdf:about="http://purl.org/net/OCRe/study_design.owl#Phase_1">
+    <rdfs:label xml:lang="en">Phase 1</rdfs:label>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="http://purl.org/net/OCRe/study_design.owl#OCRE100038"/>
+    </rdfs:subClassOf>
+    <obo:IAO_0000115>A Phase I trial assesses toxic effects on humans (not many people participate, and usually without controls) [Glossary of Terms in The Cochrane Collaboration]</obo:IAO_0000115>
+    <ocresst:curator>Simona</ocresst:curator>
+  </owl:Class>
+  <owl:Class rdf:about="http://purl.org/net/OCRe/study_design.owl#Phase_0">
+    <rdfs:label xml:lang="en">Phase 0</rdfs:label>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="http://purl.org/net/OCRe/study_design.owl#OCRE100038"/>
+    </rdfs:subClassOf>
+    <obo:IAO_0000115>A Phase 0 trial is an exploratory trial involving very limited human exposure, with no therapeutic or diagnostic intent (e.g., screening study, microdose study). [http://prsinfo.clinicaltrials.gov/definitions.html]</obo:IAO_0000115>
+    <ocresst:curator>Simona</ocresst:curator>
+  </owl:Class>
+  <owl:Class rdf:about="http://purl.org/net/OCRe/study_design.owl#Single_group_study">
+    <rdfs:label xml:lang="en">Single Group Study</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://purl.org/net/OCRe/research.owl#Interventional_study"/>
+    <obo:IAO_0000115>A single group study is an interventional study that has only a single allocation group and no contemporaneuos comparison group.
+A study in which an individual acts has his/her own comparison does not fall into this category, since an individual is not a group.</obo:IAO_0000115>
+    <ocresst:curator>Simona</ocresst:curator>
+    <ocresp:develop_comment>Simona: to be reviewed</ocresp:develop_comment>
+  </owl:Class>
+  <owl:Class rdf:about="http://purl.org/net/OCRe/study_design.owl#Phase_3">
+    <rdfs:label xml:lang="en">Phase 3</rdfs:label>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="http://purl.org/net/OCRe/study_design.owl#OCRE100038"/>
+    </rdfs:subClassOf>
+    <obo:IAO_0000115>A Phase III trial compares the new treatment against standard (or placebo) treatment (usually a full
+randomised controlled trial). At this point, a drug can be approved for community use. [Glossary of Terms in The Cochrane Collaboration]</obo:IAO_0000115>
+    <ocresst:curator>Simona</ocresst:curator>
+  </owl:Class>
+  <owl:Class rdf:about="http://purl.org/net/OCRe/study_design.owl#Phase_2">
+    <rdfs:label xml:lang="en">Phase 2</rdfs:label>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="http://purl.org/net/OCRe/study_design.owl#OCRE100038"/>
+    </rdfs:subClassOf>
+    <obo:IAO_0000115>A Phase ll trial assesses therapeutic benefit (usually involving a few hundred people, usually with controls, but not always) [Glossary of Terms in The Cochrane Collaboration]</obo:IAO_0000115>
+    <ocresst:curator>Simona</ocresst:curator>
+  </owl:Class>
+  <owl:Class rdf:about="http://purl.org/net/OCRe/study_design.owl#Phase_4">
+    <rdfs:label xml:lang="en">Phase 4</rdfs:label>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="http://purl.org/net/OCRe/study_design.owl#OCRE100038"/>
+    </rdfs:subClassOf>
+    <obo:IAO_0000115>A Phase IV study monitors a new treatment in the community, often to evaluate longterm safety and effectiveness. [Glossary of Terms in The Cochrane Collaboration]</obo:IAO_0000115>
+    <ocresst:curator>Simona</ocresst:curator>
+  </owl:Class>
+  <owl:Class rdf:about="http://purl.org/net/OCRe/study_design.owl#OCRE100038">
+    <rdfs:label xml:lang="en">Phase</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/BFO_0000015"/>
+    <obo:IAO_0000115>Phase describes the level of a trial required of drugs before (and after) they are routinely used in clinical practice:
+- Phase I trials assess toxic effects on humans (not many people participate in them, and usually without controls);
+- Phase ll trials assess therapeutic benefit (usually involving a few hundred people, usually with controls, but not always);
+- Phase III trials compare the new treatment against standard (or placebo) treatment (usually a full randomised controlled trial). At this point, a drug can be approved for community use.
+- Phase IV monitors a new treatment in the community, often to evaluate longterm safety and effectiveness. [Glossary of Terms in The Cochrane Collaboration]
+
+A trial can be of a combination phase (e.g., I/II).
+The concept of phase is not applicable to trials studying certain interventions (e.g., device, procedure, behavioral)</obo:IAO_0000115>
+    <obo:IAO_0000117>Simona</obo:IAO_0000117>
+  </owl:Class>
+</rdf:RDF>

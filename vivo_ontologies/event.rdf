@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?><rdf:RDF
+    xmlns:ns="http://www.w3.org/2003/06/sw-vocab-status/ns#"
+    xmlns:scires="http://vivoweb.org/ontology/scientific-research#"
+    xmlns:ocresst="http://purl.org/net/OCRe/statistics.owl#"
+    xmlns:ocresd="http://purl.org/net/OCRe/study_design.owl#"
+    xmlns:dcterms="http://purl.org/dc/terms/"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:obo="http://purl.obolibrary.org/obo/"
+    xmlns:geo="http://aims.fao.org/aos/geopolitical.owl#"
+    xmlns:c4o="http://purl.org/spar/c4o/"
+    xmlns:event="http://purl.org/NET/c4dm/event.owl#"
+    xmlns:ro="http://purl.obolibrary.org/obo/ro.owl#"
+    xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+    xmlns:skos2="http://www.w3.org/2008/05/skos#"
+    xmlns:vann="http://purl.org/vocab/vann/"
+    xmlns:vivo="http://vivoweb.org/ontology/core#"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:vitro-public="http://vitro.mannlib.cornell.edu/ns/vitro/public#"
+    xmlns:vitro="http://vitro.mannlib.cornell.edu/ns/vitro/0.7#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:cito="http://purl.org/spar/cito/"
+    xmlns:swo="http://www.ebi.ac.uk/efo/swo/"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:ocresp="http://purl.org/net/OCRe/study_protocol.owl#"
+    xmlns:ocrer="http://purl.org/net/OCRe/research.owl#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:vcard="http://www.w3.org/2006/vcard/ns#"
+    xmlns:bibo="http://purl.org/ontology/bibo/"
+    xmlns:fabio="http://purl.org/spar/fabio/"
+    xmlns:foaf="http://xmlns.com/foaf/0.1/">
+  <owl:Ontology rdf:about="http://purl.org/NET/c4dm/event.owl">
+    <vitro:ontologyPrefixAnnot>event</vitro:ontologyPrefixAnnot>
+    <rdfs:label xml:lang="en-US">Event Ontology</rdfs:label>
+  </owl:Ontology>
+  <owl:Class rdf:about="http://purl.org/NET/c4dm/event.owl#Event">
+    <vitro:displayRankAnnot rdf:datatype="http://www.w3.org/2001/XMLSchema#int"
+    >-1</vitro:displayRankAnnot>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="http://purl.obolibrary.org/obo/RO_0001025"/>
+        <owl:allValuesFrom rdf:resource="http://vivoweb.org/ontology/core#GeographicLocation"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="http://vivoweb.org/ontology/core#hasSubjectArea"/>
+        <owl:allValuesFrom rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="http://purl.org/ontology/bibo/presents"/>
+        <owl:allValuesFrom rdf:resource="http://purl.org/ontology/bibo/Document"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <obo:IAO_0000112>Only use if no specific subclasses of event:Event are appropriate.</obo:IAO_0000112>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="http://vivoweb.org/ontology/core#geographicFocus"/>
+        <owl:allValuesFrom rdf:resource="http://vivoweb.org/ontology/core#GeographicRegion"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <vitro:inClassGroup rdf:resource="http://vivoweb.org/ontology#vitroClassGroupevents"/>
+    <vitro:hiddenFromDisplayBelowRoleLevelAnnot rdf:resource="http://vitro.mannlib.cornell.edu/ns/vitro/role#public"/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="http://vivoweb.org/ontology/core#description"/>
+        <owl:allValuesFrom rdf:resource="http://www.w3.org/2000/01/rdf-schema#Literal"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="http://vivoweb.org/ontology/core#dateTimeInterval"/>
+        <owl:allValuesFrom rdf:resource="http://vivoweb.org/ontology/core#DateTimeInterval"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="http://vivoweb.org/ontology/core#contactInformation"/>
+        <owl:allValuesFrom rdf:resource="http://www.w3.org/2000/01/rdf-schema#Literal"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <obo:IAO_0000112>This class will also display instances of subclasses under Event, e.g. Philosophy Department Discussion Club; 2009 Racker Lecture; screening of a documentary. In addition to a location in space and time, an event may have any or all the following qualities: actively participating agents, passive factors, work products. Also, it may be in a virtual space or part of a series such as a lecture series.
+
+The previous short definition was: "An arbitrary classification of a space/time region, by a cognitive agent."</obo:IAO_0000112>
+    <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/BFO_0000015"/>
+    <vitro:hiddenFromPublishBelowRoleLevelAnnot rdf:resource="http://vitro.mannlib.cornell.edu/ns/vitro/role#public"/>
+    <vitro:displayLimitAnnot rdf:datatype="http://www.w3.org/2001/XMLSchema#int"
+    >-1</vitro:displayLimitAnnot>
+    <obo:IAO_0000115>Something that happens at a given place and time.</obo:IAO_0000115>
+    <rdfs:label xml:lang="en">Event</rdfs:label>
+    <vitro:prohibitedFromUpdateBelowRoleLevelAnnot rdf:resource="http://vitro.mannlib.cornell.edu/ns/vitro/role#public"/>
+  </owl:Class>
+</rdf:RDF>
