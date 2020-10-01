@@ -1,0 +1,69 @@
+@prefix :      <http://www.w3.org/2006/vcard/ns#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos:  <http://www.w3.org/2004/02/skos/core#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
+@prefix vitro: <http://vitro.mannlib.cornell.edu/ns/vitro/0.7#> .
+@prefix geo:   <http://aims.fao.org/aos/geopolitical.owl#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix bibo:  <http://purl.org/ontology/bibo/> .
+@prefix vivo:  <http://vivoweb.org/ontology/core#> .
+@prefix obo:   <http://purl.obolibrary.org/obo/> .
+@prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+
+<http://vivo.mydomain.edu/individual/n4321>
+        a                     vivo:FacultyMember ;
+        rdfs:label            "LastName, Firstname Middle"@en-US ;
+        obo:ARG_2000028       <http://vivo.mydomain.edu/individual/n4654> ;
+        obo:RO_0000053        <http://vivo.uncw.edu/individual/n4324> ;
+        vivo:geographicFocus  geo:Poland ;
+        vivo:overview         "Vocal performance"@en-US ;
+        vivo:relatedBy        <http://vivo.mydomain.edu/individual/n4325> .
+
+<http://vivo.mydomain.edu/individual/n4322>
+        a                 vcard:Name ;
+        vivo:middleName   "Jorge"@en-US ;
+        vcard:familyName  "Duncan"@en-US ;
+        vcard:givenName   "Marc"@en-US .
+
+<http://vivo.mydomain.edu/individual/n4654>
+        a                vcard:Individual ;
+        obo:ARG_2000029  <http://vivo.mydomain.edu/individual/n4321> ;
+        vcard:hasName    <http://vivo.mydomain.edu/individual/n4322> ;
+        vcard:hasTitle   <http://vivo.mydomain.edu/individual/n4323> .
+
+<http://vivo.uncw.edu/individual/n4324>
+        a                vivo:ResearcherRole ;
+        rdfs:label       "Stares at Thing" ;
+        obo:RO_0000052   <http://vivo.mydomain.edu/individual/n4321> .
+
+<http://vivo.mydomain.edu/individual/n4325>
+        a                      vivo:FacultyPosition ;
+        rdfs:label             "Dog Catcher"@en-US ;
+        vivo:relates           <http://vivo.mydomain.edu/individual/n4326> , <http://vivo.mydomain.edu/individual/n4321> .
+
+
+<http://vivo.mydomain.edu/individual/n4326>
+        a                vivo:AcademicDepartment ;
+        rdfs:label       "Pine Tree Counting"@en-US ;
+        obo:BFO_0000050  <http://vivo.mydomain.edu/individual/n4327> ;
+        vivo:relatedBy   <http://vivo.mydomain.edu/individual/n4325> .
+
+<http://vivo.mydomain.edu/individual/n4327>
+        a                vivo:College ;
+        rdfs:label       "College of Magic"@en-US ;
+        obo:BFO_0000050  <http://vivo.mydomain.edu/individual/n4328> ;
+        obo:BFO_0000051  <http://vivo.mydomain.edu/individual/n4326> ;
+        vivo:overview    "A college of Sample University."@en-US .
+
+ <http://vivo.mydomain.edu/individual/n4328>
+        a                vivo:University ;
+        rdfs:label       "Zoo University"@en-US ;
+        obo:BFO_0000051  <http://vivo.mydomain.edu/individual/n4327> ;
+        obo:RO_0001025   <http://dbpedia.org/resource/Kansas> ;
+        vivo:overview    "Zoo University is a <em><strong>fictional university</strong></em> created to demonstrate VIVO features."@en-US .
+
+<http://vivo.mydomain.edu/individual/n4323>
+        a            vcard:Title ;
+        vcard:title  "Cat Herder"@en-US .
