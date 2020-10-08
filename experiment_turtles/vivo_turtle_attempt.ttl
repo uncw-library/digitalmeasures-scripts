@@ -13,13 +13,21 @@
 @prefix foaf:  <http://xmlns.com/foaf/0.1/> .
 
 <http://vivo.mydomain.edu/individual/n4321>
-        a                     vivo:FacultyMember ;
-        rdfs:label            "LastName, Firstname Middle"@en-US ;
-        obo:ARG_2000028       <http://vivo.mydomain.edu/individual/n4654> ;
-        obo:RO_0000053        <http://vivo.uncw.edu/individual/n4324> ;
-        vivo:geographicFocus  geo:Poland ;
+        vivo:geographicFocus  geo:Poland .
+
+<http://vivo.mydomain.edu/individual/n4321>
         vivo:overview         "Vocal performance"@en-US ;
         vivo:relatedBy        <http://vivo.mydomain.edu/individual/n4325> .
+
+<http://vivo.mydomain.edu/individual/n4321>
+        a                     vivo:FacultyMember .
+
+<http://vivo.mydomain.edu/individual/n4321>
+        rdfs:label            "LastName, Firstname Middle"@en-US .
+
+<http://vivo.mydomain.edu/individual/n4321>
+        obo:ARG_2000028       <http://vivo.mydomain.edu/individual/n4654> ;
+        obo:RO_0000053        <http://vivo.uncw.edu/individual/n4324> .
 
 <http://vivo.mydomain.edu/individual/n4322>
         a                 vcard:Name ;
