@@ -28,6 +28,7 @@ UNIVERSITY = {
     "desc": "A description.  Or two, who knows?",
 }
 
+
 COLL_DEPT = {
     # The uids are insignificant, but must not overlap with any uids from the source dataset
     # they also must remain unchanged across different runs of this script
@@ -186,12 +187,14 @@ def parse_userfile(file):
     # users can have more than one college & more than one dept
     # a user without a dept get tagged with their college only
     # a user without a dept or college are mainly only have schoolteach records
-    current_colls = record_elem.xpath(
+    current_colls_elems = record_elem.xpath(
         "dmd:IndexEntry[@indexKey='COLLEGE']", namespaces=NSMAP
     )
-    current_depts = record_elem.xpath(
+    current_colls = parse_dmd_elems(current_colls_elems)
+    current_depts_elems = record_elem.xpath(
         "dmd:IndexEntry[@indexKey='DEPARTMENT']", namespaces=NSMAP
     )
+    current_depts = parse_dmd_elems(current_depts_elems)
     try:
         PCI_elem = record_elem.xpath("a:PCI", namespaces=NSMAP)[0]
         person = get_PCI_info(PCI_elem)
@@ -204,7 +207,7 @@ def parse_userfile(file):
         adminperm = None
     presentations = get_presentations(record_elem)
     admin_assignments = get_admin_assignments(record_elem)
-    jobs = get_admins(record_elem)
+    admin = get_admins(record_elem)
     past_history = get_past_history(record_elem)
     return {
         "userId": userId,
@@ -213,11 +216,18 @@ def parse_userfile(file):
         "adminperm": adminperm,
         "presentations": presentations,
         "admin_assignments": admin_assignments,
-        "jobs": jobs,
+        "admin": admin,
         "current_colls": current_colls,
         "current_depts": current_depts,
         "past_history": past_history,
     }
+
+
+def parse_dmd_elems(elems):
+    if not elems:
+        return []
+    for elem in elems:
+        return [i.attrib.get('text') for i in elems]
 
 
 def get_PCI_info(PCI_elem):
@@ -449,22 +459,21 @@ def add_orgs_to_graph(graph):
 
     for coll, coll_details in COLL_DEPT.items():
         coll_elem = NS[coll_details["uid"]]
+        graph.add((coll_elem, RDF.type, VIVO.College))
         graph.add((univ_elem, OBO.BFO_0000051, coll_elem))
         graph.add((coll_elem, OBO.BFO_0000050, univ_elem))
-        graph.add((coll_elem, RDF.type, VIVO.College))
         graph.add((coll_elem, RDFS.label, Literal(coll)))
 
         for dept_name, dept_uid in coll_details["depts"].items():
             dept_elem = NS[dept_uid]
+            graph.add((dept_elem, RDF.type, VIVO.AcademicDepartment))
             graph.add((coll_elem, OBO.BFO_0000051, dept_elem))
             graph.add((dept_elem, OBO.BFO_0000050, coll_elem))
-            graph.add((dept_elem, RDF.type, FOAF.Organization))
-            graph.add((dept_elem, RDF.type, VIVO.AcademicDepartment))
             graph.add((dept_elem, RDFS.label, Literal(dept_name)))
 
 
 def add_user_to_graph(parsed_user, graph):
-    fac, name, individual, title, jobs, latest_colls, latest_depts = (
+    fac, name, individual, title, admin, latest_colls, latest_depts = (
         None,
         None,
         None,
@@ -497,29 +506,26 @@ def add_user_to_graph(parsed_user, graph):
         if individual:
             graph.add((fac, OBO.ARG_2000028, individual))
 
-    if name:
-        graph.add((name, RDF.type, VIVO.Individual))
-        graph.add((name, VCARD.givenName, Literal(parsed_user["person"]["firstname"])))
-        if not parsed_user["person"]["middlename"]:
-            graph.add((name, VIVO.middleName, Literal("")))
-        else:
-            graph.add(
-                (name, VIVO.middleName, Literal(parsed_user["person"]["middlename"]))
-            )
-        graph.add((name, VCARD.familyName, Literal(parsed_user["person"]["lastname"])))
-
-    if individual:
+    use_individual = bool(fac and individual)
+    if use_individual:
         graph.add((individual, RDF.type, VCARD.Individual))
-        if name:
-            graph.add((individual, VCARD.hasName, name))
-        if fac:
-            graph.add((individual, OBO.ARG_2000029, fac))
-        if title:
+        graph.add((individual, OBO.ARG_2000029, fac))
+        graph.add((fac, OBO.ARG_2000028, individual))
+        use_name = bool(name)
+        if use_name:
+            graph.add((individual, VCARD.hasName, name)) 
+            graph.add((name, RDF.type, VCARD.Name))
+            graph.add((name, VCARD.givenName, Literal(parsed_user["person"]["firstname"])))
+            if not parsed_user["person"]["middlename"]:
+                middlename_text = ""
+            else:
+                middlename_text = parsed_user["person"]["middlename"]
+            graph.add((name, VIVO.middleName, Literal(middlename_text)))
+            graph.add((name, VCARD.familyName, Literal(parsed_user["person"]["lastname"])))
+        use_title = bool(title and parsed_user["adminperm"]["srank"])
+        if use_title:
             graph.add((individual, VCARD.hasTitle, title))
-
-    if title:
-        graph.add((title, RDF.type, VCARD.Title))
-        if parsed_user["adminperm"]["srank"]:
+            graph.add((title, RDF.type, VCARD.Title))
             graph.add((title, VCARD.title, Literal(parsed_user["adminperm"]["srank"])))
 
     for presentation in parsed_user["presentations"]:
@@ -528,12 +534,47 @@ def add_user_to_graph(parsed_user, graph):
     for admin_assignment in parsed_user["admin_assignments"]:
         add_admin_assignment_to_graph(admin_assignment, graph, fac)
 
-    for job in parsed_user["jobs"]:
-        # jobs are split by year into many entries
-        # they should be merged, if the same job.
-        # I haven't heard that we want to include job history in our vivo
-        # so let's skip this part since it's tough & probably not asked for
-        break
+    best_coll_depts = find_best_coll_depts(parsed_user)
+    if best_coll_depts:
+        for best_coll_dept in best_coll_depts:
+            pos = NS[f"{parsed_user['userId']}p"]
+            coll_uid = NS[best_coll_dept["coll_uid"]]
+            dept = NS[best_coll_dept["dept_uid"]]
+            graph.add((pos, RDF.type, VIVO.Position))
+            graph.add((pos, RDFS.label, Literal('SuperPosition')))
+            graph.add((pos, VIVO.relates, dept))
+            graph.add((dept, VIVO.relatedBy, pos))
+            graph.add((pos, VIVO.relates, fac))
+            graph.add((fac, VIVO.relatedBy, pos))
+
+
+
+def find_best_coll_depts(parsed_user):
+    dmd_depts = parsed_user.get('current_depts')
+    college_depts_info = [
+        match_college(dept)
+        for dept in dmd_depts
+        if (dept and match_college(dept))
+    ]
+    if college_depts_info:
+        if len((college_depts_info)) > 1:
+            print(college_depts_info)
+        return college_depts_info
+    return None
+
+
+def match_college(dept):
+    # because users entered the wrong college for their dept in 1/10 files
+    # we have to assume they got the dept correct, and manually lookup the coll.
+    # we also hardcoded the uid for college & for dept, for consistency
+    for coll, bundle in COLL_DEPT.items():
+        if dept in bundle.get('depts'):
+            return {
+                'coll_name': coll,
+                'coll_uid': bundle.get('uid'),
+                'dept_name': dept,
+                'dept_uid': bundle['depts'][dept]}
+    return None
 
 
 def add_presentations_to_graph(presentation, graph, fac):
@@ -671,6 +712,29 @@ def find_latest_position(parsed_user):
         return title
 
 
+def is_excluded_user(parsed_user):
+    if is_only_do_not_use(parsed_user):
+        return True
+    return False
+
+
+def is_only_do_not_use(parsed_user):
+    listed_depts = [
+        dept 
+        for dept in parsed_user.get('current_depts')
+        if dept
+    ]
+    minus_do_not_use_depts = [
+        dept 
+        for dept in parsed_user.get('current_depts')
+        if dept
+        and 'do not use' not in dept.lower()
+    ]
+    if len(listed_depts) != len(minus_do_not_use_depts):
+        return True
+    return False
+
+
 if __name__ == "__main__":
     graph = init_graph()
     ignored_users = gather_ignored_users()
@@ -680,6 +744,8 @@ if __name__ == "__main__":
         if i.split(".")[0] in ignored_users:
             continue
         parsed_user = parse_userfile(f"../extracting/output/users/{i}")
+        if is_excluded_user(parsed_user):
+            continue
         add_user_to_graph(parsed_user, graph)
         count += 1
         if count > 20:
