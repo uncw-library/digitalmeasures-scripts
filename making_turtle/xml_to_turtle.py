@@ -207,19 +207,19 @@ def parse_userfile(file):
         adminperm = None
     presentations = get_presentations(record_elem)
     admin_assignments = get_admin_assignments(record_elem)
-    admin = get_admins(record_elem)
+    admins = get_admins(record_elem)
     past_history = get_past_history(record_elem)
     return {
         "userId": userId,
         "username": username,
-        "person": person,
-        "adminperm": adminperm,
-        "presentations": presentations,
+        "admins": admins,
         "admin_assignments": admin_assignments,
-        "admin": admin,
+        "adminperm": adminperm,
         "current_colls": current_colls,
         "current_depts": current_depts,
         "past_history": past_history,
+        "person": person,
+        "presentations": presentations,
     }
 
 
@@ -227,7 +227,7 @@ def parse_dmd_elems(elems):
     if not elems:
         return []
     for elem in elems:
-        return [i.attrib.get('text') for i in elems]
+        return [i.attrib.get("text") for i in elems]
 
 
 def get_PCI_info(PCI_elem):
@@ -362,10 +362,7 @@ def parse_assignment(assignment_elem):
 
 def get_admins(record_elem):
     admin_elems = record_elem.xpath("a:ADMIN", namespaces=NSMAP)
-    all_admins = []
-    for i in admin_elems:
-        admin = parse_admin(i)
-        all_admins.append(admin)
+    all_admins = [parse_admin(i) for i in admin_elems]
     return all_admins
 
 
@@ -376,22 +373,19 @@ def parse_admin(admin_elem):
     year_end = get_child_text(admin_elem, "YEAR_END")
     college, dept = None, None
     admin_dep_elems = admin_elem.xpath("a:ADMIN_DEP", namespaces=NSMAP)
-    admin_dep = []
-    for i in admin_dep_elems:
-        college = get_child_text(i, "COLLEGE")
-        dept = get_child_text(i, "DEP")
-        admin_dep.append({"college": college, "dept": dept})
+    depts = [get_child_text(i, "DEP") for i in admin_dep_elems]
     rank = get_child_text(admin_elem, "RANK")
     tenure = get_child_text(admin_elem, "TENURE")
-    return {
+    admin = {
         "id": uid,
         "ac_year": ac_year,
         "date_start": year_start,
         "date_end": year_end,
-        "admin_dep": admin_dep,
+        "depts": depts,
         "rank": rank,
         "tenure": tenure,
     }
+    return admin
 
 
 def get_past_history(record_elem):
@@ -482,7 +476,6 @@ def add_user_to_graph(parsed_user, graph):
         None,
         None,
     )
-    current_position = find_latest_position(parsed_user)
 
     if parsed_user["userId"]:
         fac = NS[parsed_user["userId"]]
@@ -513,15 +506,19 @@ def add_user_to_graph(parsed_user, graph):
         graph.add((fac, OBO.ARG_2000028, individual))
         use_name = bool(name)
         if use_name:
-            graph.add((individual, VCARD.hasName, name)) 
+            graph.add((individual, VCARD.hasName, name))
             graph.add((name, RDF.type, VCARD.Name))
-            graph.add((name, VCARD.givenName, Literal(parsed_user["person"]["firstname"])))
+            graph.add(
+                (name, VCARD.givenName, Literal(parsed_user["person"]["firstname"]))
+            )
             if not parsed_user["person"]["middlename"]:
                 middlename_text = ""
             else:
                 middlename_text = parsed_user["person"]["middlename"]
             graph.add((name, VIVO.middleName, Literal(middlename_text)))
-            graph.add((name, VCARD.familyName, Literal(parsed_user["person"]["lastname"])))
+            graph.add(
+                (name, VCARD.familyName, Literal(parsed_user["person"]["lastname"]))
+            )
         use_title = bool(title and parsed_user["adminperm"]["srank"])
         if use_title:
             graph.add((individual, VCARD.hasTitle, title))
@@ -536,31 +533,60 @@ def add_user_to_graph(parsed_user, graph):
 
     best_coll_depts = find_best_coll_depts(parsed_user)
     if best_coll_depts:
-        for best_coll_dept in best_coll_depts:
-            pos = NS[f"{parsed_user['userId']}p"]
+        for num, best_coll_dept in enumerate(best_coll_depts):
+            rank = find_rank_in_dept(parsed_user, best_coll_dept["dept_name"])
+            pos = NS[f"{parsed_user['userId']}p{num}"]
             coll_uid = NS[best_coll_dept["coll_uid"]]
             dept = NS[best_coll_dept["dept_uid"]]
             graph.add((pos, RDF.type, VIVO.Position))
-            graph.add((pos, RDFS.label, Literal('SuperPosition')))
+            graph.add((pos, RDFS.label, Literal(rank)))
             graph.add((pos, VIVO.relates, dept))
             graph.add((dept, VIVO.relatedBy, pos))
             graph.add((pos, VIVO.relates, fac))
             graph.add((fac, VIVO.relatedBy, pos))
 
 
-
 def find_best_coll_depts(parsed_user):
-    dmd_depts = parsed_user.get('current_depts')
+    dmd_depts = parsed_user.get("current_depts")
     college_depts_info = [
-        match_college(dept)
-        for dept in dmd_depts
-        if (dept and match_college(dept))
+        match_college(dept) for dept in dmd_depts if (dept and match_college(dept))
     ]
+
     if college_depts_info:
-        if len((college_depts_info)) > 1:
-            print(college_depts_info)
         return college_depts_info
     return None
+
+
+def find_rank_in_dept(parsed_user, dept):
+    # each user has a dozen or so 'admin' elems,
+    # each admin elem has data on a year's work at one department
+    # We need to find the most recent 'admin' elem with 'rank' data for a given dept.
+    # So, First select only the admin elems matching the dept
+    # Then order the dept elems by most recent academic year, 'ac_year'
+    # Finally spit out the first elem with any 'rank' data
+    dept_matches = [
+        admin for admin in parsed_user.get("admins") if dept in admin.get("depts")
+    ]
+    latest_dept_rank = sorted(
+        dept_matches, key=lambda x: x.get("ac_year"), reverse=True
+    )
+    for i in latest_dept_rank:
+        rank = i.get("rank")
+        if rank:
+            return i.get("rank").strip()
+
+    # But some users leave their rank empty in the 'admin' elements
+    # So we next try to get it from their 'admin_perm' element
+    try:
+        rank = parsed_user["adminperm"]["srank"]
+    except TypeError:
+        rank = None
+    if rank:
+        return rank
+
+    # We could look through their 'past_hist' elems for a clue, but signal/noise is low
+    # So we just default to no 'rank'
+    return ''
 
 
 def match_college(dept):
@@ -568,12 +594,13 @@ def match_college(dept):
     # we have to assume they got the dept correct, and manually lookup the coll.
     # we also hardcoded the uid for college & for dept, for consistency
     for coll, bundle in COLL_DEPT.items():
-        if dept in bundle.get('depts'):
+        if dept in bundle.get("depts"):
             return {
-                'coll_name': coll,
-                'coll_uid': bundle.get('uid'),
-                'dept_name': dept,
-                'dept_uid': bundle['depts'][dept]}
+                "coll_name": coll,
+                "coll_uid": bundle.get("uid"),
+                "dept_name": dept,
+                "dept_uid": bundle["depts"][dept],
+            }
     return None
 
 
@@ -669,47 +696,49 @@ def add_admin_assignment_to_graph(admin_assignment, graph, fac):
     graph.add((datetime_end, VIVO.dateTimePrecision, VIVO.yearPrecision))
 
 
-def find_latest_position(parsed_user):
-    if not parsed_user["person"]:
-        return None
+## Commenting this out and hopefully not needing to use it
 
-    # check if the user entered their position in "endpos" first
-    # except for bad data entried
-    false_entries = (
-        "na",
-        "n/a",
-        "n / a",
-        "steve zinder",
-        "drew rosen",
-        "hua li",
-        "alexander mcdaniel",
-        "james a. lyon",
-    )
-    try:
-        end_position = parsed_user["person"]["endpos"]
-    except KeyError:
-        end_position = None
-    if end_position and end_position.strip().lower() not in false_entries:
-        latest_position = parsed_user["person"]["endpos"]
-        return latest_position
+# def find_latest_position(parsed_user):
+#     if not parsed_user["person"]:
+#         return None
 
-    # check if the user entered their position in "srank" next
-    try:
-        srank = parsed_user["adminperm"]["srank"]
-    except (KeyError, TypeError):
-        srank = None
-    if srank:
-        return srank
+#     # check if the user entered their position in "endpos" first
+#     # except for bad data entried
+#     false_positions = (
+#         "na",
+#         "n/a",
+#         "n / a",
+#         "steve zinder",
+#         "drew rosen",
+#         "hua li",
+#         "alexander mcdaniel",
+#         "james a. lyon",
+#     )
+#     try:
+#         end_position = parsed_user["person"]["endpos"]
+#     except KeyError:
+#         end_position = None
+#     if end_position and end_position.strip().lower() not in false_positions:
+#         latest_position = parsed_user["person"]["endpos"]
+#         return latest_position
 
-    try:
-        past_history = sorted(
-            parsed_user["past_history"], key=lambda x: x["start_date"], reverse=True
-        )[0]
-        title = past_history["title"]
-    except IndexError:
-        title = None
-    if title:
-        return title
+#     # check if the user entered their position in "srank" next
+#     try:
+#         srank = parsed_user["adminperm"]["srank"]
+#     except (KeyError, TypeError):
+#         srank = None
+#     if srank:
+#         return srank
+
+#     try:
+#         past_history = sorted(
+#             parsed_user["past_history"], key=lambda x: x["start_date"], reverse=True
+#         )[0]
+#         title = past_history["title"]
+#     except IndexError:
+#         title = None
+#     if title:
+#         return title
 
 
 def is_excluded_user(parsed_user):
@@ -719,16 +748,13 @@ def is_excluded_user(parsed_user):
 
 
 def is_only_do_not_use(parsed_user):
-    listed_depts = [
-        dept 
-        for dept in parsed_user.get('current_depts')
-        if dept
-    ]
+    # some users have a department name with the text "DO NOT USE"
+    # exclude the user if all their departments names are such
+    listed_depts = [dept for dept in parsed_user.get("current_depts") if dept]
     minus_do_not_use_depts = [
-        dept 
-        for dept in parsed_user.get('current_depts')
-        if dept
-        and 'do not use' not in dept.lower()
+        dept
+        for dept in parsed_user.get("current_depts")
+        if dept and "do not use" not in dept.lower()
     ]
     if len(listed_depts) != len(minus_do_not_use_depts):
         return True
@@ -740,7 +766,8 @@ if __name__ == "__main__":
     ignored_users = gather_ignored_users()
     add_orgs_to_graph(graph)
     count = 0
-    for i in sorted(os.listdir("../extracting/output/users/")):
+
+    for i in set(os.listdir("../extracting/output/users/")):
         if i.split(".")[0] in ignored_users:
             continue
         parsed_user = parse_userfile(f"../extracting/output/users/{i}")
