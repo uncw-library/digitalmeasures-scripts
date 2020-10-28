@@ -139,44 +139,6 @@ def get_child_text(elem, child, ns="a"):
 ## Parsing user files
 
 
-def gather_ignored_users():
-    generic_users = {
-        "databackup_service",
-        "fac_reports",
-        "web_services_vivo",
-        "facultytest",
-    }
-    admin_assistants = {"DIEPPAS", "carabellin", "culpa", "sahljs"}
-    IT = {"chapmanc", "luopaj", "powella"}
-    IRP = {"cohens", "lawsonw"}
-    deans_office = {"wilsonca"}
-    name_changed = {"gorea"}
-    unknown_reason = {
-        "braunr",
-        "crs5798",
-        "gorae",
-        "hoadleyd",
-        "jarrellb",
-        "jrh4152",
-        "keepw",
-        "knoxj",
-        "lambertonc",
-        "learw",
-        "macleodw",
-        "mcb4548",
-        "nelsoncl",
-        "richardsa",
-        "smm9756",
-        "stuartal",
-        "weisa",
-        "wellswd",
-        "westgatea",
-    }
-    return generic_users.union(
-        admin_assistants, IT, IRP, deans_office, name_changed, unknown_reason
-    )
-
-
 def parse_userfile(file):
     etree = ET.parse(file)
     data_elem = etree.xpath("/a:Data", namespaces=NSMAP)[0]
@@ -208,7 +170,7 @@ def parse_userfile(file):
     presentations = get_presentations(record_elem)
     admin_assignments = get_admin_assignments(record_elem)
     admins = get_admins(record_elem)
-    past_history = get_past_history(record_elem)
+    # past_history = get_past_history(record_elem)  # hoping we can overlook these
     return {
         "userId": userId,
         "username": username,
@@ -217,7 +179,7 @@ def parse_userfile(file):
         "adminperm": adminperm,
         "current_colls": current_colls,
         "current_depts": current_depts,
-        "past_history": past_history,
+        # "past_history": past_history,
         "person": person,
         "presentations": presentations,
     }
@@ -388,50 +350,50 @@ def parse_admin(admin_elem):
     return admin
 
 
-def get_past_history(record_elem):
-    past_history_elems = record_elem.xpath("a:PASTHIST", namespaces=NSMAP)
-    all_past_history = []
-    for elem in past_history_elems:
-        past_history = parse_past_history(elem)
-        if past_history:
-            all_past_history.append(past_history)
-    return all_past_history
+# def get_past_history(record_elem):
+#     past_history_elems = record_elem.xpath("a:PASTHIST", namespaces=NSMAP)
+#     all_past_history = []
+#     for elem in past_history_elems:
+#         past_history = parse_past_history(elem)
+#         if past_history:
+#             all_past_history.append(past_history)
+#     return all_past_history
 
 
-def parse_past_history(elem):
-    org = get_child_text(elem, "ORG")
-    title = get_child_text(elem, "TITLE")
-    start_date = elem.attrib.get("startDate") or get_child_text(elem, "START_START")
-    if not is_uncw_org(org):
-        return None
-    if not (title and start_date):
-        return None
-    return {"title": title, "start_date": start_date}
+# def parse_past_history(elem):
+#     org = get_child_text(elem, "ORG")
+#     title = get_child_text(elem, "TITLE")
+#     start_date = elem.attrib.get("startDate") or get_child_text(elem, "START_START")
+#     if not is_uncw_org(org):
+#         return None
+#     if not (title and start_date):
+#         return None
+#     return {"title": title, "start_date": start_date}
 
 
-def is_uncw_org(org):
-    for i in {
-        "uncw",
-        "university of north carolina wilmington",
-        "unc - wilmington",
-        "unc wilmington",
-        "univ of north carolina - wilmington",
-        "univeristy of north carolina wilmington",
-        "unc-wilmington",
-        "unversity of north carolina wilmington",
-        "university of north carolina wilmingon",
-        "university of north carolina wilmingtn",
-        "university of north carolina at wilmington",
-        "university of north carolina, wilmington",
-        "univerity of north carolina wilmington",
-        "university north carolina wilmington",
-        "university of north carolina  wilmington",
-        "university of north carolina-wilmington",
-        "university if north carolina wilmington",
-    }:
-        if i in org.lower():
-            return True
-    return False
+# def is_uncw_org(org):
+#     for i in {
+#         "uncw",
+#         "university of north carolina wilmington",
+#         "unc - wilmington",
+#         "unc wilmington",
+#         "univ of north carolina - wilmington",
+#         "univeristy of north carolina wilmington",
+#         "unc-wilmington",
+#         "unversity of north carolina wilmington",
+#         "university of north carolina wilmingon",
+#         "university of north carolina wilmingtn",
+#         "university of north carolina at wilmington",
+#         "university of north carolina, wilmington",
+#         "univerity of north carolina wilmington",
+#         "university north carolina wilmington",
+#         "university of north carolina  wilmington",
+#         "university of north carolina-wilmington",
+#         "university if north carolina wilmington",
+#     }:
+#         if i in org.lower():
+#             return True
+#     return False
 
 
 ## Creating a turtle file
@@ -558,7 +520,7 @@ def find_best_coll_depts(parsed_user):
 
 
 def find_rank_in_dept(parsed_user, dept):
-    # each user has a dozen or so 'admin' elems,
+    # in the source data, each user has a dozen or so 'admin' elems,
     # each admin elem has data on a year's work at one department
     # We need to find the most recent 'admin' elem with 'rank' data for a given dept.
     # So, First select only the admin elems matching the dept
@@ -576,7 +538,8 @@ def find_rank_in_dept(parsed_user, dept):
             return i.get("rank").strip()
 
     # But some users leave their rank empty in the 'admin' elements
-    # So we next try to get it from their 'admin_perm' element
+    # So we next try to get it from their 'admin_perm' element.
+    # the source data is less accurate for adminperm/srank than for admin/rank.
     try:
         rank = parsed_user["adminperm"]["srank"]
     except TypeError:
@@ -586,7 +549,7 @@ def find_rank_in_dept(parsed_user, dept):
 
     # We could look through their 'past_hist' elems for a clue, but signal/noise is low
     # So we just default to no 'rank'
-    return ''
+    return ""
 
 
 def match_college(dept):
@@ -741,8 +704,46 @@ def add_admin_assignment_to_graph(admin_assignment, graph, fac):
 #         return title
 
 
+def gather_ignored_users():
+    generic_users = {
+        "databackup_service",
+        "fac_reports",
+        "web_services_vivo",
+        "facultytest",
+    }
+    admin_assistants = {"DIEPPAS", "carabellin", "culpa", "sahljs"}
+    IT = {"chapmanc", "luopaj", "powella"}
+    IRP = {"cohens", "lawsonw"}
+    deans_office = {"wilsonca"}
+    name_changed = {"gorea"}
+    unknown_reason = {
+        "braunr",
+        "crs5798",
+        "gorae",
+        "hoadleyd",
+        "jarrellb",
+        "jrh4152",
+        "keepw",
+        "knoxj",
+        "lambertonc",
+        "learw",
+        "macleodw",
+        "mcb4548",
+        "nelsoncl",
+        "richardsa",
+        "smm9756",
+        "stuartal",
+        "weisa",
+        "wellswd",
+        "westgatea",
+    }
+    return generic_users.union(
+        admin_assistants, IT, IRP, deans_office, name_changed, unknown_reason
+    )
+
+
 def is_excluded_user(parsed_user):
-    if is_only_do_not_use(parsed_user):
+    if is_only_do_not_use(parsed_user) or is_student(parsed_user):
         return True
     return False
 
@@ -761,22 +762,28 @@ def is_only_do_not_use(parsed_user):
     return False
 
 
+def is_student(parsed_user):
+    username = parsed_user.get("username")
+    if username[-4:].isnumeric():
+        return True
+    return False
+
+
 if __name__ == "__main__":
     graph = init_graph()
     ignored_users = gather_ignored_users()
     add_orgs_to_graph(graph)
-    count = 0
-
-    for i in set(os.listdir("../extracting/output/users/")):
-        if i.split(".")[0] in ignored_users:
+    # count = 0
+    for filename in sorted(os.listdir("../extracting/output/users/")):
+        # count += 1
+        # if count > 20:
+        #     break
+        if filename.split(".")[0] in ignored_users:
             continue
-        parsed_user = parse_userfile(f"../extracting/output/users/{i}")
+        parsed_user = parse_userfile(f"../extracting/output/users/{filename}")
         if is_excluded_user(parsed_user):
             continue
         add_user_to_graph(parsed_user, graph)
-        count += 1
-        if count > 20:
-            break
 
     filetext = graph.serialize(format="turtle").decode("utf-8")
     with open("all.ttl", "w") as f:
