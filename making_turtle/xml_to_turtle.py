@@ -170,7 +170,6 @@ def parse_userfile(file):
     presentations = get_presentations(record_elem)
     admin_assignments = get_admin_assignments(record_elem)
     admins = get_admins(record_elem)
-    # past_history = get_past_history(record_elem)  # hoping we can overlook these
     return {
         "userId": userId,
         "username": username,
@@ -179,7 +178,6 @@ def parse_userfile(file):
         "adminperm": adminperm,
         "current_colls": current_colls,
         "current_depts": current_depts,
-        # "past_history": past_history,
         "person": person,
         "presentations": presentations,
     }
@@ -348,52 +346,6 @@ def parse_admin(admin_elem):
         "tenure": tenure,
     }
     return admin
-
-
-# def get_past_history(record_elem):
-#     past_history_elems = record_elem.xpath("a:PASTHIST", namespaces=NSMAP)
-#     all_past_history = []
-#     for elem in past_history_elems:
-#         past_history = parse_past_history(elem)
-#         if past_history:
-#             all_past_history.append(past_history)
-#     return all_past_history
-
-
-# def parse_past_history(elem):
-#     org = get_child_text(elem, "ORG")
-#     title = get_child_text(elem, "TITLE")
-#     start_date = elem.attrib.get("startDate") or get_child_text(elem, "START_START")
-#     if not is_uncw_org(org):
-#         return None
-#     if not (title and start_date):
-#         return None
-#     return {"title": title, "start_date": start_date}
-
-
-# def is_uncw_org(org):
-#     for i in {
-#         "uncw",
-#         "university of north carolina wilmington",
-#         "unc - wilmington",
-#         "unc wilmington",
-#         "univ of north carolina - wilmington",
-#         "univeristy of north carolina wilmington",
-#         "unc-wilmington",
-#         "unversity of north carolina wilmington",
-#         "university of north carolina wilmingon",
-#         "university of north carolina wilmingtn",
-#         "university of north carolina at wilmington",
-#         "university of north carolina, wilmington",
-#         "univerity of north carolina wilmington",
-#         "university north carolina wilmington",
-#         "university of north carolina  wilmington",
-#         "university of north carolina-wilmington",
-#         "university if north carolina wilmington",
-#     }:
-#         if i in org.lower():
-#             return True
-#     return False
 
 
 ## Creating a turtle file
@@ -657,51 +609,6 @@ def add_admin_assignment_to_graph(admin_assignment, graph, fac):
         )
     )
     graph.add((datetime_end, VIVO.dateTimePrecision, VIVO.yearPrecision))
-
-
-## Commenting this out and hopefully not needing to use it
-
-# def find_latest_position(parsed_user):
-#     if not parsed_user["person"]:
-#         return None
-
-#     # check if the user entered their position in "endpos" first
-#     # except for bad data entried
-#     false_positions = (
-#         "na",
-#         "n/a",
-#         "n / a",
-#         "steve zinder",
-#         "drew rosen",
-#         "hua li",
-#         "alexander mcdaniel",
-#         "james a. lyon",
-#     )
-#     try:
-#         end_position = parsed_user["person"]["endpos"]
-#     except KeyError:
-#         end_position = None
-#     if end_position and end_position.strip().lower() not in false_positions:
-#         latest_position = parsed_user["person"]["endpos"]
-#         return latest_position
-
-#     # check if the user entered their position in "srank" next
-#     try:
-#         srank = parsed_user["adminperm"]["srank"]
-#     except (KeyError, TypeError):
-#         srank = None
-#     if srank:
-#         return srank
-
-#     try:
-#         past_history = sorted(
-#             parsed_user["past_history"], key=lambda x: x["start_date"], reverse=True
-#         )[0]
-#         title = past_history["title"]
-#     except IndexError:
-#         title = None
-#     if title:
-#         return title
 
 
 def gather_ignored_users():
