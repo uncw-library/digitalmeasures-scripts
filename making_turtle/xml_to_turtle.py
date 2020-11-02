@@ -169,6 +169,8 @@ def parse_userfile(file):
         adminperm = None
     presentations = get_presentations(record_elem)
     admin_assignments = get_admin_assignments(record_elem)
+    if admin_assignments:
+        print(username)
     admins = get_admins(record_elem)
     return {
         "userId": userId,
@@ -618,12 +620,28 @@ def gather_ignored_users():
         "web_services_vivo",
         "facultytest",
     }
-    admin_assistants = {"DIEPPAS", "carabellin", "culpa", "sahljs"}
+    office_staff = {
+        "DIEPPAS",
+        "carabellin",
+        "culpa",
+        "sahljs",
+        "baileyj",
+        'beaudoinh',
+        "deltsi",
+        "grays",
+        "hartmanc",
+        "lindgrens",
+        "murrayd",
+        "ramadanik",
+        "grays",
+        "mcdanielk",
+        "wrightlk",
+    }
     IT = {"chapmanc", "luopaj", "powella"}
-    IRP = {"cohens", "lawsonw"}
+    IRP = {"cohens", "lawsonw", "morristr"}
     deans_office = {"wilsonca"}
     name_changed = {"gorea"}
-    unknown_reason = {
+    unknown_404_response = {
         "braunr",
         "crs5798",
         "gorae",
@@ -645,7 +663,7 @@ def gather_ignored_users():
         "westgatea",
     }
     return generic_users.union(
-        admin_assistants, IT, IRP, deans_office, name_changed, unknown_reason
+        office_staff, IT, IRP, deans_office, name_changed, unknown_404_response
     )
 
 
