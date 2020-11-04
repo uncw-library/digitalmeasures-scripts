@@ -632,7 +632,7 @@ def gather_ignored_users():
         "culpa",
         "sahljs",
         "baileyj",
-        'beaudoinh',
+        "beaudoinh",
         "deltsi",
         "grays",
         "hartmanc",
@@ -680,7 +680,7 @@ def is_excluded_user(parsed_user, driver):
         print(f"{parsed_user.get('username')} is only do not use")
         return True
     if is_student(parsed_user):
-        print(f"{parsed_user.get('username')} is student") 
+        print(f"{parsed_user.get('username')} is student")
         return True
     if not is_in_directory(parsed_user, driver):
         print(f"{parsed_user.get('username')} is not in directory")
@@ -714,36 +714,38 @@ def is_in_directory(parsed_user, driver):
     # someone with no lastname can't be found, reasonable
     # same for some one with no firstname.
     try:
-        firstname = parsed_user.get('person').get('firstname')
+        firstname = parsed_user.get("person").get("firstname")
     except AttributeError:
         firstname = None
     if not firstname or len(firstname) < 2:
         return False
 
     try:
-        lastname = parsed_user.get('person').get('lastname')
+        lastname = parsed_user.get("person").get("lastname")
     except AttributeError:
         lastname = None
     if not lastname or len(lastname) < 2:
         return False
 
-    directory_results = search_directory(firstname=firstname, lastname=lastname, driver=driver)
+    directory_results = search_directory(
+        firstname=firstname, lastname=lastname, driver=driver
+    )
     if not directory_results:
         return False
     return True
 
 
-def search_directory(firstname='', lastname='', driver=None):
+def search_directory(firstname="", lastname="", driver=None):
     if not driver:
         options = Options()
-        options.add_argument('-headless')
-        driver = webdriver.Firefox(executable_path='geckodriver', options=options)        
+        options.add_argument("-headless")
+        driver = webdriver.Firefox(executable_path="geckodriver", options=options)
     driver.get("https://itsappserv01.uncw.edu/directory/")
 
-    radio_elem = driver.find_element_by_id('rdoSearchTable_0')
-    firstname_elem = driver.find_element_by_name('txtFirstName')
-    lastname_elem = driver.find_element_by_name('txtLastName')
-    submit_elem = driver.find_element_by_name('btnSearch')
+    radio_elem = driver.find_element_by_id("rdoSearchTable_0")
+    firstname_elem = driver.find_element_by_name("txtFirstName")
+    lastname_elem = driver.find_element_by_name("txtLastName")
+    submit_elem = driver.find_element_by_name("btnSearch")
     radio_elem.send_keys(Keys.ARROW_RIGHT)
     firstname_elem.clear()
     firstname_elem.send_keys(firstname)
@@ -757,17 +759,25 @@ def search_directory(firstname='', lastname='', driver=None):
         )
     except TimeoutException:
         return []
-    response_rows = response_table.find_elements_by_xpath('tbody/tr')
+    response_rows = response_table.find_elements_by_xpath("tbody/tr")
 
     row_dicts = []
     for num, row in enumerate(response_rows):
         if num == 0:
             continue
-        (name, pos, dept, _, email, _) = [i.text for i in row.find_elements_by_xpath('td')]
-        row_dict = {'table_row': num, 'name': name, 'pos': pos, 'dept': dept, 'email': email}
+        (name, pos, dept, _, email, _) = [
+            i.text for i in row.find_elements_by_xpath("td")
+        ]
+        row_dict = {
+            "table_row": num,
+            "name": name,
+            "pos": pos,
+            "dept": dept,
+            "email": email,
+        }
         row_dicts.append(row_dict)
-    
-    return row_dicts    
+
+    return row_dicts
 
 
 if __name__ == "__main__":
@@ -776,8 +786,8 @@ if __name__ == "__main__":
     add_orgs_to_graph(graph)
 
     options = Options()
-    options.add_argument('-headless')
-    driver = webdriver.Firefox(executable_path='geckodriver', options=options)  
+    options.add_argument("-headless")
+    driver = webdriver.Firefox(executable_path="geckodriver", options=options)
 
     for filename in sorted(os.listdir("../extracting/output/users/")):
         if filename < "siegelr.xml":
