@@ -1,11 +1,17 @@
 #!/usr/bin/env python
 
 import os
+
 from lxml import etree as ET
 import rdflib
 from rdflib import Namespace, URIRef, BNode, Literal
 from rdflib.namespace import FOAF, OWL, RDF, RDFS, SKOS, XSD
-
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.firefox.options import Options
 
 ## Globals
 
@@ -170,7 +176,7 @@ def parse_userfile(file):
     presentations = get_presentations(record_elem)
     admin_assignments = get_admin_assignments(record_elem)
     if admin_assignments:
-        print(username)
+        pass
     admins = get_admins(record_elem)
     return {
         "userId": userId,
@@ -667,8 +673,17 @@ def gather_ignored_users():
     )
 
 
-def is_excluded_user(parsed_user):
-    if is_only_do_not_use(parsed_user) or is_student(parsed_user):
+def is_excluded_user(parsed_user, driver):
+    if not parsed_user:
+        print(f"")
+    if is_only_do_not_use(parsed_user):
+        print(f"{parsed_user.get('username')} is only do not use")
+        return True
+    if is_student(parsed_user):
+        print(f"{parsed_user.get('username')} is student") 
+        return True
+    if not is_in_directory(parsed_user, driver):
+        print(f"{parsed_user.get('username')} is not in directory")
         return True
     return False
 
@@ -694,21 +709,86 @@ def is_student(parsed_user):
     return False
 
 
+def is_in_directory(parsed_user, driver):
+    # directory requires each namepart have 2+ characters.
+    # someone with no lastname can't be found, reasonable
+    # same for some one with no firstname.
+    try:
+        firstname = parsed_user.get('person').get('firstname')
+    except AttributeError:
+        firstname = None
+    if not firstname or len(firstname) < 2:
+        return False
+
+    try:
+        lastname = parsed_user.get('person').get('lastname')
+    except AttributeError:
+        lastname = None
+    if not lastname or len(lastname) < 2:
+        return False
+
+    directory_results = search_directory(firstname=firstname, lastname=lastname, driver=driver)
+    if not directory_results:
+        return False
+    return True
+
+
+def search_directory(firstname='', lastname='', driver=None):
+    if not driver:
+        options = Options()
+        options.add_argument('-headless')
+        driver = webdriver.Firefox(executable_path='geckodriver', options=options)        
+    driver.get("https://itsappserv01.uncw.edu/directory/")
+
+    radio_elem = driver.find_element_by_id('rdoSearchTable_0')
+    firstname_elem = driver.find_element_by_name('txtFirstName')
+    lastname_elem = driver.find_element_by_name('txtLastName')
+    submit_elem = driver.find_element_by_name('btnSearch')
+    radio_elem.send_keys(Keys.ARROW_RIGHT)
+    firstname_elem.clear()
+    firstname_elem.send_keys(firstname)
+    lastname_elem.clear()
+    lastname_elem.send_keys(lastname)
+    submit_elem.send_keys(Keys.RETURN)
+
+    try:
+        response_table = WebDriverWait(driver, 60).until(
+            EC.presence_of_element_located((By.ID, "gvDirectory"))
+        )
+    except TimeoutException:
+        return []
+    response_rows = response_table.find_elements_by_xpath('tbody/tr')
+
+    row_dicts = []
+    for num, row in enumerate(response_rows):
+        if num == 0:
+            continue
+        (name, pos, dept, _, email, _) = [i.text for i in row.find_elements_by_xpath('td')]
+        row_dict = {'table_row': num, 'name': name, 'pos': pos, 'dept': dept, 'email': email}
+        row_dicts.append(row_dict)
+    
+    return row_dicts    
+
+
 if __name__ == "__main__":
     graph = init_graph()
     ignored_users = gather_ignored_users()
     add_orgs_to_graph(graph)
-    # count = 0
+
+    options = Options()
+    options.add_argument('-headless')
+    driver = webdriver.Firefox(executable_path='geckodriver', options=options)  
+
     for filename in sorted(os.listdir("../extracting/output/users/")):
-        # count += 1
-        # if count > 20:
-        #     break
+        if filename < "siegelr.xml":
+            continue
         if filename.split(".")[0] in ignored_users:
             continue
         parsed_user = parse_userfile(f"../extracting/output/users/{filename}")
-        if is_excluded_user(parsed_user):
+        if is_excluded_user(parsed_user, driver):
             continue
         add_user_to_graph(parsed_user, graph)
+    driver.close()
 
     filetext = graph.serialize(format="turtle").decode("utf-8")
     with open("all.ttl", "w") as f:
