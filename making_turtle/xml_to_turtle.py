@@ -305,6 +305,18 @@ def get_admin_assignments(record_elem):
     all_assignments = []
     for i in assignment_elems:
         assignment = parse_assignment(i)
+        date_end = assignment.get('date_end')
+        role = assignment.get('role')
+        if date_end != '':
+            # active assignments have '' as date_end.
+            # only include active assignment_elems.
+            # no assignment_elems have a None date_end (moot).
+            # past assignments have 'yyyy-mm-dd' date_end, and are excluded.
+            continue
+        if not role:
+            # Some elem have an empty 'role' value
+            # but we can't make sense of that, so exclude them.
+            continue
         all_assignments.append(assignment)
     return all_assignments
 
@@ -312,6 +324,7 @@ def get_admin_assignments(record_elem):
 def parse_assignment(assignment_elem):
     uid = assignment_elem.attrib.get("id")
     role = get_child_text(assignment_elem, "ROLE")
+    scope = get_child_text(assignment_elem, "SCOPE")
     desc = get_child_text(assignment_elem, "DESC")
     date_start = get_child_text(assignment_elem, "START_START") or get_child_text(
         assignment_elem, "START_END"
@@ -322,6 +335,7 @@ def parse_assignment(assignment_elem):
     return {
         "id": uid,
         "role": role,
+        'scope': scope,
         "desc": desc,
         "date_start": date_start,
         "date_end": date_end,
