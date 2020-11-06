@@ -305,9 +305,9 @@ def get_admin_assignments(record_elem):
     all_assignments = []
     for i in assignment_elems:
         assignment = parse_assignment(i)
-        date_end = assignment.get('date_end')
-        role = assignment.get('role')
-        if date_end != '':
+        date_end = assignment.get("date_end")
+        role = assignment.get("role")
+        if date_end != "":
             # active assignments have '' as date_end.
             # only include active assignment_elems.
             # no assignment_elems have a None date_end (moot).
@@ -335,7 +335,7 @@ def parse_assignment(assignment_elem):
     return {
         "id": uid,
         "role": role,
-        'scope': scope,
+        "scope": scope,
         "desc": desc,
         "date_start": date_start,
         "date_end": date_end,
@@ -403,23 +403,21 @@ def add_orgs_to_graph(graph):
 
 
 def add_user_to_graph(parsed_user, graph):
-    fac, name, individual, title, admin, latest_colls, latest_depts = (
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-    )
-
     if parsed_user["userId"]:
         fac = NS[parsed_user["userId"]]
+    else:
+        fac = None
+
     if parsed_user["person"] and parsed_user["person"]["id"]:
         name = NS[parsed_user["person"]["id"]]
         individual = NS[f"{parsed_user['userId']}a"]
+    else:
+        name, individual = None, None
+
     if parsed_user["adminperm"] and parsed_user["adminperm"]["id"]:
         title = NS[parsed_user["adminperm"]["id"]]
+    else:
+        title = None
 
     if fac:
         graph.add((fac, RDF.type, VIVO.FacultyMember))
@@ -464,9 +462,6 @@ def add_user_to_graph(parsed_user, graph):
     for presentation in parsed_user["presentations"]:
         add_presentations_to_graph(presentation, graph, fac)
 
-    for admin_assignment in parsed_user["admin_assignments"]:
-        add_admin_assignment_to_graph(admin_assignment, graph, fac)
-
     best_coll_depts = find_best_coll_depts(parsed_user)
     if best_coll_depts:
         for num, best_coll_dept in enumerate(best_coll_depts):
@@ -481,13 +476,15 @@ def add_user_to_graph(parsed_user, graph):
             graph.add((pos, VIVO.relates, fac))
             graph.add((fac, VIVO.relatedBy, pos))
 
+    for admin_assignment in parsed_user["admin_assignments"]:
+        add_admin_assignment_to_graph(admin_assignment, graph, fac, best_coll_depts)
+
 
 def find_best_coll_depts(parsed_user):
     dmd_depts = parsed_user.get("current_depts")
     college_depts_info = [
         match_college(dept) for dept in dmd_depts if (dept and match_college(dept))
     ]
-
     if college_depts_info:
         return college_depts_info
     return None
@@ -594,8 +591,17 @@ def add_presentations_to_graph(presentation, graph, fac):
     graph.add((datetime_end, VIVO.dateTimePrecision, VIVO.yearPrecision))
 
 
-def add_admin_assignment_to_graph(admin_assignment, graph, fac):
+def add_admin_assignment_to_graph(admin_assignment, graph, fac, best_coll_depts):
     position = NS[admin_assignment["id"]]
+    scope = admin_assignment.get("scope")
+    if scope == "Department":
+        org = NS[best_coll_depts[0]["dept_uid"]]
+    elif scope == "College":
+        org = NS[best_coll_depts[0]["coll_uid"]]
+    elif scope == "University":
+        org = NS[UNIVERSITY["uid"]]
+    else:
+        org = None
 
     datetime_interval = NS[f"{admin_assignment['id']}a"]
     datetime_start = NS[f"{admin_assignment['id']}b"]
@@ -605,7 +611,8 @@ def add_admin_assignment_to_graph(admin_assignment, graph, fac):
     graph.add((position, RDFS.label, Literal(admin_assignment["role"])))
     graph.add((position, VIVO.description, Literal(admin_assignment["desc"])))
     graph.add((position, VIVO.dateTimeInterval, datetime_interval))
-    #     graph.add((position, VIVO.relates, #college_elem))
+    if org:
+        graph.add((position, VIVO.relates, org))
     graph.add((position, VIVO.relates, fac))
 
     graph.add((datetime_interval, RDF.type, VIVO.DateTimeInterval))
@@ -622,15 +629,15 @@ def add_admin_assignment_to_graph(admin_assignment, graph, fac):
     )
     graph.add((datetime_start, VIVO.dateTimePrecision, VIVO.yearPrecision))
 
-    graph.add((datetime_end, RDF.type, VIVO.DateTimeValue))
-    graph.add(
-        (
-            datetime_end,
-            VIVO.dateTime,
-            Literal(admin_assignment["date_end"], datatype=XSD.date),
-        )
-    )
-    graph.add((datetime_end, VIVO.dateTimePrecision, VIVO.yearPrecision))
+    # graph.add((datetime_end, RDF.type, VIVO.DateTimeValue))
+    # graph.add(
+    #     (
+    #         datetime_end,
+    #         VIVO.dateTime,
+    #         Literal(admin_assignment["date_end"], datatype=XSD.date),
+    #     )
+    # )
+    # graph.add((datetime_end, VIVO.dateTimePrecision, VIVO.yearPrecision))
 
 
 def gather_ignored_users():
@@ -689,15 +696,12 @@ def gather_ignored_users():
 
 def is_excluded_user(parsed_user, driver):
     if not parsed_user:
-        print(f"")
+        return True
     if is_only_do_not_use(parsed_user):
-        print(f"{parsed_user.get('username')} is only do not use")
         return True
     if is_student(parsed_user):
-        print(f"{parsed_user.get('username')} is student")
         return True
     if not is_in_directory(parsed_user, driver):
-        print(f"{parsed_user.get('username')} is not in directory")
         return True
     return False
 
@@ -727,6 +731,15 @@ def is_in_directory(parsed_user, driver):
     # directory requires each namepart have 2+ characters.
     # someone with no lastname can't be found, reasonable
     # same for some one with no firstname.
+
+    # dev code !!!!!!!!
+    with open("exclude_users/not_in_directory.txt", "r") as f:
+        directory_results = [i for i in f.readlines()]
+    if parsed_user.get("username") in directory_results:
+        return False
+    return True
+
+    # production code !!!!!!!!!
     try:
         firstname = parsed_user.get("person").get("firstname")
     except AttributeError:
@@ -779,7 +792,7 @@ def search_directory(firstname="", lastname="", driver=None):
     for num, row in enumerate(response_rows):
         if num == 0:
             continue
-        (name, pos, dept, _, email, _) = [
+        name, pos, dept, _, email, _ = [
             i.text for i in row.find_elements_by_xpath("td")
         ]
         row_dict = {
@@ -804,8 +817,6 @@ if __name__ == "__main__":
     driver = webdriver.Firefox(executable_path="geckodriver", options=options)
 
     for filename in sorted(os.listdir("../extracting/output/users/")):
-        if filename < "siegelr.xml":
-            continue
         if filename.split(".")[0] in ignored_users:
             continue
         parsed_user = parse_userfile(f"../extracting/output/users/{filename}")
