@@ -177,8 +177,7 @@ def parse_userfile(file):
         adminperm = None
     presentations = get_presentations(record_elem)
     admin_assignments = get_admin_assignments(record_elem)
-    intellconts = get_intellcont(record_elem)
-    print(intellconts)
+    intellconts = get_intellconts(record_elem)
     admins = get_admins(record_elem)
     return {
         "userId": userId,
@@ -372,7 +371,7 @@ def parse_intellcont(intellcont_elem):
     authors_elems = intellcont_elem.xpath("a:INTELLCONT_AUTH", namespaces=NSMAP)
     persons_involved = parse_persons_involved(intellcont_elem, "INTELLCONT_AUTH")
     intellcont = {
-        "uid": uid,
+        "id": uid,
         "contype": contype,
         "status": status,
         "title": title,
@@ -380,6 +379,10 @@ def parse_intellcont(intellcont_elem):
         "date_published": date_published,
         "doi": doi,
         "persons_involved": persons_involved,
+        "abstract": abstract,
+        "volume": volume,
+        "issue": issue,
+        "page_nums": page_nums,
     }
     return intellcont
 
@@ -511,6 +514,9 @@ def add_user_to_graph(parsed_user, graph):
 
     for presentation in parsed_user["presentations"]:
         add_presentations_to_graph(presentation, graph, fac)
+
+    for intellcont in parsed_user["intellconts"]:
+        add_intellcont_to_graph(intellcont, graph, fac)
 
     best_coll_depts = find_best_coll_depts(parsed_user)
     if best_coll_depts:
@@ -647,6 +653,68 @@ def add_presentations_to_graph(presentation, graph, fac):
         )
     )
     graph.add((datetime_end, VIVO.dateTimePrecision, VIVO.yearPrecision))
+
+
+def add_intellcont_to_graph(intellcont, graph, fac):
+    print(intellcont)
+    academic_article = NS[intellcont["id"]]
+    if (academic_article, None, None) in graph:
+        # we skip adding the article if it's already in the graph
+        return None
+
+    datetime_value = NS[f"{academic_article}a"]
+    journal = NS[f"{academic_article}b"]
+    authorship = NS[f"{academic_article}c"]
+
+    graph.add((academic_article, RDF.type, BIBO.AcademicArticle))
+    graph.add((academic_article, RDFS.label, Literal(intellcont["title"])))
+
+    abstract = intellcont.get("abstract").strip()
+    doi = intellcont.get("doi").strip()
+    volume = intellcont.get("volume").strip()
+    issue = intellcont.get("issue").strip()
+    page_nums = intellcont.get("page_nums").strip()
+    startpage, endpage = split_pages(page_nums)
+    print(startpage, endpage)
+
+    if abstract:
+        graph.add((academic_article, BIBO.abstract, Literal(abstract)))
+    if doi:
+        graph.add((academic_article, BIBO.doi, Literal(doi)))
+    if volume:
+        graph.add((academic_article, BIBO.volume, Literal(intellcont["volume"])))
+    if issue:
+        graph.add((academic_article, BIBO.issue, Literal(issue)))
+    if startpage:
+        graph.add((academic_article, BIBO.pageStart, Literal(startpage)))
+    else:
+        print(f'no startpage for {academic_article}')
+    if endpage:
+        graph.add((academic_article, BIBO.pageEnd, Literal(endpage)))
+    else:
+        print(f'no endpage for {academic_article}')
+
+    graph.add((datetime_value, RDF.type, VIVO.DateTimeValue))
+    graph.add((datetime_value, VIVO.dateTime, Literal(intellcont["date_published"])))
+    graph.add((datetime_value, VIVO.dateTimePrecision, VIVO.yearPrecision))
+
+    graph.add((academic_article, VIVO.relatesBy, authorship))
+    graph.add((authorship, VIVO.relates, academic_article))
+
+    graph.add((authorship, VIVO.relates, fac))
+    graph.add((fac, VIVO.relatedBy, authorship))
+
+
+def split_pages(text):
+    if not text:
+        startpage, endpage = None, None
+    elif '-' in text:
+        startpage = text.split('-')[0].strip()
+        endpage = text.split('-')[1].strip()
+    else:
+        startpage = text.strip()
+        endpage= None
+    return startpage, endpage
 
 
 def add_admin_assignment_to_graph(admin_assignment, graph, fac, best_coll_depts):
@@ -874,15 +942,21 @@ if __name__ == "__main__":
     options.add_argument("-headless")
     driver = webdriver.Firefox(executable_path="geckodriver", options=options)
 
+    count = 0
     for filename in sorted(os.listdir("../extracting/output/users/")):
+        if filename not in ('ahernn.xml', ):
+            continue
         if filename.split(".")[0] in ignored_users:
             continue
         parsed_user = parse_userfile(f"../extracting/output/users/{filename}")
         if is_excluded_user(parsed_user, driver):
             continue
         add_user_to_graph(parsed_user, graph)
+        count += 1
+        if count > 20:
+            break
     driver.close()
 
-    # filetext = graph.serialize(format="turtle").decode("utf-8")
-    # with open("all.ttl", "w") as f:
-    #     f.write(filetext)
+    filetext = graph.serialize(format="turtle").decode("utf-8")
+    with open("all.ttl", "w") as f:
+        f.write(filetext)
