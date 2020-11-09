@@ -177,8 +177,7 @@ def parse_userfile(file):
         adminperm = None
     presentations = get_presentations(record_elem)
     admin_assignments = get_admin_assignments(record_elem)
-    if admin_assignments:
-        pass
+    intellconts = get_intellcont(record_elem)
     admins = get_admins(record_elem)
     return {
         "userId": userId,
@@ -190,6 +189,7 @@ def parse_userfile(file):
         "current_depts": current_depts,
         "person": person,
         "presentations": presentations,
+        "intellconts": intellconts,
     }
 
 
@@ -342,6 +342,9 @@ def parse_assignment(assignment_elem):
         "date_start": date_start,
         "date_end": date_end,
     }
+
+def get_intellcont(record_elem):
+    pass
 
 
 def get_admins(record_elem):
@@ -534,7 +537,7 @@ def find_rank_in_dept(parsed_user, dept):
 
 
 def match_college(dept):
-    # because users entered the wrong college for their dept in 1/10 files
+    # because users entered the wrong college for their dept in 10% of files
     # we have to assume they got the dept correct, and manually lookup the coll.
     # we also hardcoded the uid for college & for dept, for consistency
     for coll, bundle in COLL_DEPT.items():
@@ -546,7 +549,7 @@ def match_college(dept):
                 "dept_uid": bundle["depts"][dept],
             }
     # if dept not in COLL_DEPT, check if it's in Academic Affairs
-    if dept in ACADEMIC_AFFAIRS.get('depts'):
+    if dept in ACADEMIC_AFFAIRS.get("depts"):
         return {
             "coll_name": ACADEMIC_AFFAIRS["name"],
             "coll_uid": ACADEMIC_AFFAIRS["uid"],
