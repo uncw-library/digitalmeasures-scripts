@@ -178,6 +178,7 @@ def parse_userfile(file):
     presentations = get_presentations(record_elem)
     admin_assignments = get_admin_assignments(record_elem)
     intellconts = get_intellcont(record_elem)
+    print(intellconts)
     admins = get_admins(record_elem)
     return {
         "userId": userId,
@@ -243,7 +244,7 @@ def parse_presentation(present_elem):
     org = get_child_text(present_elem, "ORG")
     location = get_child_text(present_elem, "LOCATION")
     title = get_child_text(present_elem, "TITLE")
-    persons_involved = parse_persons_involved(present_elem)
+    persons_involved = parse_persons_involved(present_elem, "PRESENT_AUTH")
     collab = get_child_text(present_elem, "COLLAB")
     meettype = get_child_text(present_elem, "MEETTYPE")
     scope = get_child_text(present_elem, "SCOPE")
@@ -255,6 +256,7 @@ def parse_presentation(present_elem):
     abstract = get_child_text(present_elem, "ABSTRACT")
     date_start = get_child_text(present_elem, "DATE_START")
     date_end = get_child_text(present_elem, "DATE_END")
+
     user_reference_creator = get_child_text(present_elem, "USER_REFERENCE_CREATOR")
     return {
         "id": uid,
@@ -279,8 +281,8 @@ def parse_presentation(present_elem):
     }
 
 
-def parse_persons_involved(elem):
-    persons_involved = elem.xpath("a:PRESENT_AUTH", namespaces=NSMAP)
+def parse_persons_involved(elem, subelem_name):
+    persons_involved = elem.xpath(f"a:{subelem_name}", namespaces=NSMAP)
     all_persons = []
     for i in persons_involved:
         uid = get_child_text(i, "FACULTY_NAME")
@@ -288,6 +290,7 @@ def parse_persons_involved(elem):
         middlename = get_child_text(i, "MNAME")
         lastname = get_child_text(i, "LNAME")
         role = get_child_text(i, "ROLE")
+        institution = get_child_text(i, "INSTITUTION")
         student_level = get_child_text(i, "STUDENT_LEVEL")
         all_persons.append(
             {
@@ -343,8 +346,42 @@ def parse_assignment(assignment_elem):
         "date_end": date_end,
     }
 
-def get_intellcont(record_elem):
-    pass
+
+def get_intellconts(record_elem):
+    intellcont_elems = record_elem.xpath("a:INTELLCONT", namespaces=NSMAP)
+    all_intellconts = []
+    for i in intellcont_elems:
+        intellcont = parse_intellcont(i)
+        all_intellconts.append(intellcont)
+    return all_intellconts
+
+
+def parse_intellcont(intellcont_elem):
+    uid = intellcont_elem.attrib.get("id")
+    contype = get_child_text(intellcont_elem, "CONTYPE")
+    status = get_child_text(intellcont_elem, "STATUS")
+    title = get_child_text(intellcont_elem, "TITLE")
+    publisher = get_child_text(intellcont_elem, "PUBLISHER")
+    date_published = get_child_text(intellcont_elem, "PUB_START")
+    doi = get_child_text(intellcont_elem, "DOI")
+    abstract = get_child_text(intellcont_elem, "ABSTRACT")
+    volume = get_child_text(intellcont_elem, "VOLUME")
+    issue = get_child_text(intellcont_elem, "ISSUE")
+    page_nums = get_child_text(intellcont_elem, "PAGENUM")
+
+    authors_elems = intellcont_elem.xpath("a:INTELLCONT_AUTH", namespaces=NSMAP)
+    persons_involved = parse_persons_involved(intellcont_elem, "INTELLCONT_AUTH")
+    intellcont = {
+        "uid": uid,
+        "contype": contype,
+        "status": status,
+        "title": title,
+        "publisher": publisher,
+        "date_published": date_published,
+        "doi": doi,
+        "persons_involved": persons_involved,
+    }
+    return intellcont
 
 
 def get_admins(record_elem):
@@ -846,6 +883,6 @@ if __name__ == "__main__":
         add_user_to_graph(parsed_user, graph)
     driver.close()
 
-    filetext = graph.serialize(format="turtle").decode("utf-8")
-    with open("all.ttl", "w") as f:
-        f.write(filetext)
+    # filetext = graph.serialize(format="turtle").decode("utf-8")
+    # with open("all.ttl", "w") as f:
+    #     f.write(filetext)
