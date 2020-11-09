@@ -34,31 +34,33 @@ UNIVERSITY = {
     "desc": "A description.  Or two, who knows?",
 }
 
+ACADEMIC_AFFAIRS = {
+    "name": "Academic Affairs",
+    "uid": "168540397570",
+    "desc": "Another description, Or something",
+    "depts": {
+        "Randall Library": "161986105345",
+        "Office of the Provost": "161986107393",
+        "Office of the Graduate School": "161986109441",
+        "Office of Center for Teaching Excellence & Center for Faculty Leadership": "161986111489",
+        "Office of Diversity and Inclusion": "161986113537",
+        "Office of the Dean, College of Arts and Sciences": "168541734913",
+        "Office of International Programs": "161984303106",
+        "Office of the Honors College": "14241826817",
+        "Womens Resource Center": "161984301058",
+        "Office of Undergraduate Studies": "161984296962",
+        "Office of Cultural Arts": "161984299010",
+    },
+}
 
 COLL_DEPT = {
-    # The uids are insignificant, but must not overlap with any uids from the source dataset
+    # The uids are arbitrary, but must not overlap with any uids from the source dataset
     # they also must remain unchanged across different runs of this script
     # since this is a hard problem, I've manually selected some uid's from ADMIN_DEP elems in the source data
     # because ADMIN_DEP uid's are not carried into the vivo import dataset
     # but the ADMIN_DEP uid's are guarenteed to never equal a uid we may carry over.
     # Essentially, trying to hardcode a uid that could never collide with another element's uid.
     # Each org will need to change these uids.  I suggest using id values from the source ADMIN_DEP elements.
-    "Academic Affairs": {
-        "uid": "168540397570",
-        "depts": {
-            "Randall Library": "161986105345",
-            "Office of the Provost": "161986107393",
-            "Office of the Graduate School": "161986109441",
-            "Office of Center for Teaching Excellence & Center for Faculty Leadership": "161986111489",
-            "Office of Diversity and Inclusion": "161986113537",
-            "Office of the Dean, College of Arts and Sciences": "168541734913",
-            "Office of International Programs": "161984303106",
-            "Office of the Honors College": "14241826817",
-            "Womens Resource Center": "161984301058",
-            "Office of Undergraduate Studies": "161984296962",
-            "Office of Cultural Arts": "161984299010",
-        },
-    },
     "Cameron School of Business": {
         "uid": "168540397569",
         "depts": {
@@ -382,16 +384,24 @@ def init_graph():
 
 
 def add_orgs_to_graph(graph):
+    # Our organization structure is University->Division->College->AcademicDepartment
     univ_elem = NS[UNIVERSITY["uid"]]
     graph.add((univ_elem, RDF.type, VIVO.University))
     graph.add((univ_elem, RDFS.label, Literal(UNIVERSITY["name"])))
     graph.add((univ_elem, VIVO.overview, Literal(UNIVERSITY["desc"])))
 
+    division_elem = NS[ACADEMIC_AFFAIRS["uid"]]
+    graph.add((division_elem, RDF.type, VIVO.Division))
+    graph.add((division_elem, RDFS.label, Literal(ACADEMIC_AFFAIRS["name"])))
+    graph.add((division_elem, VIVO.overview, Literal(ACADEMIC_AFFAIRS["desc"])))
+    graph.add((univ_elem, OBO.BFO_0000051, division_elem))
+    graph.add((division_elem, OBO.BFO_0000050, univ_elem))
+
     for coll, coll_details in COLL_DEPT.items():
         coll_elem = NS[coll_details["uid"]]
         graph.add((coll_elem, RDF.type, VIVO.College))
-        graph.add((univ_elem, OBO.BFO_0000051, coll_elem))
-        graph.add((coll_elem, OBO.BFO_0000050, univ_elem))
+        graph.add((division_elem, OBO.BFO_0000051, coll_elem))
+        graph.add((coll_elem, OBO.BFO_0000050, division_elem))
         graph.add((coll_elem, RDFS.label, Literal(coll)))
 
         for dept_name, dept_uid in coll_details["depts"].items():
@@ -535,6 +545,14 @@ def match_college(dept):
                 "dept_name": dept,
                 "dept_uid": bundle["depts"][dept],
             }
+    # if dept not in COLL_DEPT, check if it's in Academic Affairs
+    if dept in ACADEMIC_AFFAIRS.get('depts'):
+        return {
+            "coll_name": ACADEMIC_AFFAIRS["name"],
+            "coll_uid": ACADEMIC_AFFAIRS["uid"],
+            "dept_name": dept,
+            "dept_uid": ACADEMIC_AFFAIRS["depts"][dept],
+        }
     return None
 
 
@@ -734,7 +752,7 @@ def is_in_directory(parsed_user, driver):
 
     # dev code !!!!!!!!
     with open("exclude_users/not_in_directory.txt", "r") as f:
-        directory_results = [i for i in f.readlines()]
+        directory_results = [i.strip() for i in f.readlines()]
     if parsed_user.get("username") in directory_results:
         return False
     return True
