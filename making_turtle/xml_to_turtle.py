@@ -656,7 +656,6 @@ def add_presentations_to_graph(presentation, graph, fac):
 
 
 def add_intellcont_to_graph(intellcont, graph, fac):
-    print(intellcont)
     academic_article = NS[intellcont["id"]]
     if (academic_article, None, None) in graph:
         # we skip adding the article if it's already in the graph
@@ -666,33 +665,17 @@ def add_intellcont_to_graph(intellcont, graph, fac):
     journal = NS[f"{academic_article}b"]
     authorship = NS[f"{academic_article}c"]
 
-    graph.add((academic_article, RDF.type, BIBO.AcademicArticle))
+    content_type = map_contypes(intellcont.get("contype"))
+
+    graph.add((academic_article, RDF.type, content_type))
     graph.add((academic_article, RDFS.label, Literal(intellcont["title"])))
 
-    abstract = intellcont.get("abstract").strip()
-    doi = intellcont.get("doi").strip()
-    volume = intellcont.get("volume").strip()
-    issue = intellcont.get("issue").strip()
-    page_nums = intellcont.get("page_nums").strip()
-    startpage, endpage = split_pages(page_nums)
-    print(startpage, endpage)
+    graph.add((authorship, RDF.type, VIVO.Authorship))
 
-    if abstract:
-        graph.add((academic_article, BIBO.abstract, Literal(abstract)))
-    if doi:
-        graph.add((academic_article, BIBO.doi, Literal(doi)))
-    if volume:
-        graph.add((academic_article, BIBO.volume, Literal(intellcont["volume"])))
-    if issue:
-        graph.add((academic_article, BIBO.issue, Literal(issue)))
-    if startpage:
-        graph.add((academic_article, BIBO.pageStart, Literal(startpage)))
-    else:
-        print(f'no startpage for {academic_article}')
-    if endpage:
-        graph.add((academic_article, BIBO.pageEnd, Literal(endpage)))
-    else:
-        print(f'no endpage for {academic_article}')
+    graph.add((journal, RDF.type, BIBO.Journal))
+    graph.add((journal, RDFS.label, Literal(intellcont["publisher"])))
+    graph.add((journal, VIVO.publicationVenueFor, academic_article))
+    graph.add((academic_article, VIVO.hasPublicationVenue, journal))
 
     graph.add((datetime_value, RDF.type, VIVO.DateTimeValue))
     graph.add((datetime_value, VIVO.dateTime, Literal(intellcont["date_published"])))
@@ -704,17 +687,99 @@ def add_intellcont_to_graph(intellcont, graph, fac):
     graph.add((authorship, VIVO.relates, fac))
     graph.add((fac, VIVO.relatedBy, authorship))
 
+    abstract = intellcont.get("abstract").strip()
+    doi = intellcont.get("doi").strip()
+    volume = intellcont.get("volume").strip()
+    issue = intellcont.get("issue").strip()
+    page_nums = intellcont.get("page_nums").strip()
+    startpage, endpage = split_pages(page_nums)
+
+    if abstract:
+        graph.add((academic_article, BIBO.abstract, Literal(abstract)))
+    if doi:
+        graph.add((academic_article, BIBO.doi, Literal(doi)))
+    if volume:
+        graph.add((academic_article, BIBO.volume, Literal(intellcont["volume"])))
+    if issue:
+        graph.add((academic_article, BIBO.issue, Literal(issue)))
+    if startpage:
+        graph.add((academic_article, BIBO.pageStart, Literal(startpage)))
+    if endpage:
+        graph.add((academic_article, BIBO.pageEnd, Literal(endpage)))
+
 
 def split_pages(text):
     if not text:
         startpage, endpage = None, None
-    elif '-' in text:
-        startpage = text.split('-')[0].strip()
-        endpage = text.split('-')[1].strip()
+    elif "-" in text:
+        startpage = text.split("-")[0].strip()
+        endpage = text.split("-")[1].strip()
     else:
         startpage = text.strip()
-        endpage= None
+        endpage = None
     return startpage, endpage
+
+
+def map_contypes(contype):
+    contypes_pubtypes = {
+        None: BIBO.Document,
+        "": BIBO.Document,
+        "Book Review": BIBO.Document,
+        "Book, Chapter in Non-Scholarly Book-New": BIBO.Chapter,
+        "Book, Chapter in Non-Scholarly Book-Revised": BIBO.Chapter,
+        "Book, Chapter in Scholarly Book-New": BIBO.Chapter,
+        "Book, Chapter in Scholarly Book-Revised": BIBO.Chapter,
+        "Book, Chapter in Textbook-New": BIBO.Chapter,
+        "Book, Chapter in Textbook-Revised": BIBO.Chapter,
+        "Book, Non-Scholarly-New": BIBO.Book,
+        "Book, Non-Scholarly-Revised": BIBO.Book,
+        "Book, Scholarly-New": BIBO.Book,
+        "Book, Scholarly-Revised": BIBO.Book,
+        "Book, Textbook-New": BIBO.Book,
+        "Book, Textbook-Revised": BIBO.Book,
+        "Broadcast Media": BIBO.AudioVisualDocument,
+        "Cited Research": BIBO.Document,
+        "Conference Proceeding": BIBO.ConferencePaper,
+        "Instructor's Manual": BIBO.Manual,
+        "Journal Article, Academic Journal": BIBO.AcademicArticle,
+        "Journal Article, In-House Journal": BIBO.AcademicArticle,
+        "Journal Article, Professional Journal": BIBO.AcademicArticle,
+        "Journal Article, Public or Trade Journal": BIBO.AcademicArticle,
+        "Law Review": BIBO.AcademicArticle,
+        "Magazine/Trade Publication": BIBO.AcademicArticle,
+        "Manuscript": BIBO.Manuscript,
+        "Map": BIBO.Map,
+        "Material Regarding New Courses/Curricula": BIBO.Document,
+        "Monograph": BIBO.Document,
+        "Newsletter": VIVO.Newsletter,
+        "Newspaper": BIBO.Newspaper,
+        "Nonfiction - Anthology": BIBO.Book,
+        "Nonfiction - Book": BIBO.Book,
+        "Nonfiction - Online Journal": BIBO.Article,
+        "Nonfiction - Print Journal": BIBO.Article,
+        "Novel": BIBO.Book,
+        "Other": BIBO.Document,
+        "Poetry - Anthology": BIBO.Document,
+        "Poetry - Book": BIBO.Document,
+        "Poetry - Online Journal": BIBO.Document,
+        "Poetry - Print Journal": BIBO.Document,
+        "Poster Session": VIVO.ConferencePoster,
+        "Recording": BIBO.AudioVisualDocument,
+        "Regular Column in Journal or Newspaper": BIBO.Article,
+        "Research Report": BIBO.Report,
+        "Short Fiction - Anthology": BIBO.Document,
+        "Short Fiction - Book": BIBO.Document,
+        "Short Fiction - Online Journal": BIBO.Document,
+        "Short Fiction - Print Journal": BIBO.Document,
+        "Software": OBO.ERO_0000071,
+        "Software, Instructional": OBO.ERO_0000071,
+        "Study Guide": BIBO.Document,
+        "Technical Report": BIBO.Report,
+        "Translation or Transcription": BIBO.Document,
+        "Working Paper": VIVO.WorkingPaper,
+        "Written Case with Instructional Material": BIBO.Document,
+    }
+    return contypes_pubtypes.get(contype)
 
 
 def add_admin_assignment_to_graph(admin_assignment, graph, fac, best_coll_depts):
@@ -942,19 +1007,19 @@ if __name__ == "__main__":
     options.add_argument("-headless")
     driver = webdriver.Firefox(executable_path="geckodriver", options=options)
 
-    count = 0
+    # count = 0
     for filename in sorted(os.listdir("../extracting/output/users/")):
-        if filename not in ('ahernn.xml', ):
-            continue
+        # if filename not in ('ahernn.xml', ):
+        #     continue
         if filename.split(".")[0] in ignored_users:
             continue
         parsed_user = parse_userfile(f"../extracting/output/users/{filename}")
         if is_excluded_user(parsed_user, driver):
             continue
         add_user_to_graph(parsed_user, graph)
-        count += 1
-        if count > 20:
-            break
+        # count += 1
+        # if count > 20:
+        #     break
     driver.close()
 
     filetext = graph.serialize(format="turtle").decode("utf-8")
