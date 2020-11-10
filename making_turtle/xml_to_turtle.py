@@ -603,6 +603,8 @@ def match_college(dept):
 
 
 def add_presentations_to_graph(presentation, graph, fac):
+    if not presentation.get('name'):
+        print(presentation)
     invited_talk = NS[presentation["id"]]
     conference = NS[f"{presentation['id']}a"]
     attendee_role = NS[f"{presentation['id']}b"]
@@ -665,11 +667,6 @@ def add_intellcont_to_graph(intellcont, graph, fac):
     journal = NS[f"{academic_article}b"]
     authorship = NS[f"{academic_article}c"]
 
-    content_type = map_contypes(intellcont.get("contype"))
-
-    graph.add((academic_article, RDF.type, content_type))
-    graph.add((academic_article, RDFS.label, Literal(intellcont["title"])))
-
     graph.add((authorship, RDF.type, VIVO.Authorship))
 
     graph.add((journal, RDF.type, BIBO.Journal))
@@ -677,29 +674,37 @@ def add_intellcont_to_graph(intellcont, graph, fac):
     graph.add((journal, VIVO.publicationVenueFor, academic_article))
     graph.add((academic_article, VIVO.hasPublicationVenue, journal))
 
-    graph.add((datetime_value, RDF.type, VIVO.DateTimeValue))
-    graph.add((datetime_value, VIVO.dateTime, Literal(intellcont["date_published"])))
-    graph.add((datetime_value, VIVO.dateTimePrecision, VIVO.yearPrecision))
-
     graph.add((academic_article, VIVO.relatesBy, authorship))
     graph.add((authorship, VIVO.relates, academic_article))
 
     graph.add((authorship, VIVO.relates, fac))
     graph.add((fac, VIVO.relatedBy, authorship))
 
+    publisher = intellcont["publisher"].strip()
+    title = intellcont["title"].strip()
     abstract = intellcont.get("abstract").strip()
     doi = intellcont.get("doi").strip()
     volume = intellcont.get("volume").strip()
     issue = intellcont.get("issue").strip()
+    date_published = intellcont.get("date_published").strip()
     page_nums = intellcont.get("page_nums").strip()
     startpage, endpage = split_pages(page_nums)
+    content_type = map_contypes(intellcont.get("contype"))
 
+    if date_published:
+        graph.add((datetime_value, RDF.type, VIVO.DateTimeValue))
+        graph.add((datetime_value, VIVO.dateTime, Literal(intellcont["date_published"])))
+        graph.add((datetime_value, VIVO.dateTimePrecision, VIVO.yearPrecision))
+    if content_type:
+        graph.add((academic_article, RDF.type, content_type))
+    if title:
+        graph.add((academic_article, RDFS.label, Literal(title)))
     if abstract:
         graph.add((academic_article, BIBO.abstract, Literal(abstract)))
     if doi:
         graph.add((academic_article, BIBO.doi, Literal(doi)))
     if volume:
-        graph.add((academic_article, BIBO.volume, Literal(intellcont["volume"])))
+        graph.add((academic_article, BIBO.volume, Literal(volume)))
     if issue:
         graph.add((academic_article, BIBO.issue, Literal(issue)))
     if startpage:
@@ -1009,8 +1014,8 @@ if __name__ == "__main__":
 
     # count = 0
     for filename in sorted(os.listdir("../extracting/output/users/")):
-        # if filename not in ('ahernn.xml', ):
-        #     continue
+        if filename not in ('morrisonj.xml', ):
+            continue
         if filename.split(".")[0] in ignored_users:
             continue
         parsed_user = parse_userfile(f"../extracting/output/users/{filename}")
@@ -1022,6 +1027,6 @@ if __name__ == "__main__":
         #     break
     driver.close()
 
-    filetext = graph.serialize(format="turtle").decode("utf-8")
-    with open("all.ttl", "w") as f:
-        f.write(filetext)
+    # filetext = graph.serialize(format="turtle").decode("utf-8")
+    # with open("all.ttl", "w") as f:
+    #     f.write(filetext)
