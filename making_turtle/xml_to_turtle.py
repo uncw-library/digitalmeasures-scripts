@@ -440,6 +440,14 @@ def add_orgs_to_graph(graph):
     graph.add((univ_elem, OBO.BFO_0000051, division_elem))
     graph.add((division_elem, OBO.BFO_0000050, univ_elem))
 
+    for dept_name, dept_uid in ACADEMIC_AFFAIRS["depts"].items():
+        dept_elem = NS[dept_uid]
+        graph.add((dept_elem, RDF.type, VIVO.AcademicDepartment))
+        graph.add((dept_elem, RDFS.label, Literal(dept_name)))
+        graph.add((dept_elem, OBO.BFO_0000050, division_elem))
+        graph.add((division_elem, OBO.BFO_0000051, dept_elem))
+
+
     for coll, coll_details in COLL_DEPT.items():
         coll_elem = NS[coll_details["uid"]]
         graph.add((coll_elem, RDF.type, VIVO.College))
@@ -450,9 +458,9 @@ def add_orgs_to_graph(graph):
         for dept_name, dept_uid in coll_details["depts"].items():
             dept_elem = NS[dept_uid]
             graph.add((dept_elem, RDF.type, VIVO.AcademicDepartment))
-            graph.add((coll_elem, OBO.BFO_0000051, dept_elem))
-            graph.add((dept_elem, OBO.BFO_0000050, coll_elem))
             graph.add((dept_elem, RDFS.label, Literal(dept_name)))
+            graph.add((dept_elem, OBO.BFO_0000050, coll_elem))
+            graph.add((coll_elem, OBO.BFO_0000051, dept_elem))
 
 
 def add_user_to_graph(parsed_user, graph):
@@ -603,8 +611,6 @@ def match_college(dept):
 
 
 def add_presentations_to_graph(presentation, graph, fac):
-    if not presentation.get('name'):
-        print(presentation)
     invited_talk = NS[presentation["id"]]
     conference = NS[f"{presentation['id']}a"]
     attendee_role = NS[f"{presentation['id']}b"]
@@ -711,6 +717,21 @@ def add_intellcont_to_graph(intellcont, graph, fac):
         graph.add((academic_article, BIBO.pageStart, Literal(startpage)))
     if endpage:
         graph.add((academic_article, BIBO.pageEnd, Literal(endpage)))
+
+    for num, person in enumerate(intellcont.get('persons_involved')):
+        person_id = person['id']
+        # we wish to exclude persons who are not uncw faculty
+        # digitalmeasures gives non-uncw persons an empty string for an 'id'
+        # so we check for empty 'id' and skip them 
+        if not person_id:
+            continue
+        person_elem = NS[person_id]
+        other_authorship = NS[f"{academic_article}c{num}"]
+        graph.add((other_authorship, RDF.type, VIVO.Authorship))
+        graph.add((academic_article, VIVO.relatesBy, other_authorship))
+        graph.add((other_authorship, VIVO.relates, academic_article))
+        graph.add((other_authorship, VIVO.relates, person_elem))
+        graph.add((person_elem, VIVO.relatedBy, other_authorship))
 
 
 def split_pages(text):
@@ -1003,6 +1024,10 @@ def search_directory(firstname="", lastname="", driver=None):
     return row_dicts
 
 
+def find_active_users(homefolder):
+    pass
+
+
 if __name__ == "__main__":
     graph = init_graph()
     ignored_users = gather_ignored_users()
@@ -1012,9 +1037,9 @@ if __name__ == "__main__":
     options.add_argument("-headless")
     driver = webdriver.Firefox(executable_path="geckodriver", options=options)
 
-    # count = 0
+    # # count = 0
     for filename in sorted(os.listdir("../extracting/output/users/")):
-        if filename not in ('morrisonj.xml', ):
+        if filename not in ('ahernn.xml', 'falsafin.xml', 'mechlingb.xml', 'waldschlagelm.xml', 'devitaj.xml', 'kolomers.xml', 'palumbor.xml'):
             continue
         if filename.split(".")[0] in ignored_users:
             continue
@@ -1027,6 +1052,6 @@ if __name__ == "__main__":
         #     break
     driver.close()
 
-    # filetext = graph.serialize(format="turtle").decode("utf-8")
-    # with open("all.ttl", "w") as f:
-    #     f.write(filetext)
+    filetext = graph.serialize(format="turtle").decode("utf-8")
+    with open("all.ttl", "w") as f:
+        f.write(filetext)
