@@ -619,8 +619,6 @@ def add_presentations_to_graph(presentation, graph, fac):
     datetime_start = NS[f"{presentation['id']}d"]
     datetime_end = NS[f"{presentation['id']}e"]
 
-    graph.add((fac, OBO.RO_0000053, attendee_role))
-
     graph.add((conference, RDF.type, BIBO.Conference))
     graph.add((conference, RDFS.label, Literal(presentation["name"])))
     graph.add((conference, OBO.BFO_0000051, invited_talk))
@@ -628,15 +626,26 @@ def add_presentations_to_graph(presentation, graph, fac):
 
     graph.add((invited_talk, RDF.type, VIVO.InvitedTalk))
     graph.add((invited_talk, RDFS.label, Literal(presentation["title"])))
-    graph.add((invited_talk, OBO.BFO_0000055, attendee_role))
     graph.add((invited_talk, VIVO.description, Literal(presentation["abstract"])))
     graph.add((invited_talk, VIVO.dateTimeInterval, datetime_interval))
     graph.add((invited_talk, OBO.BFO_0000050, conference))
 
-    graph.add((attendee_role, RDF.type, VIVO.AttendeeRole))
-    graph.add((attendee_role, OBO.BFO_0000054, invited_talk))
-    graph.add((attendee_role, OBO.RO_0000052, fac))
-    graph.add((attendee_role, VIVO.dateTimeInterval, datetime_interval))
+    for num, person in enumerate(presentation.get('persons_involved')):
+        person_id = person['id']
+        # we wish to exclude persons who are not uncw faculty
+        # digitalmeasures gives non-uncw persons an empty string for an 'id'
+        # so we check for empty 'id' and skip them 
+        if not person_id:
+            continue
+        person_elem = NS[person_id]
+        other_attendee_role = NS[f"{invited_talk}b{num}"]
+        graph.add((other_attendee_role, RDF.type, VIVO.AttendeeRole))
+        graph.add((invited_talk, OBO.BFO_0000055, other_attendee_role))
+        graph.add((other_attendee_role, OBO.BFO_0000054, invited_talk))
+        graph.add((person_elem, OBO.RO_0000053, other_attendee_role))
+        graph.add((other_attendee_role, OBO.RO_0000052, person_elem))
+        graph.add((other_attendee_role, VIVO.dateTimeInterval, datetime_interval))        
+
 
     graph.add((datetime_interval, RDF.type, VIVO.DateTimeInterval))
     graph.add((datetime_interval, VIVO.start, datetime_start))
@@ -1040,7 +1049,7 @@ if __name__ == "__main__":
 
     # # count = 0
     for filename in sorted(os.listdir("../extracting/output/users/")):
-        if filename not in ('ahernn.xml', 'falsafin.xml', 'mechlingb.xml', 'waldschlagelm.xml', 'devitaj.xml', 'kolomers.xml', 'palumbor.xml'):
+        if filename not in ('ahernn.xml', 'falsafin.xml', 'mechlingb.xml', 'waldschlagelm.xml', 'devitaj.xml', 'kolomers.xml', 'palumbor.xml', 'leej.xml'):
             continue
         if filename.split(".")[0] in ignored_users:
             continue
