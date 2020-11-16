@@ -665,26 +665,26 @@ def add_presentations_to_graph(presentation, graph, fac):
 
 def add_intellcont_to_graph(intellcont, graph, fac):
     academic_article = NS[intellcont["id"]]
-    if (academic_article, None, None) in graph:
-        # we skip adding the article if it's already in the graph
-        return None
+    # if (academic_article, None, None) in graph:
+    #     # we skip adding the article if it's already in the graph
+    #     return None
 
     datetime_value = NS[f"{academic_article}a"]
     journal = NS[f"{academic_article}b"]
-    authorship = NS[f"{academic_article}c"]
+    # authorship = NS[f"{academic_article}c"]
 
-    graph.add((authorship, RDF.type, VIVO.Authorship))
+    # graph.add((authorship, RDF.type, VIVO.Authorship))
 
     graph.add((journal, RDF.type, BIBO.Journal))
     graph.add((journal, RDFS.label, Literal(intellcont["publisher"])))
     graph.add((journal, VIVO.publicationVenueFor, academic_article))
     graph.add((academic_article, VIVO.hasPublicationVenue, journal))
 
-    graph.add((academic_article, VIVO.relatesBy, authorship))
-    graph.add((authorship, VIVO.relates, academic_article))
+    # graph.add((academic_article, VIVO.relatesBy, authorship))
+    # graph.add((authorship, VIVO.relates, academic_article))
 
-    graph.add((authorship, VIVO.relates, fac))
-    graph.add((fac, VIVO.relatedBy, authorship))
+    # graph.add((authorship, VIVO.relates, fac))
+    # graph.add((fac, VIVO.relatedBy, authorship))
 
     publisher = intellcont["publisher"].strip()
     title = intellcont["title"].strip()
@@ -730,8 +730,9 @@ def add_intellcont_to_graph(intellcont, graph, fac):
         graph.add((other_authorship, RDF.type, VIVO.Authorship))
         graph.add((academic_article, VIVO.relatesBy, other_authorship))
         graph.add((other_authorship, VIVO.relates, academic_article))
-        graph.add((other_authorship, VIVO.relates, person_elem))
         graph.add((person_elem, VIVO.relatedBy, other_authorship))
+        graph.add((other_authorship, VIVO.relates, person_elem))
+
 
 
 def split_pages(text):
