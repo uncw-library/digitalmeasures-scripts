@@ -177,8 +177,7 @@ def parse_userfile(file):
         adminperm = None
     presentations = get_presentations(record_elem)
     admin_assignments = get_admin_assignments(record_elem)
-    if admin_assignments:
-        pass
+    intellconts = get_intellconts(record_elem)
     admins = get_admins(record_elem)
     return {
         "userId": userId,
@@ -190,6 +189,7 @@ def parse_userfile(file):
         "current_depts": current_depts,
         "person": person,
         "presentations": presentations,
+        "intellconts": intellconts,
     }
 
 
@@ -243,7 +243,7 @@ def parse_presentation(present_elem):
     org = get_child_text(present_elem, "ORG")
     location = get_child_text(present_elem, "LOCATION")
     title = get_child_text(present_elem, "TITLE")
-    persons_involved = parse_persons_involved(present_elem)
+    persons_involved = parse_persons_involved(present_elem, "PRESENT_AUTH")
     collab = get_child_text(present_elem, "COLLAB")
     meettype = get_child_text(present_elem, "MEETTYPE")
     scope = get_child_text(present_elem, "SCOPE")
@@ -255,6 +255,7 @@ def parse_presentation(present_elem):
     abstract = get_child_text(present_elem, "ABSTRACT")
     date_start = get_child_text(present_elem, "DATE_START")
     date_end = get_child_text(present_elem, "DATE_END")
+
     user_reference_creator = get_child_text(present_elem, "USER_REFERENCE_CREATOR")
     return {
         "id": uid,
@@ -279,8 +280,8 @@ def parse_presentation(present_elem):
     }
 
 
-def parse_persons_involved(elem):
-    persons_involved = elem.xpath("a:PRESENT_AUTH", namespaces=NSMAP)
+def parse_persons_involved(elem, subelem_name):
+    persons_involved = elem.xpath(f"a:{subelem_name}", namespaces=NSMAP)
     all_persons = []
     for i in persons_involved:
         uid = get_child_text(i, "FACULTY_NAME")
@@ -288,6 +289,7 @@ def parse_persons_involved(elem):
         middlename = get_child_text(i, "MNAME")
         lastname = get_child_text(i, "LNAME")
         role = get_child_text(i, "ROLE")
+        institution = get_child_text(i, "INSTITUTION")
         student_level = get_child_text(i, "STUDENT_LEVEL")
         all_persons.append(
             {
@@ -344,6 +346,47 @@ def parse_assignment(assignment_elem):
     }
 
 
+def get_intellconts(record_elem):
+    intellcont_elems = record_elem.xpath("a:INTELLCONT", namespaces=NSMAP)
+    all_intellconts = []
+    for i in intellcont_elems:
+        intellcont = parse_intellcont(i)
+        all_intellconts.append(intellcont)
+    return all_intellconts
+
+
+def parse_intellcont(intellcont_elem):
+    uid = intellcont_elem.attrib.get("id")
+    contype = get_child_text(intellcont_elem, "CONTYPE")
+    status = get_child_text(intellcont_elem, "STATUS")
+    title = get_child_text(intellcont_elem, "TITLE")
+    publisher = get_child_text(intellcont_elem, "PUBLISHER")
+    date_published = get_child_text(intellcont_elem, "PUB_START")
+    doi = get_child_text(intellcont_elem, "DOI")
+    abstract = get_child_text(intellcont_elem, "ABSTRACT")
+    volume = get_child_text(intellcont_elem, "VOLUME")
+    issue = get_child_text(intellcont_elem, "ISSUE")
+    page_nums = get_child_text(intellcont_elem, "PAGENUM")
+
+    authors_elems = intellcont_elem.xpath("a:INTELLCONT_AUTH", namespaces=NSMAP)
+    persons_involved = parse_persons_involved(intellcont_elem, "INTELLCONT_AUTH")
+    intellcont = {
+        "id": uid,
+        "contype": contype,
+        "status": status,
+        "title": title,
+        "publisher": publisher,
+        "date_published": date_published,
+        "doi": doi,
+        "persons_involved": persons_involved,
+        "abstract": abstract,
+        "volume": volume,
+        "issue": issue,
+        "page_nums": page_nums,
+    }
+    return intellcont
+
+
 def get_admins(record_elem):
     admin_elems = record_elem.xpath("a:ADMIN", namespaces=NSMAP)
     all_admins = [parse_admin(i) for i in admin_elems]
@@ -397,6 +440,14 @@ def add_orgs_to_graph(graph):
     graph.add((univ_elem, OBO.BFO_0000051, division_elem))
     graph.add((division_elem, OBO.BFO_0000050, univ_elem))
 
+    for dept_name, dept_uid in ACADEMIC_AFFAIRS["depts"].items():
+        dept_elem = NS[dept_uid]
+        graph.add((dept_elem, RDF.type, VIVO.AcademicDepartment))
+        graph.add((dept_elem, RDFS.label, Literal(dept_name)))
+        graph.add((dept_elem, OBO.BFO_0000050, division_elem))
+        graph.add((division_elem, OBO.BFO_0000051, dept_elem))
+
+
     for coll, coll_details in COLL_DEPT.items():
         coll_elem = NS[coll_details["uid"]]
         graph.add((coll_elem, RDF.type, VIVO.College))
@@ -407,9 +458,9 @@ def add_orgs_to_graph(graph):
         for dept_name, dept_uid in coll_details["depts"].items():
             dept_elem = NS[dept_uid]
             graph.add((dept_elem, RDF.type, VIVO.AcademicDepartment))
-            graph.add((coll_elem, OBO.BFO_0000051, dept_elem))
-            graph.add((dept_elem, OBO.BFO_0000050, coll_elem))
             graph.add((dept_elem, RDFS.label, Literal(dept_name)))
+            graph.add((dept_elem, OBO.BFO_0000050, coll_elem))
+            graph.add((coll_elem, OBO.BFO_0000051, dept_elem))
 
 
 def add_user_to_graph(parsed_user, graph):
@@ -471,6 +522,9 @@ def add_user_to_graph(parsed_user, graph):
 
     for presentation in parsed_user["presentations"]:
         add_presentations_to_graph(presentation, graph, fac)
+
+    for intellcont in parsed_user["intellconts"]:
+        add_intellcont_to_graph(intellcont, graph, fac)
 
     best_coll_depts = find_best_coll_depts(parsed_user)
     if best_coll_depts:
@@ -534,7 +588,7 @@ def find_rank_in_dept(parsed_user, dept):
 
 
 def match_college(dept):
-    # because users entered the wrong college for their dept in 1/10 files
+    # because users entered the wrong college for their dept in 10% of files
     # we have to assume they got the dept correct, and manually lookup the coll.
     # we also hardcoded the uid for college & for dept, for consistency
     for coll, bundle in COLL_DEPT.items():
@@ -546,7 +600,7 @@ def match_college(dept):
                 "dept_uid": bundle["depts"][dept],
             }
     # if dept not in COLL_DEPT, check if it's in Academic Affairs
-    if dept in ACADEMIC_AFFAIRS.get('depts'):
+    if dept in ACADEMIC_AFFAIRS.get("depts"):
         return {
             "coll_name": ACADEMIC_AFFAIRS["name"],
             "coll_uid": ACADEMIC_AFFAIRS["uid"],
@@ -565,8 +619,6 @@ def add_presentations_to_graph(presentation, graph, fac):
     datetime_start = NS[f"{presentation['id']}d"]
     datetime_end = NS[f"{presentation['id']}e"]
 
-    graph.add((fac, OBO.RO_0000053, attendee_role))
-
     graph.add((conference, RDF.type, BIBO.Conference))
     graph.add((conference, RDFS.label, Literal(presentation["name"])))
     graph.add((conference, OBO.BFO_0000051, invited_talk))
@@ -574,15 +626,26 @@ def add_presentations_to_graph(presentation, graph, fac):
 
     graph.add((invited_talk, RDF.type, VIVO.InvitedTalk))
     graph.add((invited_talk, RDFS.label, Literal(presentation["title"])))
-    graph.add((invited_talk, OBO.BFO_0000055, attendee_role))
     graph.add((invited_talk, VIVO.description, Literal(presentation["abstract"])))
     graph.add((invited_talk, VIVO.dateTimeInterval, datetime_interval))
     graph.add((invited_talk, OBO.BFO_0000050, conference))
 
-    graph.add((attendee_role, RDF.type, VIVO.AttendeeRole))
-    graph.add((attendee_role, OBO.BFO_0000054, invited_talk))
-    graph.add((attendee_role, OBO.RO_0000052, fac))
-    graph.add((attendee_role, VIVO.dateTimeInterval, datetime_interval))
+    for num, person in enumerate(presentation.get('persons_involved')):
+        person_id = person['id']
+        # we wish to exclude persons who are not uncw faculty
+        # digitalmeasures gives non-uncw persons an empty string for an 'id'
+        # so we check for empty 'id' and skip them 
+        if not person_id:
+            continue
+        person_elem = NS[person_id]
+        other_attendee_role = NS[f"{invited_talk}b{num}"]
+        graph.add((other_attendee_role, RDF.type, VIVO.AttendeeRole))
+        graph.add((invited_talk, OBO.BFO_0000055, other_attendee_role))
+        graph.add((other_attendee_role, OBO.BFO_0000054, invited_talk))
+        graph.add((person_elem, OBO.RO_0000053, other_attendee_role))
+        graph.add((other_attendee_role, OBO.RO_0000052, person_elem))
+        graph.add((other_attendee_role, VIVO.dateTimeInterval, datetime_interval))        
+
 
     graph.add((datetime_interval, RDF.type, VIVO.DateTimeInterval))
     graph.add((datetime_interval, VIVO.start, datetime_start))
@@ -607,6 +670,152 @@ def add_presentations_to_graph(presentation, graph, fac):
         )
     )
     graph.add((datetime_end, VIVO.dateTimePrecision, VIVO.yearPrecision))
+
+
+def add_intellcont_to_graph(intellcont, graph, fac):
+    academic_article = NS[intellcont["id"]]
+    # if (academic_article, None, None) in graph:
+    #     # we skip adding the article if it's already in the graph
+    #     return None
+
+    datetime_value = NS[f"{academic_article}a"]
+    journal = NS[f"{academic_article}b"]
+    # authorship = NS[f"{academic_article}c"]
+
+    # graph.add((authorship, RDF.type, VIVO.Authorship))
+
+    graph.add((journal, RDF.type, BIBO.Journal))
+    graph.add((journal, RDFS.label, Literal(intellcont["publisher"])))
+    graph.add((journal, VIVO.publicationVenueFor, academic_article))
+    graph.add((academic_article, VIVO.hasPublicationVenue, journal))
+
+    # graph.add((academic_article, VIVO.relatesBy, authorship))
+    # graph.add((authorship, VIVO.relates, academic_article))
+
+    # graph.add((authorship, VIVO.relates, fac))
+    # graph.add((fac, VIVO.relatedBy, authorship))
+
+    publisher = intellcont["publisher"].strip()
+    title = intellcont["title"].strip()
+    abstract = intellcont.get("abstract").strip()
+    doi = intellcont.get("doi").strip()
+    volume = intellcont.get("volume").strip()
+    issue = intellcont.get("issue").strip()
+    date_published = intellcont.get("date_published").strip()
+    page_nums = intellcont.get("page_nums").strip()
+    startpage, endpage = split_pages(page_nums)
+    content_type = map_contypes(intellcont.get("contype"))
+
+    if date_published:
+        graph.add((datetime_value, RDF.type, VIVO.DateTimeValue))
+        graph.add((datetime_value, VIVO.dateTime, Literal(intellcont["date_published"])))
+        graph.add((datetime_value, VIVO.dateTimePrecision, VIVO.yearPrecision))
+    if content_type:
+        graph.add((academic_article, RDF.type, content_type))
+    if title:
+        graph.add((academic_article, RDFS.label, Literal(title)))
+    if abstract:
+        graph.add((academic_article, BIBO.abstract, Literal(abstract)))
+    if doi:
+        graph.add((academic_article, BIBO.doi, Literal(doi)))
+    if volume:
+        graph.add((academic_article, BIBO.volume, Literal(volume)))
+    if issue:
+        graph.add((academic_article, BIBO.issue, Literal(issue)))
+    if startpage:
+        graph.add((academic_article, BIBO.pageStart, Literal(startpage)))
+    if endpage:
+        graph.add((academic_article, BIBO.pageEnd, Literal(endpage)))
+
+    for num, person in enumerate(intellcont.get('persons_involved')):
+        person_id = person['id']
+        # we wish to exclude persons who are not uncw faculty
+        # digitalmeasures gives non-uncw persons an empty string for an 'id'
+        # so we check for empty 'id' and skip them 
+        if not person_id:
+            continue
+        person_elem = NS[person_id]
+        other_authorship = NS[f"{academic_article}c{num}"]
+        graph.add((other_authorship, RDF.type, VIVO.Authorship))
+        graph.add((academic_article, VIVO.relatesBy, other_authorship))
+        graph.add((other_authorship, VIVO.relates, academic_article))
+        graph.add((person_elem, VIVO.relatedBy, other_authorship))
+        graph.add((other_authorship, VIVO.relates, person_elem))
+
+
+
+def split_pages(text):
+    if not text:
+        startpage, endpage = None, None
+    elif "-" in text:
+        startpage = text.split("-")[0].strip()
+        endpage = text.split("-")[1].strip()
+    else:
+        startpage = text.strip()
+        endpage = None
+    return startpage, endpage
+
+
+def map_contypes(contype):
+    contypes_pubtypes = {
+        None: BIBO.Document,
+        "": BIBO.Document,
+        "Book Review": BIBO.Document,
+        "Book, Chapter in Non-Scholarly Book-New": BIBO.Chapter,
+        "Book, Chapter in Non-Scholarly Book-Revised": BIBO.Chapter,
+        "Book, Chapter in Scholarly Book-New": BIBO.Chapter,
+        "Book, Chapter in Scholarly Book-Revised": BIBO.Chapter,
+        "Book, Chapter in Textbook-New": BIBO.Chapter,
+        "Book, Chapter in Textbook-Revised": BIBO.Chapter,
+        "Book, Non-Scholarly-New": BIBO.Book,
+        "Book, Non-Scholarly-Revised": BIBO.Book,
+        "Book, Scholarly-New": BIBO.Book,
+        "Book, Scholarly-Revised": BIBO.Book,
+        "Book, Textbook-New": BIBO.Book,
+        "Book, Textbook-Revised": BIBO.Book,
+        "Broadcast Media": BIBO.AudioVisualDocument,
+        "Cited Research": BIBO.Document,
+        "Conference Proceeding": BIBO.ConferencePaper,
+        "Instructor's Manual": BIBO.Manual,
+        "Journal Article, Academic Journal": BIBO.AcademicArticle,
+        "Journal Article, In-House Journal": BIBO.AcademicArticle,
+        "Journal Article, Professional Journal": BIBO.AcademicArticle,
+        "Journal Article, Public or Trade Journal": BIBO.AcademicArticle,
+        "Law Review": BIBO.AcademicArticle,
+        "Magazine/Trade Publication": BIBO.AcademicArticle,
+        "Manuscript": BIBO.Manuscript,
+        "Map": BIBO.Map,
+        "Material Regarding New Courses/Curricula": BIBO.Document,
+        "Monograph": BIBO.Document,
+        "Newsletter": VIVO.Newsletter,
+        "Newspaper": BIBO.Newspaper,
+        "Nonfiction - Anthology": BIBO.Book,
+        "Nonfiction - Book": BIBO.Book,
+        "Nonfiction - Online Journal": BIBO.Article,
+        "Nonfiction - Print Journal": BIBO.Article,
+        "Novel": BIBO.Book,
+        "Other": BIBO.Document,
+        "Poetry - Anthology": BIBO.Document,
+        "Poetry - Book": BIBO.Document,
+        "Poetry - Online Journal": BIBO.Document,
+        "Poetry - Print Journal": BIBO.Document,
+        "Poster Session": VIVO.ConferencePoster,
+        "Recording": BIBO.AudioVisualDocument,
+        "Regular Column in Journal or Newspaper": BIBO.Article,
+        "Research Report": BIBO.Report,
+        "Short Fiction - Anthology": BIBO.Document,
+        "Short Fiction - Book": BIBO.Document,
+        "Short Fiction - Online Journal": BIBO.Document,
+        "Short Fiction - Print Journal": BIBO.Document,
+        "Software": OBO.ERO_0000071,
+        "Software, Instructional": OBO.ERO_0000071,
+        "Study Guide": BIBO.Document,
+        "Technical Report": BIBO.Report,
+        "Translation or Transcription": BIBO.Document,
+        "Working Paper": VIVO.WorkingPaper,
+        "Written Case with Instructional Material": BIBO.Document,
+    }
+    return contypes_pubtypes.get(contype)
 
 
 def add_admin_assignment_to_graph(admin_assignment, graph, fac, best_coll_depts):
@@ -825,6 +1034,10 @@ def search_directory(firstname="", lastname="", driver=None):
     return row_dicts
 
 
+def find_active_users(homefolder):
+    pass
+
+
 if __name__ == "__main__":
     graph = init_graph()
     ignored_users = gather_ignored_users()
@@ -834,13 +1047,19 @@ if __name__ == "__main__":
     options.add_argument("-headless")
     driver = webdriver.Firefox(executable_path="geckodriver", options=options)
 
+    # # count = 0
     for filename in sorted(os.listdir("../extracting/output/users/")):
+        if filename not in ('ahernn.xml', 'falsafin.xml', 'mechlingb.xml', 'waldschlagelm.xml', 'devitaj.xml', 'kolomers.xml', 'palumbor.xml', 'leej.xml'):
+            continue
         if filename.split(".")[0] in ignored_users:
             continue
         parsed_user = parse_userfile(f"../extracting/output/users/{filename}")
         if is_excluded_user(parsed_user, driver):
             continue
         add_user_to_graph(parsed_user, graph)
+        # count += 1
+        # if count > 20:
+        #     break
     driver.close()
 
     filetext = graph.serialize(format="turtle").decode("utf-8")
