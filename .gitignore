@@ -9,4 +9,4 @@ making_turtle/exclude_users
 all.ttl
 extracting/geckodriver.log
 making_turtle/geckodriver.log
-extracting/__pycache__/
+__pycache__

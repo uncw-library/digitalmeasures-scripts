@@ -1,0 +1,58 @@
+# scrape_directory.py
+
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
+
+options = Options()
+options.add_argument("-headless")
+driver = webdriver.Firefox(executable_path="geckodriver", options=options)
+
+
+def scrape_directory(firstname="", lastname="", driver=None):
+    if not driver:
+        options = Options()
+        options.add_argument("-headless")
+        driver = webdriver.Firefox(executable_path="geckodriver", options=options)
+    driver.get("https://itsappserv01.uncw.edu/directory/")
+
+    radio_elem = driver.find_element_by_id("rdoSearchTable_0")
+    firstname_elem = driver.find_element_by_name("txtFirstName")
+    lastname_elem = driver.find_element_by_name("txtLastName")
+    submit_elem = driver.find_element_by_name("btnSearch")
+    radio_elem.send_keys(Keys.ARROW_RIGHT)
+    firstname_elem.clear()
+    firstname_elem.send_keys(firstname)
+    lastname_elem.clear()
+    lastname_elem.send_keys(lastname)
+    submit_elem.send_keys(Keys.RETURN)
+
+    try:
+        response_table = WebDriverWait(driver, 60).until(
+            EC.presence_of_element_located((By.ID, "gvDirectory"))
+        )
+    except TimeoutException:
+        return []
+    response_rows = response_table.find_elements_by_xpath("tbody/tr")
+
+    row_dicts = []
+    for num, row in enumerate(response_rows):
+        if num == 0:
+            continue
+        name, pos, dept, _, email, _ = [
+            i.text for i in row.find_elements_by_xpath("td")
+        ]
+        row_dict = {
+            "table_row": num,
+            "name": name,
+            "pos": pos,
+            "dept": dept,
+            "email": email,
+        }
+        row_dicts.append(row_dict)
+
+    return row_dicts
