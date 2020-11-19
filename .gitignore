@@ -3,7 +3,7 @@ __pycache__
 vivo-sample-data
 app/exclude_users
 app/output
-app/geckodriver.log
+geckodriver.log
 extracting/geckodriver.log
 extracting/output/*
 extracting/userpass.*
