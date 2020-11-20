@@ -26,23 +26,24 @@ def make_graph():
 
     for filename in sorted(os.listdir(USERFILES_DIR)):
         username = filename.split(".")[0]
-        # if filename not in (
-        #     "ahernn.xml",
-        #     "falsafin.xml",
-        #     "mechlingb.xml",
-        #     "waldschlagelm.xml",
-        #     "devitaj.xml",
-        #     "kolomers.xml",
-        #     "palumbor.xml",
-        #     "leej.xml",
-        # ):
-        #     continue
+        if username not in (
+            "ahernn",
+            # "falsafin",
+            # "mechlingb",
+            # "waldschlagelm",
+            # "devitaj",
+            # "kolomers",
+            # "palumbor",
+            # "leej",
+        ):
+            continue
         if username in preignored_users:
             continue
         filepath = os.path.join(USERFILES_DIR, filename)
         parsed_user = parse_userfile(filepath)
         if is_excluded_user(parsed_user, driver):
             continue
+        print(parsed_user)
         add_user_to_graph(parsed_user, graph)
     driver.close()
     return graph
@@ -58,4 +59,4 @@ def write_turtle(graph):
 if __name__ == "__main__":
     # scrape_digitalmeasures()
     graph = make_graph()
-    write_turtle(graph)
+    # write_turtle(graph)

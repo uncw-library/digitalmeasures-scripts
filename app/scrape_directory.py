@@ -18,12 +18,14 @@ def scrape_directory(firstname="", lastname="", driver=None):
         options = Options()
         options.add_argument("-headless")
         driver = webdriver.Firefox(executable_path="geckodriver", options=options)
+
     driver.get("https://itsappserv01.uncw.edu/directory/")
 
     radio_elem = driver.find_element_by_id("rdoSearchTable_0")
     firstname_elem = driver.find_element_by_name("txtFirstName")
     lastname_elem = driver.find_element_by_name("txtLastName")
     submit_elem = driver.find_element_by_name("btnSearch")
+
     radio_elem.send_keys(Keys.ARROW_RIGHT)
     firstname_elem.clear()
     firstname_elem.send_keys(firstname)

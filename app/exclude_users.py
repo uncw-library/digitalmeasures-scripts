@@ -6,6 +6,7 @@ from scrape_directory import scrape_directory
 generic_users = {"facultytest"}
 IRP = {"morristr"}
 office_staff = {
+    "armstrongg",
     "baileyj",
     "beaudoinh",
     "deltsi",
@@ -58,7 +59,7 @@ def is_in_directory(parsed_user, driver):
     # someone with no lastname can't be found, reasonable
     # same for some one with no firstname.
 
-    # dev code !!!!!!!!
+    # DEV CODE !!!!!!!!
     with open("exclude_users/not_in_directory.txt", "r") as f:
         directory_results = [i.strip() for i in f.readlines()]
     if parsed_user.get("username") in directory_results:

@@ -33,6 +33,9 @@ def do_userfiles(usernames, creds, output_dir):
     for username in usernames:
         if f"{username}.xml" in existing_files:
             continue
+        # students have numeric username ending, and are excluded
+        if username[-4:].isnumeric():
+            continue
         endpoint = f"/login/service/v4/SchemaData/INDIVIDUAL-ACTIVITIES-University/USERNAME:{username}"
         response = get_response(endpoint, creds)
         if response.status_code != 200:
