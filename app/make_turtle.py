@@ -103,11 +103,6 @@ def add_user_to_graph(parsed_user, graph):
             graph.add(
                 (name, VCARD.familyName, Literal(parsed_user["person"]["lastname"]))
             )
-        use_title = bool(title and parsed_user["adminperm"]["srank"])
-        if use_title:
-            graph.add((individual, VCARD.hasTitle, title))
-            graph.add((title, RDF.type, VCARD.Title))
-            graph.add((title, VCARD.title, Literal(parsed_user["adminperm"]["srank"])))
 
     for presentation in parsed_user["presentations"]:
         add_presentations_to_graph(presentation, graph, fac)
@@ -128,6 +123,10 @@ def add_user_to_graph(parsed_user, graph):
             graph.add((dept, VIVO.relatedBy, pos))
             graph.add((pos, VIVO.relates, fac))
             graph.add((fac, VIVO.relatedBy, pos))
+
+            graph.add((individual, VCARD.hasTitle, title))
+            graph.add((title, RDF.type, VCARD.Title))
+            graph.add((title, VCARD.title, Literal(rank)))
 
     for admin_assignment in parsed_user["admin_assignments"]:
         add_admin_assignment_to_graph(admin_assignment, graph, fac, best_coll_depts)
@@ -444,13 +443,3 @@ def add_admin_assignment_to_graph(admin_assignment, graph, fac, best_coll_depts)
         )
     )
     graph.add((datetime_start, VIVO.dateTimePrecision, VIVO.yearPrecision))
-
-    # graph.add((datetime_end, RDF.type, VIVO.DateTimeValue))
-    # graph.add(
-    #     (
-    #         datetime_end,
-    #         VIVO.dateTime,
-    #         Literal(admin_assignment["date_end"], datatype=XSD.date),
-    #     )
-    # )
-    # graph.add((datetime_end, VIVO.dateTimePrecision, VIVO.yearPrecision))
