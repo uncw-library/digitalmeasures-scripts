@@ -2,6 +2,7 @@
 # xml_to_turtle.py
 
 import os
+from datetime import datetime
 import getpass
 
 from exclude_users import preignored_users, is_excluded_user
@@ -28,13 +29,13 @@ def make_graph():
         username = filename.split(".")[0]
         if username not in (
             "ahernn",
-            # "falsafin",
-            # "mechlingb",
-            # "waldschlagelm",
-            # "devitaj",
-            # "kolomers",
-            # "palumbor",
-            # "leej",
+            "falsafin",
+            "mechlingb",
+            "waldschlagelm",
+            "devitaj",
+            "kolomers",
+            "palumbor",
+            "leej",
         ):
             continue
         if username in preignored_users:
@@ -43,7 +44,6 @@ def make_graph():
         parsed_user = parse_userfile(filepath)
         if is_excluded_user(parsed_user, driver):
             continue
-        print(parsed_user)
         add_user_to_graph(parsed_user, graph)
     driver.close()
     return graph
@@ -52,11 +52,11 @@ def make_graph():
 def write_turtle(graph):
     filetext = graph.serialize(format="turtle").decode("utf-8")
     os.makedirs("output", exist_ok=True)
-    with open("output/vivo_import.ttl", "w") as f:
+    with open(f"output/vivo_import_{datetime.now().timestamp()}.ttl", "w") as f:
         f.write(filetext)
 
 
 if __name__ == "__main__":
     # scrape_digitalmeasures()
     graph = make_graph()
-    # write_turtle(graph)
+    write_turtle(graph)
