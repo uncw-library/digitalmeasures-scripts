@@ -130,6 +130,10 @@ def add_user_to_graph(parsed_user, graph):
 
     for admin_assignment in parsed_user["admin_assignments"]:
         add_admin_assignment_to_graph(admin_assignment, graph, fac, best_coll_depts)
+    for perform_exhibit in parsed_user["perform_exhibits"]:
+        add_perform_exhibit_to_graph(perform_exhibit, graph, fac)
+    for intellprop in parsed_user["intellprops"]:
+        add_intellprop_to_graph(intellprop, graph)
 
 
 def find_best_coll_depts(parsed_user):
@@ -261,26 +265,8 @@ def add_presentations_to_graph(presentation, graph, fac):
 
 def add_intellcont_to_graph(intellcont, graph, fac):
     academic_article = NS[intellcont["id"]]
-    # if (academic_article, None, None) in graph:
-    #     # we skip adding the article if it's already in the graph
-    #     return None
-
-    datetime_value = NS[f"{academic_article}a"]
+    datetime_node = NS[f"{academic_article}a"]
     journal = NS[f"{academic_article}b"]
-    # authorship = NS[f"{academic_article}c"]
-
-    # graph.add((authorship, RDF.type, VIVO.Authorship))
-
-    graph.add((journal, RDF.type, BIBO.Journal))
-    graph.add((journal, RDFS.label, Literal(intellcont["publisher"])))
-    graph.add((journal, VIVO.publicationVenueFor, academic_article))
-    graph.add((academic_article, VIVO.hasPublicationVenue, journal))
-
-    # graph.add((academic_article, VIVO.relatesBy, authorship))
-    # graph.add((authorship, VIVO.relates, academic_article))
-
-    # graph.add((authorship, VIVO.relates, fac))
-    # graph.add((fac, VIVO.relatedBy, authorship))
 
     publisher = intellcont["publisher"].strip()
     title = intellcont["title"].strip()
@@ -293,12 +279,23 @@ def add_intellcont_to_graph(intellcont, graph, fac):
     startpage, endpage = split_pages(page_nums)
     content_type = map_contypes(intellcont.get("contype"))
 
+    graph.add((journal, RDF.type, BIBO.Journal))
+    graph.add((journal, RDFS.label, Literal(intellcont["publisher"])))
+    graph.add((journal, VIVO.publicationVenueFor, academic_article))
+    graph.add((academic_article, VIVO.hasPublicationVenue, journal))
+
     if date_published:
-        graph.add((datetime_value, RDF.type, VIVO.DateTimeValue))
+        graph.add((academic_article, VIVO.dateTimeValue, datetime_node))
+        graph.add((datetime_node, RDF.type, VIVO.DateTimeValue))
         graph.add(
-            (datetime_value, VIVO.dateTime, Literal(intellcont["date_published"]))
+            (
+                datetime_node,
+                VIVO.dateTime,
+                Literal(intellcont["date_published"], datatype=XSD.date),
+            )
         )
-        graph.add((datetime_value, VIVO.dateTimePrecision, VIVO.yearPrecision))
+        graph.add((datetime_node, VIVO.dateTimePrecision, VIVO.yearPrecision))
+
     if content_type:
         graph.add((academic_article, RDF.type, content_type))
     if title:
@@ -443,3 +440,103 @@ def add_admin_assignment_to_graph(admin_assignment, graph, fac, best_coll_depts)
         )
     )
     graph.add((datetime_start, VIVO.dateTimePrecision, VIVO.yearPrecision))
+
+
+def add_perform_exhibit_to_graph(perform_exhibit, graph, fac):
+    performance = NS[perform_exhibit["id"]]
+    conference = NS[f"{perform_exhibit['id']}a"]
+    attendee_role = NS[f"{perform_exhibit['id']}b"]
+
+    datetime_interval = NS[f"{perform_exhibit['id']}c"]
+    time_start_node = NS[f"{perform_exhibit['id']}d"]
+    time_end_node = NS[f"{perform_exhibit['id']}e"]
+
+    graph.add((conference, RDF.type, BIBO.Conference))
+    graph.add((conference, RDFS.label, Literal(perform_exhibit["name"])))
+    graph.add((conference, OBO.BFO_0000051, performance))
+    graph.add((conference, BIBO.organizer, Literal(perform_exhibit["sponsor"])))
+
+    graph.add((performance, RDF.type, BIBO.Performance))
+    graph.add((performance, RDFS.label, Literal(perform_exhibit["title"])))
+    graph.add((performance, VIVO.description, Literal(perform_exhibit["desc"])))
+    graph.add((performance, VIVO.dateTimeInterval, datetime_interval))
+    graph.add((performance, OBO.BFO_0000050, conference))
+
+    for num, person in enumerate(perform_exhibit.get("persons_involved")):
+        person_id = person["id"]
+        # we wish to exclude persons who are not uncw faculty
+        # digitalmeasures gives non-uncw persons an empty string for an 'id'
+        # so we check for empty 'id' and skip them
+        if not person_id:
+            continue
+        person_elem = NS[person_id]
+        other_attendee_role = NS[f"{performance}b{num}"]
+        graph.add((other_attendee_role, RDF.type, VIVO.AttendeeRole))
+        graph.add((performance, OBO.BFO_0000055, other_attendee_role))
+        graph.add((other_attendee_role, OBO.BFO_0000054, performance))
+        graph.add((person_elem, OBO.RO_0000053, other_attendee_role))
+        graph.add((other_attendee_role, OBO.RO_0000052, person_elem))
+        graph.add((other_attendee_role, VIVO.dateTimeInterval, datetime_interval))
+
+    start_date = perform_exhibit["start_start"] or perform_exhibit["start_end"]
+    end_date = perform_exhibit["end_start"] or perform_exhibit["end_end"]
+    if start_date:
+        graph.add((datetime_interval, RDF.type, VIVO.DateTimeInterval))
+        graph.add((datetime_interval, VIVO.start, time_start_node))
+        graph.add((time_start_node, RDF.type, VIVO.DateTimeValue))
+        graph.add(
+            (time_start_node, VIVO.dateTime, Literal(start_date, datatype=XSD.date))
+        )
+        graph.add((time_start_node, VIVO.dateTimePrecision, VIVO.yearPrecision))
+    if end_date:
+        graph.add((datetime_interval, RDF.type, VIVO.DateTimeInterval))
+        graph.add((datetime_interval, VIVO.end, time_end_node))
+        graph.add((time_end_node, RDF.type, VIVO.DateTimeValue))
+        graph.add((time_end_node, VIVO.dateTime, Literal(end_date, datatype=XSD.date)))
+        graph.add((time_end_node, VIVO.dateTimePrecision, VIVO.yearPrecision))
+
+
+def add_intellprop_to_graph(intellprop, graph):
+    if intellprop["format"] != "Patent":
+        return
+
+    intellprop_id = intellprop["id"]
+    intellprop_node = NS[intellprop_id]
+    time_filed_node = NS[f"{intellprop_id}a"]
+    time_issued_node = NS[f"{intellprop_id}b"]
+
+    title = intellprop["title"].strip()
+    patent_number = intellprop["id_number"]
+    date_filed = intellprop["application_end"] or intellprop["application_start"]
+    date_issued = intellprop["approve_end"] or intellprop["approve_start"]
+
+    graph.add((intellprop_node, RDF.type, BIBO.Patent))
+    if title:
+        graph.add((intellprop_node, RDFS.label, Literal(title)))
+    if patent_number:
+        graph.add((intellprop_node, VIVO.patentNumber, Literal(patent_number)))
+    if date_filed:
+        graph.add((intellprop_node, VIVO.dateFiled, time_filed_node))
+        graph.add((time_filed_node, RDF.type, VIVO.DateTimeValue))
+        graph.add(
+            (time_filed_node, VIVO.dateTime, Literal(date_filed, datatype=XSD.date))
+        )
+        graph.add((time_filed_node, VIVO.dateTimePrecision, VIVO.yearPrecision))
+    if date_issued:
+        graph.add((intellprop_node, VIVO.dateIssued, time_issued_node))
+        graph.add((time_issued_node, RDF.type, VIVO.DateTimeValue))
+        graph.add(
+            (time_issued_node, VIVO.dateTime, Literal(date_filed, datatype=XSD.date))
+        )
+        graph.add((time_issued_node, VIVO.dateTimePrecision, VIVO.yearPrecision))
+
+    for num, person in enumerate(intellprop["persons_involved"]):
+        person_id = person["id"]
+        # we wish to exclude persons who are not uncw faculty
+        # digitalmeasures gives non-uncw persons an empty string for an 'id'
+        # so we check for empty 'id' and skip them
+        if not person_id:
+            continue
+        fac_node = NS[person_id]
+        graph.add((intellprop_node, VIVO.assigneeFor, fac_node))
+        graph.add((fac_node, VIVO.assignee, intellprop_node))

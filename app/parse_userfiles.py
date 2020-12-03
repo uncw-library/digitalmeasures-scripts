@@ -144,11 +144,13 @@ def get_current_depts(record_elem):
 def get_intellprops(record_elem):
     intellprop_elems = record_elem.xpath("a:INTELLPROP", namespaces=NSMAP)
     intellprops = [parse_intellprop(i) for i in intellprop_elems]
+    print(intellprops)
     return intellprops
 
 
 def parse_intellprop(intellprop_elem):
     intellprops = {
+        "id": intellprop_elem.attrib.get("id"),
         "application_end": get_child_text(intellprop_elem, "APPLICATION_END"),
         "application_start": get_child_text(intellprop_elem, "APPLICATION_START"),
         "approve_end": get_child_text(intellprop_elem, "APPROVE_END"),
@@ -174,20 +176,21 @@ def parse_intellprop(intellprop_elem):
         "license_start": get_child_text(intellprop_elem, "LICENSE_START"),
         "nationality": get_child_text(intellprop_elem, "NATIONALITY"),
         "nations": get_child_text(intellprop_elem, "NATIONS"),
-        "persons_involved": get_persons_involved(
-            intellprop_elem, "INTELLPROP_INVENT"
-        ),
+        "persons_involved": get_persons_involved(intellprop_elem, "INTELLPROP_INVENT"),
         "renewal_end": get_child_text(intellprop_elem, "RENEWAL_END"),
         "renewal_start": get_child_text(intellprop_elem, "RENEWAL_START"),
         "submit_end": get_child_text(intellprop_elem, "SUBMIT_END"),
         "submit_start": get_child_text(intellprop_elem, "SUBMIT_START"),
         "title": get_child_text(intellprop_elem, "TITLE"),
         "type": get_child_text(intellprop_elem, "TYPE"),
-        "user_reference_creator": get_child_text(intellprop_elem, "USER_REFERENCE_CREATOR"),
+        "user_reference_creator": get_child_text(
+            intellprop_elem, "USER_REFERENCE_CREATOR"
+        ),
         "whom_assigned": get_child_text(intellprop_elem, "WHOM_ASSIGNED"),
         "whom_licensed": get_child_text(intellprop_elem, "WHOM_LICENSED"),
     }
     return intellprops
+
 
 def get_perform_exhibits(record_elem):
     perform_exhibit_elems = record_elem.xpath("a:PERFORM_EXHIBIT", namespaces=NSMAP)
@@ -197,6 +200,7 @@ def get_perform_exhibits(record_elem):
 
 def parse_perform_exhibit(perform_exhibit_elem):
     perform_exhibit = {
+        "id": perform_exhibit_elem.attrib.get("id"),
         "academic": get_child_text(perform_exhibit_elem, "ACADEMIC"),
         "delivery_type": get_child_text(perform_exhibit_elem, "DELIVERY_TYPE"),
         "desc": get_child_text(perform_exhibit_elem, "DESC"),
@@ -317,7 +321,8 @@ def parse_person(person_elem):
         "firstname": get_child_text(person_elem, "FNAME"),
         "middlename": get_child_text(person_elem, "MNAME"),
         "lastname": get_child_text(person_elem, "LNAME"),
-        "role": get_child_text(person_elem, "ROLE") or get_child_text(person_elem, "CONTRIBUTION"),
+        "role": get_child_text(person_elem, "ROLE")
+        or get_child_text(person_elem, "CONTRIBUTION"),
         "student_level": get_child_text(person_elem, "STUDENT_LEVEL"),
         "institution": get_child_text(person_elem, "INSTITUTION"),
     }

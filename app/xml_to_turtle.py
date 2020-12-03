@@ -52,20 +52,21 @@ def make_graph():
         # ):
         #     continue
         # With INTELLPROP
-        if username not in (
-            "baden",
-            "carrm",
-            "changy",
-        ):
+        if username not in ("baden", "carrm", "changy"):
             continue
-        if username in preignored_users:
-            continue
+        # debugging why dates aren't sticking
+        # if username not in (
+        #     "mcbrayerl",
+        #     "carrm",
+        # ):
+        #     continue
+        # if username in preignored_users:
+        #     continue
         filepath = os.path.join(USERFILES_DIR, filename)
         parsed_user = parse_userfile(filepath)
-        print(parsed_user.get('intellprops'))
-        # if is_excluded_user(parsed_user, driver):
-        #     continue
-        # add_user_to_graph(parsed_user, graph)
+        if is_excluded_user(parsed_user, driver):
+            continue
+        add_user_to_graph(parsed_user, graph)
     driver.close()
     return graph
 
@@ -80,4 +81,4 @@ def write_turtle(graph):
 if __name__ == "__main__":
     # scrape_digitalmeasures()
     graph = make_graph()
-    # write_turtle(graph)
+    write_turtle(graph)
