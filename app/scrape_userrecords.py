@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
-import os
 import getpass
+import os
+import shutil
 import unicodedata
 from io import StringIO
 
@@ -14,7 +15,9 @@ def get_usernames(creds):
     endpoint = "/login/service/v4/User"
     response = get_response(endpoint, creds)
     if response.status_code != 200:
-        print(f"non-200 status code from {endpoint}\nIs the user/password correct?  Is the server down?")
+        print(
+            f"non-200 status code from {endpoint}\nIs the user/password correct?  Is the server down?"
+        )
         exit()
     usersEtree = ET.fromstring(response.content)
     users = usersEtree.findall(".//User")
@@ -22,13 +25,16 @@ def get_usernames(creds):
     return usernames
 
 
-def do_userfiles(usernames, creds):
-    output_dir = os.path.join("output", "users")
+def do_userfiles(usernames, creds, output_dir):
+    shutil.rmtree(output_dir, ignore_errors=True)
     os.makedirs(output_dir, exist_ok=True)
     existing_files = os.listdir(output_dir)
 
     for username in usernames:
         if f"{username}.xml" in existing_files:
+            continue
+        # students have numeric username ending, and are excluded
+        if username[-4:].isnumeric():
             continue
         endpoint = f"/login/service/v4/SchemaData/INDIVIDUAL-ACTIVITIES-University/USERNAME:{username}"
         response = get_response(endpoint, creds)
@@ -43,7 +49,7 @@ def get_response(endpoint, creds, limiter=""):
     base_url = "https://webservices.digitalmeasures.com"
     response = requests.get(
         f"{base_url}{endpoint}{limiter}",
-        auth=HTTPBasicAuth(creds.get('user'), creds.get('password')),
+        auth=HTTPBasicAuth(creds.get("user"), creds.get("password")),
     )
     return response
 
@@ -51,4 +57,5 @@ def get_response(endpoint, creds, limiter=""):
 if __name__ == "__main__":
     creds = {"user": "uncw/web_services_vivo", "password": getpass.getpass()}
     usernames = get_usernames(creds)
-    do_userfiles(usernames, creds)
+    output_dir = os.path.join("output", "users")
+    do_userfiles(usernames, creds, output_dir)

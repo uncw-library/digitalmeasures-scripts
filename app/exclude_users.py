@@ -3,58 +3,22 @@
 from scrape_directory import scrape_directory
 
 
-generic_users = {
-    "databackup_service",
-    "fac_reports",
-    "web_services_vivo",
-    "facultytest",
-}
+generic_users = {"facultytest"}
+IRP = {"morristr"}
 office_staff = {
-    "DIEPPAS",
-    "carabellin",
-    "culpa",
-    "sahljs",
+    "armstrongg",
     "baileyj",
     "beaudoinh",
     "deltsi",
     "grays",
     "hartmanc",
     "lindgrens",
+    "mcdanielk",
     "murrayd",
     "ramadanik",
-    "grays",
-    "mcdanielk",
     "wrightlk",
 }
-IT = {"chapmanc", "luopaj", "powella"}
-IRP = {"cohens", "lawsonw", "morristr"}
-deans_office = {"wilsonca"}
-name_changed = {"gorea"}
-unknown_404_response = {
-    "braunr",
-    "crs5798",
-    "gorae",
-    "hoadleyd",
-    "jarrellb",
-    "jrh4152",
-    "keepw",
-    "knoxj",
-    "lambertonc",
-    "learw",
-    "macleodw",
-    "mcb4548",
-    "nelsoncl",
-    "richardsa",
-    "smm9756",
-    "stuartal",
-    "weisa",
-    "wellswd",
-    "westgatea",
-}
-
-preignored_users = generic_users.union(
-    office_staff, IT, IRP, deans_office, name_changed, unknown_404_response
-)
+preignored_users = set().union(generic_users, office_staff, IRP)
 
 
 def is_excluded_user(parsed_user, driver):
@@ -95,7 +59,7 @@ def is_in_directory(parsed_user, driver):
     # someone with no lastname can't be found, reasonable
     # same for some one with no firstname.
 
-    # dev code !!!!!!!!
+    # DEV CODE !!!!!!!!
     with open("exclude_users/not_in_directory.txt", "r") as f:
         directory_results = [i.strip() for i in f.readlines()]
     if parsed_user.get("username") in directory_results:
@@ -122,4 +86,5 @@ def is_in_directory(parsed_user, driver):
     )
     if not directory_results:
         return False
+
     return True

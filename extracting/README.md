@@ -2,10 +2,6 @@ These are a variety of scripts related to the DigitalMeasures/ActivityInsight AP
 
 They have text comments describing the dataset.  But you'll need an API login user/pass to actually run them.
 
-## scrape_userrecords.py
-
-This grabs all the user records from the API & saves them as xml in ./output/users/
-
 ## QueryingAPI.ipynb
 
 A jupyter notebook with all the available API endpoints & examples for many of them.
