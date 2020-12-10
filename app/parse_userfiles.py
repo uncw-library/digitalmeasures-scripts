@@ -41,6 +41,7 @@ def parse_userfile(file):
         "admins": get_admins(record_elem),
         "admin_assignments": get_admin_assignments(record_elem),
         "adminperm": get_adminperm(record_elem),
+        "congrants": get_contgrants(record_elem),
         "current_colls": get_current_colls(record_elem),
         "current_depts": get_current_depts(record_elem),
         "intellprops": get_intellprops(record_elem),
@@ -125,6 +126,50 @@ def get_adminperm(record_elem):
     return adminperm
 
 
+def get_contgrants(record_elem):
+    congrant_elems = record_elem.xpath("a:CONGRANT", namespaces=NSMAP)
+    congrants = [parse_congrant(i) for i in congrant_elems]
+    print(congrants)
+    return congrants
+
+
+def parse_congrant(congrant_elem):
+    congrant = {
+        "id": congrant_elem.attrib.get("id"),
+        "abstract": get_child_text(congrant_elem, "ABSTRACT"),
+        "amount": get_child_text(congrant_elem, "AMOUNT"),
+        "awardorg": get_child_text(congrant_elem, "AWARDORG"),
+        "classification": get_child_text(congrant_elem, "CLASSIFICATION"),
+        "congrant_invest": get_child_text(congrant_elem, "CONGRANT_INVEST"),
+        "dtd_end": get_child_text(congrant_elem, "DTD_END"),
+        "dtd_start": get_child_text(congrant_elem, "DTD_START"),
+        "dtd_sub": get_child_text(congrant_elem, "DTD_SUB"),
+        "dtm_end": get_child_text(congrant_elem, "DTM_END"),
+        "dtm_start": get_child_text(congrant_elem, "DTM_START"),
+        "dtm_sub": get_child_text(congrant_elem, "DTM_SUB"),
+        "dty_end": get_child_text(congrant_elem, "DTY_END"),
+        "dty_start": get_child_text(congrant_elem, "DTY_START"),
+        "dty_sub": get_child_text(congrant_elem, "DTY_SUB"),
+        "end_end": get_child_text(congrant_elem, "END_END"),
+        "end_start": get_child_text(congrant_elem, "END_START"),
+        "partner": get_child_text(congrant_elem, "PARTNER"),
+        "persons_involved": get_persons_involved(congrant_elem, "CONGRANT_INVEST"),
+        "sponorg": get_child_text(congrant_elem, "SPONORG"),
+        "start_end": get_child_text(congrant_elem, "START_END"),
+        "start_start": get_child_text(congrant_elem, "START_START"),
+        "status": get_child_text(congrant_elem, "STATUS"),
+        "sub_end": get_child_text(congrant_elem, "SUB_END"),
+        "sub_start": get_child_text(congrant_elem, "SUB_START"),
+        "teaching_related": get_child_text(congrant_elem, "TEACHING_RELATED"),
+        "title": get_child_text(congrant_elem, "TITLE"),
+        "type": get_child_text(congrant_elem, "TYPE"),
+        "user_reference_creator": get_child_text(
+            congrant_elem, "USER_REFERENCE_CREATOR"
+        ),
+    }
+    return congrant
+
+
 def get_current_colls(record_elem):
     current_colls_elems = record_elem.xpath(
         "dmd:IndexEntry[@indexKey='COLLEGE']", namespaces=NSMAP
@@ -144,7 +189,6 @@ def get_current_depts(record_elem):
 def get_intellprops(record_elem):
     intellprop_elems = record_elem.xpath("a:INTELLPROP", namespaces=NSMAP)
     intellprops = [parse_intellprop(i) for i in intellprop_elems]
-    print(intellprops)
     return intellprops
 
 

@@ -50,16 +50,18 @@ def make_graph():
         #     "kaylorj",
         #     "kingn",
         # ):
-        #     continue
+        # continue
         # With INTELLPROP
-        if username not in ("baden", "carrm", "changy"):
-            continue
+        # if username not in ("baden", "carrm", "changy"):
+        #     continue
         # debugging why dates aren't sticking
         # if username not in (
         #     "mcbrayerl",
         #     "carrm",
         # ):
-        #     continue
+        # WITH CONGRANT
+        if username not in ("sackleyw", "covij"):
+            continue
         # if username in preignored_users:
         #     continue
         filepath = os.path.join(USERFILES_DIR, filename)
@@ -81,4 +83,4 @@ def write_turtle(graph):
 if __name__ == "__main__":
     # scrape_digitalmeasures()
     graph = make_graph()
-    write_turtle(graph)
+    # write_turtle(graph)
