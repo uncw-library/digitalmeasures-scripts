@@ -129,7 +129,6 @@ def get_adminperm(record_elem):
 def get_contgrants(record_elem):
     congrant_elems = record_elem.xpath("a:CONGRANT", namespaces=NSMAP)
     congrants = [parse_congrant(i) for i in congrant_elems]
-    print(congrants)
     return congrants
 
 
@@ -140,7 +139,6 @@ def parse_congrant(congrant_elem):
         "amount": get_child_text(congrant_elem, "AMOUNT"),
         "awardorg": get_child_text(congrant_elem, "AWARDORG"),
         "classification": get_child_text(congrant_elem, "CLASSIFICATION"),
-        "congrant_invest": get_child_text(congrant_elem, "CONGRANT_INVEST"),
         "dtd_end": get_child_text(congrant_elem, "DTD_END"),
         "dtd_start": get_child_text(congrant_elem, "DTD_START"),
         "dtd_sub": get_child_text(congrant_elem, "DTD_SUB"),

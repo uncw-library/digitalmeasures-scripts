@@ -67,7 +67,7 @@ def add_user_to_graph(parsed_user, graph):
     if parsed_user["adminperm"] and parsed_user["adminperm"]["id"]:
         title = NS[parsed_user["adminperm"]["id"]]
     else:
-        title = None
+        title = NS[f"{parsed_user['userId']}t"]
 
     if fac:
         graph.add((fac, RDF.type, VIVO.FacultyMember))
@@ -123,7 +123,6 @@ def add_user_to_graph(parsed_user, graph):
             graph.add((dept, VIVO.relatedBy, pos))
             graph.add((pos, VIVO.relates, fac))
             graph.add((fac, VIVO.relatedBy, pos))
-
             graph.add((individual, VCARD.hasTitle, title))
             graph.add((title, RDF.type, VCARD.Title))
             graph.add((title, VCARD.title, Literal(rank)))
@@ -134,6 +133,8 @@ def add_user_to_graph(parsed_user, graph):
         add_perform_exhibit_to_graph(perform_exhibit, graph, fac)
     for intellprop in parsed_user["intellprops"]:
         add_intellprop_to_graph(intellprop, graph)
+    for congrant in parsed_user["congrants"]:
+        add_congrant_to_graph(congrant, graph)
 
 
 def find_best_coll_depts(parsed_user):
@@ -540,3 +541,83 @@ def add_intellprop_to_graph(intellprop, graph):
         fac_node = NS[person_id]
         graph.add((intellprop_node, VIVO.assigneeFor, fac_node))
         graph.add((fac_node, VIVO.assignee, intellprop_node))
+
+
+def add_congrant_to_graph(congrant, graph):
+    if congrant["status"] in {"Currently Under Review", "Not Funded", ""}:
+        return
+    grant_id = congrant["id"]
+    grant_node = NS[grant_id]
+    time_filed_node = NS[f"{grant_id}a"]
+    time_issued_node = NS[f"{grant_id}b"]
+    funding_org_node = NS[f"{grant_id}c"]
+
+    title = congrant["title"].strip()
+    abstract = congrant["abstract"].strip()
+    award_amount = congrant["amount"].strip()
+    date_filed = congrant["sub_start"] or congrant["sub_end"]
+    date_issued_start = congrant["start_start"] or congrant["start_end"]
+    date_issued_end = congrant["end_start"] or congrant["end_end"]
+
+    graph.add((grant_node, RDF.type, VIVO.Grant))
+    if title:
+        graph.add((grant_node, RDFS.label, Literal(title)))
+    if abstract:
+        graph.add((grant_node, BIBO.abstract, Literal(abstract)))
+    if award_amount:
+        graph.add((grant_node, VIVO.totalAwardAmount, Literal(award_amount)))
+
+    if date_filed:
+        graph.add((grant_node, VIVO.dateFiled, time_filed_node))
+        graph.add((time_filed_node, RDF.type, VIVO.DateTimeValue))
+        graph.add(
+            (time_filed_node, VIVO.dateTime, Literal(date_filed, datatype=XSD.date))
+        )
+        graph.add((time_filed_node, VIVO.dateTimePrecision, VIVO.yearPrecision))
+
+    if date_issued_start or date_issued_end:
+        date_issued_interval_node = NS[f"{grant_id}e"]
+        date_issued_start_node = NS[f"{grant_id}f"]
+        date_issued_end_node = NS[f"{grant_id}g"]
+
+        graph.add((date_issued_interval_node, RDF.type, VIVO.DateTimeInterval))
+        graph.add((date_issued_interval_node, VIVO.start, date_issued_start_node))
+        graph.add((date_issued_interval_node, VIVO.end, date_issued_end_node))
+
+        graph.add((date_issued_start_node, RDF.type, VIVO.DateTimeValue))
+        graph.add(
+            (
+                date_issued_start_node,
+                VIVO.dateTime,
+                Literal(date_issued_start, datatype=XSD.date),
+            )
+        )
+        graph.add((date_issued_start_node, VIVO.dateTimePrecision, VIVO.yearPrecision))
+
+        graph.add((date_issued_end_node, RDF.type, VIVO.DateTimeValue))
+        graph.add(
+            (
+                date_issued_end_node,
+                VIVO.dateTime,
+                Literal(date_issued_end, datatype=XSD.date),
+            )
+        )
+        graph.add((date_issued_end_node, VIVO.dateTimePrecision, VIVO.yearPrecision))
+        graph.add((grant_node, VIVO.dateTimeInterval, date_issued_interval_node))
+
+    for num, person in enumerate(congrant["persons_involved"]):
+        person_id = person["id"]
+        if not person_id:
+            continue
+        fac_node = NS[person_id]
+        graph.add((grant_node, VIVO.relates, fac_node))
+        graph.add((fac_node, VIVO.relatedBy, grant_node))
+
+        role = person["role"]
+        if role:
+            role_node = NS[f"{grant_id}d{num}"]
+            graph.add((role_node, RDF.type, VIVO.PrincipleInvestigatorRole))
+            graph.add((fac_node, OBO.RO_0000053, role_node))
+            graph.add((role_node, OBO.RO_0000052, fac_node))
+            graph.add((role_node, VIVO.relatedBy, grant_node))
+            graph.add((grant_node, VIVO.relates, role_node))

@@ -60,10 +60,10 @@ def make_graph():
         #     "carrm",
         # ):
         # WITH CONGRANT
-        if username not in ("sackleyw", "covij"):
+        if username not in ("turrises", "bovel", "carrollr"):
             continue
-        # if username in preignored_users:
-        #     continue
+        if username in preignored_users:
+            continue
         filepath = os.path.join(USERFILES_DIR, filename)
         parsed_user = parse_userfile(filepath)
         if is_excluded_user(parsed_user, driver):
@@ -83,4 +83,4 @@ def write_turtle(graph):
 if __name__ == "__main__":
     # scrape_digitalmeasures()
     graph = make_graph()
-    # write_turtle(graph)
+    write_turtle(graph)
