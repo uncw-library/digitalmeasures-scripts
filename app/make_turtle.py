@@ -610,14 +610,17 @@ def add_congrant_to_graph(congrant, graph):
         if not person_id:
             continue
         fac_node = NS[person_id]
-        graph.add((grant_node, VIVO.relates, fac_node))
-        graph.add((fac_node, VIVO.relatedBy, grant_node))
+        # graph.add((grant_node, VIVO.relates, fac_node))
+        # graph.add((fac_node, VIVO.relatedBy, grant_node))
 
-        role = person["role"]
-        if role:
-            role_node = NS[f"{grant_id}d{num}"]
-            graph.add((role_node, RDF.type, VIVO.PrincipleInvestigatorRole))
-            graph.add((fac_node, OBO.RO_0000053, role_node))
-            graph.add((role_node, OBO.RO_0000052, fac_node))
-            graph.add((role_node, VIVO.relatedBy, grant_node))
-            graph.add((grant_node, VIVO.relates, role_node))
+        graph.add((grant_node, VIVO.fundingVehicleFor, fac_node))
+        graph.add((fac_node, VIVO.hasFundingVehicle, grant_node))
+
+        # role = person["role"]
+        # if role:
+        #     role_node = NS[f"{grant_id}d{num}"]
+        #     graph.add((role_node, RDF.type, VIVO.PrincipleInvestigatorRole))
+        #     graph.add((fac_node, OBO.RO_0000053, role_node))
+        #     graph.add((role_node, OBO.RO_0000052, fac_node))
+        #     graph.add((role_node, VIVO.relatedBy, grant_node))
+        #     graph.add((grant_node, VIVO.relates, role_node))

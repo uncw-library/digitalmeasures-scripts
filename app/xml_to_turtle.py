@@ -27,47 +27,17 @@ def make_graph():
 
     for filename in sorted(os.listdir(USERFILES_DIR)):
         username = filename.split(".")[0]
-        # With co-authors
-        # if username not in (
-        #     "ahernn",
-        #     "falsafin",
-        #     "mechlingb",
-        #     "waldschlagelm",
-        #     "devitaj",
-        #     "kolomers",
-        #     "palumbor",
-        #     "leej",
-        # ):
+
+        # if not include_while_developing(username):
         #     continue
-        # With PERFORM_EXHIBITs
-        # if username not in (
-        #     "cordied",
-        #     "cordiep",
-        #     "degennarod",
-        #     "errantes",
-        #     "furiap",
-        #     "haddadl",
-        #     "kaylorj",
-        #     "kingn",
-        # ):
-        # continue
-        # With INTELLPROP
-        # if username not in ("baden", "carrm", "changy"):
-        #     continue
-        # debugging why dates aren't sticking
-        # if username not in (
-        #     "mcbrayerl",
-        #     "carrm",
-        # ):
-        # WITH CONGRANT
-        if username not in ("turrises", "bovel", "carrollr"):
-            continue
+
         if username in preignored_users:
             continue
         filepath = os.path.join(USERFILES_DIR, filename)
         parsed_user = parse_userfile(filepath)
         if is_excluded_user(parsed_user, driver):
             continue
+
         add_user_to_graph(parsed_user, graph)
     driver.close()
     return graph
@@ -79,6 +49,59 @@ def write_turtle(graph):
     with open(f"output/vivo_import_{datetime.now().timestamp()}.ttl", "w") as f:
         f.write(filetext)
 
+
+def include_while_developing(username):
+    # if has_coauthor(username):
+    #     return True
+    # if has_PERFORM_EXHIBIT(username):
+    #     return True
+    # if has_INTELLPROP(username):
+    #     return True
+    if has_CONGRANT(username):
+        return True
+    return False
+
+def has_coauthor(username):
+    # With co-authors
+    if username in (
+        "ahernn",
+        "falsafin",
+        "mechlingb",
+        "waldschlagelm",
+        "devitaj",
+        "kolomers",
+        "palumbor",
+        "leej",
+    ):
+        return True
+    return False
+
+
+def has_PERFORM_EXHIBIT(username):
+    if username in (
+        "cordied",
+        "cordiep",
+        "degennarod",
+        "errantes",
+        "furiap",
+        "haddadl",
+        "kaylorj",
+        "kingn",
+    ):
+        return True
+    return False
+
+
+def has_INTELLPROP(username):
+    if username in ("baden", "carrm", "changy"):
+        return True
+    return False
+
+
+def has_CONGRANT(username):
+    if username in ("turrises", "bovel", "carrollr"):
+        return True
+    return False
 
 if __name__ == "__main__":
     # scrape_digitalmeasures()
