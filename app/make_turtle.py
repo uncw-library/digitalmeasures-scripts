@@ -265,6 +265,9 @@ def add_presentations_to_graph(presentation, graph, fac):
 
 
 def add_intellcont_to_graph(intellcont, graph, fac):
+    if intellcont.get('status') != 'Published':
+        return
+
     academic_article = NS[intellcont["id"]]
     datetime_node = NS[f"{academic_article}a"]
     journal = NS[f"{academic_article}b"]
@@ -544,7 +547,7 @@ def add_intellprop_to_graph(intellprop, graph):
 
 
 def add_congrant_to_graph(congrant, graph):
-    if congrant["status"] in {"Currently Under Review", "Not Funded", ""}:
+    if congrant["status"] not in {"Funded", }:
         return
     grant_id = congrant["id"]
     grant_node = NS[grant_id]
