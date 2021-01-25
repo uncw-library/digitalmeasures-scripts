@@ -99,6 +99,9 @@ def add_user_to_graph(graph, parsed_user):
                 middlename_text = parsed_user["person"]["middlename"]
             graph.add((name, VIVO.middleName, Literal(middlename_text)))
             graph.add((name, VCARD.familyName, Literal(parsed_user["person"]["lastname"])))
+        # if parsed_user["person"]["teaching_interests"]:
+        #     graph.add((fac, ))
+
 
     for presentation in parsed_user["presentations"]:
         add_presentations_to_graph(graph, presentation, fac)

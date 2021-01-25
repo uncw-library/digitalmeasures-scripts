@@ -59,6 +59,8 @@ def include_while_developing(username):
         return True
     if has_CONGRANT(username):
         return True
+    if has_BIO(username):
+        return True
     return False
 
 def has_coauthor(username):
@@ -102,6 +104,13 @@ def has_CONGRANT(username):
     if username in ("turrises", "bovel", "carrollr"):
         return True
     return False
+
+
+def has_BIO(username):
+    if username in ("struckelle", ):
+        return True
+    return False
+
 
 if __name__ == "__main__":
     # scrape_digitalmeasures()

@@ -290,6 +290,10 @@ def get_person(record_elem):
         "suffix": get_child_text(PCI_elem, "SUFFIX"),
         "photo": get_child_text(PCI_elem, "UPLOAD_PHOTO"),
         "endpos": get_child_text(PCI_elem, "ENDPOS"),
+        "bio": get_child_text(PCI_elem, "BIO"),
+        "teaching_interests": get_child_text(PCI_elem, "TEACHING_INTERESTS"),
+        "research_interests": get_child_text(PCI_elem, "RESEARCH_INTERESTS"),
+        "photo_url": get_child_text(PCI_elem, "UPLOAD_PHOTO")
     }
     return person
 
