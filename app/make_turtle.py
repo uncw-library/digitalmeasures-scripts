@@ -52,7 +52,7 @@ def add_orgs_to_graph(graph):
             graph.add((coll_elem, OBO.BFO_0000051, dept_elem))
 
 
-def add_user_to_graph(parsed_user, graph):
+def add_user_to_graph(graph, parsed_user):
     if parsed_user["userId"]:
         fac = NS[parsed_user["userId"]]
     else:
@@ -92,23 +92,19 @@ def add_user_to_graph(parsed_user, graph):
         if use_name:
             graph.add((individual, VCARD.hasName, name))
             graph.add((name, RDF.type, VCARD.Name))
-            graph.add(
-                (name, VCARD.givenName, Literal(parsed_user["person"]["firstname"]))
-            )
+            graph.add((name, VCARD.givenName, Literal(parsed_user["person"]["firstname"])))
             if not parsed_user["person"]["middlename"]:
                 middlename_text = ""
             else:
                 middlename_text = parsed_user["person"]["middlename"]
             graph.add((name, VIVO.middleName, Literal(middlename_text)))
-            graph.add(
-                (name, VCARD.familyName, Literal(parsed_user["person"]["lastname"]))
-            )
+            graph.add((name, VCARD.familyName, Literal(parsed_user["person"]["lastname"])))
 
     for presentation in parsed_user["presentations"]:
-        add_presentations_to_graph(presentation, graph, fac)
+        add_presentations_to_graph(graph, presentation, fac)
 
     for intellcont in parsed_user["intellconts"]:
-        add_intellcont_to_graph(intellcont, graph, fac)
+        add_intellcont_to_graph(graph, intellcont, fac)
 
     best_coll_depts = find_best_coll_depts(parsed_user)
     if best_coll_depts:
@@ -128,13 +124,13 @@ def add_user_to_graph(parsed_user, graph):
             graph.add((title, VCARD.title, Literal(rank)))
 
     for admin_assignment in parsed_user["admin_assignments"]:
-        add_admin_assignment_to_graph(admin_assignment, graph, fac, best_coll_depts)
+        add_admin_assignment_to_graph(graph, admin_assignment, fac, best_coll_depts)
     for perform_exhibit in parsed_user["perform_exhibits"]:
-        add_perform_exhibit_to_graph(perform_exhibit, graph, fac)
+        add_perform_exhibit_to_graph(graph, perform_exhibit, fac)
     for intellprop in parsed_user["intellprops"]:
-        add_intellprop_to_graph(intellprop, graph)
+        add_intellprop_to_graph(graph, intellprop)
     for congrant in parsed_user["congrants"]:
-        add_congrant_to_graph(congrant, graph)
+        add_congrant_to_graph(graph, congrant)
 
 
 def find_best_coll_depts(parsed_user):
@@ -203,14 +199,15 @@ def match_college(dept):
     return None
 
 
-def add_presentations_to_graph(presentation, graph, fac):
-    invited_talk = NS[presentation["id"]]
-    conference = NS[f"{presentation['id']}a"]
-    attendee_role = NS[f"{presentation['id']}b"]
+def add_presentations_to_graph(graph, presentation, fac):
+    presentation_id = presentation["id"]
+    invited_talk = NS[presentation_id]
+    conference = NS[f"{presentation_id}a"]
+    attendee_role = NS[f"{presentation_id}b"]
 
-    datetime_interval = NS[f"{presentation['id']}c"]
-    datetime_start = NS[f"{presentation['id']}d"]
-    datetime_end = NS[f"{presentation['id']}e"]
+    datetime_interval = NS[f"{presentation_id}c"]
+    datetime_start = NS[f"{presentation_id}d"]
+    datetime_end = NS[f"{presentation_id}e"]
 
     graph.add((conference, RDF.type, BIBO.Conference))
     graph.add((conference, RDFS.label, Literal(presentation["name"])))
@@ -231,7 +228,7 @@ def add_presentations_to_graph(presentation, graph, fac):
         if not person_id:
             continue
         person_elem = NS[person_id]
-        other_attendee_role = NS[f"{invited_talk}b{num}"]
+        other_attendee_role = NS[f"{presentation_id}b{num}"]
         graph.add((other_attendee_role, RDF.type, VIVO.AttendeeRole))
         graph.add((invited_talk, OBO.BFO_0000055, other_attendee_role))
         graph.add((other_attendee_role, OBO.BFO_0000054, invited_talk))
@@ -264,13 +261,14 @@ def add_presentations_to_graph(presentation, graph, fac):
     graph.add((datetime_end, VIVO.dateTimePrecision, VIVO.yearPrecision))
 
 
-def add_intellcont_to_graph(intellcont, graph, fac):
+def add_intellcont_to_graph(graph, intellcont, fac):
     if intellcont.get('status') != 'Published':
         return
 
-    academic_article = NS[intellcont["id"]]
-    datetime_node = NS[f"{academic_article}a"]
-    journal = NS[f"{academic_article}b"]
+    article_id = intellcont["id"]
+    academic_article = NS[article_id]
+    datetime_node = NS[f"{article_id}a"]
+    journal = NS[f"{article_id}b"]
 
     publisher = intellcont["publisher"].strip()
     title = intellcont["title"].strip()
@@ -325,7 +323,7 @@ def add_intellcont_to_graph(intellcont, graph, fac):
         if not person_id:
             continue
         person_elem = NS[person_id]
-        other_authorship = NS[f"{academic_article}c{num}"]
+        other_authorship = NS[f"{article_id}c{num}"]
         graph.add((other_authorship, RDF.type, VIVO.Authorship))
         graph.add((academic_article, VIVO.relatesBy, other_authorship))
         graph.add((other_authorship, VIVO.relates, academic_article))
@@ -407,7 +405,7 @@ def map_contypes(contype):
     return contypes_pubtypes.get(contype)
 
 
-def add_admin_assignment_to_graph(admin_assignment, graph, fac, best_coll_depts):
+def add_admin_assignment_to_graph(graph, admin_assignment, fac, best_coll_depts):
     position = NS[admin_assignment["id"]]
     scope = admin_assignment.get("scope")
     if scope == "Department":
@@ -446,14 +444,15 @@ def add_admin_assignment_to_graph(admin_assignment, graph, fac, best_coll_depts)
     graph.add((datetime_start, VIVO.dateTimePrecision, VIVO.yearPrecision))
 
 
-def add_perform_exhibit_to_graph(perform_exhibit, graph, fac):
-    performance = NS[perform_exhibit["id"]]
-    conference = NS[f"{perform_exhibit['id']}a"]
-    attendee_role = NS[f"{perform_exhibit['id']}b"]
+def add_perform_exhibit_to_graph(graph, perform_exhibit, fac):
+    perf_id = perform_exhibit["id"]
+    performance = NS[perf_id]
+    conference = NS[f"{perf_id}a"]
+    attendee_role = NS[f"{perf_id}b"]
 
-    datetime_interval = NS[f"{perform_exhibit['id']}c"]
-    time_start_node = NS[f"{perform_exhibit['id']}d"]
-    time_end_node = NS[f"{perform_exhibit['id']}e"]
+    datetime_interval = NS[f"{perf_id}c"]
+    time_start_node = NS[f"{perf_id}d"]
+    time_end_node = NS[f"{perf_id}e"]
 
     graph.add((conference, RDF.type, BIBO.Conference))
     graph.add((conference, RDFS.label, Literal(perform_exhibit["name"])))
@@ -474,7 +473,7 @@ def add_perform_exhibit_to_graph(perform_exhibit, graph, fac):
         if not person_id:
             continue
         person_elem = NS[person_id]
-        other_attendee_role = NS[f"{performance}b{num}"]
+        other_attendee_role = NS[f"{perf_id}b{num}"]
         graph.add((other_attendee_role, RDF.type, VIVO.AttendeeRole))
         graph.add((performance, OBO.BFO_0000055, other_attendee_role))
         graph.add((other_attendee_role, OBO.BFO_0000054, performance))
@@ -500,7 +499,7 @@ def add_perform_exhibit_to_graph(perform_exhibit, graph, fac):
         graph.add((time_end_node, VIVO.dateTimePrecision, VIVO.yearPrecision))
 
 
-def add_intellprop_to_graph(intellprop, graph):
+def add_intellprop_to_graph(graph, intellprop):
     if intellprop["format"] != "Patent":
         return
 
@@ -546,7 +545,7 @@ def add_intellprop_to_graph(intellprop, graph):
         graph.add((fac_node, VIVO.assignee, intellprop_node))
 
 
-def add_congrant_to_graph(congrant, graph):
+def add_congrant_to_graph(graph, congrant):
     if congrant["status"] not in {"Funded", }:
         return
     grant_id = congrant["id"]
@@ -613,17 +612,5 @@ def add_congrant_to_graph(congrant, graph):
         if not person_id:
             continue
         fac_node = NS[person_id]
-        # graph.add((grant_node, VIVO.relates, fac_node))
-        # graph.add((fac_node, VIVO.relatedBy, grant_node))
-
         graph.add((grant_node, VIVO.fundingVehicleFor, fac_node))
         graph.add((fac_node, VIVO.hasFundingVehicle, grant_node))
-
-        # role = person["role"]
-        # if role:
-        #     role_node = NS[f"{grant_id}d{num}"]
-        #     graph.add((role_node, RDF.type, VIVO.PrincipleInvestigatorRole))
-        #     graph.add((fac_node, OBO.RO_0000053, role_node))
-        #     graph.add((role_node, OBO.RO_0000052, fac_node))
-        #     graph.add((role_node, VIVO.relatedBy, grant_node))
-        #     graph.add((grant_node, VIVO.relates, role_node))

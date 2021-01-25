@@ -28,8 +28,8 @@ def make_graph():
     for filename in sorted(os.listdir(USERFILES_DIR)):
         username = filename.split(".")[0]
 
-        # if not include_while_developing(username):
-        #     continue
+        if not include_while_developing(username):
+            continue
 
         if username in preignored_users:
             continue
@@ -38,7 +38,7 @@ def make_graph():
         if is_excluded_user(parsed_user, driver):
             continue
 
-        add_user_to_graph(parsed_user, graph)
+        add_user_to_graph(graph, parsed_user)
     driver.close()
     return graph
 
@@ -51,12 +51,12 @@ def write_turtle(graph):
 
 
 def include_while_developing(username):
-    # if has_coauthor(username):
-    #     return True
-    # if has_PERFORM_EXHIBIT(username):
-    #     return True
-    # if has_INTELLPROP(username):
-    #     return True
+    if has_coauthor(username):
+        return True
+    if has_PERFORM_EXHIBIT(username):
+        return True
+    if has_INTELLPROP(username):
+        return True
     if has_CONGRANT(username):
         return True
     return False
