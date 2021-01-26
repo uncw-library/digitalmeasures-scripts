@@ -63,6 +63,7 @@ def include_while_developing(username):
         return True
     return False
 
+
 def has_coauthor(username):
     # With co-authors
     if username in (
@@ -107,7 +108,7 @@ def has_CONGRANT(username):
 
 
 def has_BIO(username):
-    if username in ("struckelle", ):
+    if username in ("struckelle",):
         return True
     return False
 

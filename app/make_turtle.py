@@ -92,16 +92,27 @@ def add_user_to_graph(graph, parsed_user):
         if use_name:
             graph.add((individual, VCARD.hasName, name))
             graph.add((name, RDF.type, VCARD.Name))
-            graph.add((name, VCARD.givenName, Literal(parsed_user["person"]["firstname"])))
+            graph.add(
+                (name, VCARD.givenName, Literal(parsed_user["person"]["firstname"]))
+            )
             if not parsed_user["person"]["middlename"]:
                 middlename_text = ""
             else:
                 middlename_text = parsed_user["person"]["middlename"]
             graph.add((name, VIVO.middleName, Literal(middlename_text)))
-            graph.add((name, VCARD.familyName, Literal(parsed_user["person"]["lastname"])))
-        # if parsed_user["person"]["teaching_interests"]:
-        #     graph.add((fac, ))
+            graph.add(
+                (name, VCARD.familyName, Literal(parsed_user["person"]["lastname"]))
+            )
 
+        bio = parsed_user["person"]["bio"]
+        if bio:
+            graph.add((fac, VIVO.overview, Literal(bio)))
+        teaching_interests = parsed_user["person"]["teaching_interests"]
+        if teaching_interests:
+            graph.add((fac, VIVO.teachingOverview, Literal(teaching_interests)))
+        research_interests = parsed_user["person"]["research_interests"]
+        if research_interests:
+            graph.add((fac, VIVO.researchOverview, Literal(research_interests)))
 
     for presentation in parsed_user["presentations"]:
         add_presentations_to_graph(graph, presentation, fac)
@@ -265,7 +276,7 @@ def add_presentations_to_graph(graph, presentation, fac):
 
 
 def add_intellcont_to_graph(graph, intellcont, fac):
-    if intellcont.get('status') != 'Published':
+    if intellcont.get("status") != "Published":
         return
 
     article_id = intellcont["id"]
@@ -549,7 +560,7 @@ def add_intellprop_to_graph(graph, intellprop):
 
 
 def add_congrant_to_graph(graph, congrant):
-    if congrant["status"] not in {"Funded", }:
+    if congrant["status"] not in {"Funded"}:
         return
     grant_id = congrant["id"]
     grant_node = NS[grant_id]
