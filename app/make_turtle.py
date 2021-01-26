@@ -53,92 +53,39 @@ def add_orgs_to_graph(graph):
 
 
 def add_user_to_graph(graph, parsed_user):
-    if parsed_user["userId"]:
-        fac = NS[parsed_user["userId"]]
-    else:
-        fac = None
+    """
+    fac is the person-as-employed -- Everything about a person that's tied to a job position.
+    individual is the person-as-organism
+    """
+    user_id = parsed_user["userId"]
+    fac = NS[user_id]
+    individual = NS[f"{user_id}a"]
+    likely_coll_dept_assignment = conjure_coll_dept_assignment(parsed_user)
 
-    if parsed_user["person"] and parsed_user["person"]["id"]:
-        name = NS[parsed_user["person"]["id"]]
-        individual = NS[f"{parsed_user['userId']}a"]
-    else:
-        name, individual = None, None
+    """
+    Abort processing any person's record if it lacks a userId + person.id + department assignment
+    """
+    if not parsed_user["userId"]:
+        return
+    if not (parsed_user["person"] and parsed_user["person"]["id"]):
+        return
+    if not likely_coll_dept_assignment:
+        return
 
-    if parsed_user["adminperm"] and parsed_user["adminperm"]["id"]:
-        title = NS[parsed_user["adminperm"]["id"]]
-    else:
-        title = NS[f"{parsed_user['userId']}t"]
-
-    if fac:
-        graph.add((fac, RDF.type, VIVO.FacultyMember))
-        if parsed_user["person"]:
-            lastname = parsed_user["person"]["lastname"]
-            firstname = parsed_user["person"]["firstname"]
-            if parsed_user["person"]["middlename"]:
-                middlename = parsed_user["person"]["middlename"]
-                display_name = f"{lastname}, {firstname} {middlename}"
-            else:
-                display_name = f"{lastname}, {firstname}"
-            graph.add((fac, RDFS.label, Literal(display_name)))
-        if individual:
-            graph.add((fac, OBO.ARG_2000028, individual))
-
-    use_individual = bool(fac and individual)
-    if use_individual:
-        graph.add((individual, RDF.type, VCARD.Individual))
-        graph.add((individual, OBO.ARG_2000029, fac))
-        graph.add((fac, OBO.ARG_2000028, individual))
-        use_name = bool(name)
-        if use_name:
-            graph.add((individual, VCARD.hasName, name))
-            graph.add((name, RDF.type, VCARD.Name))
-            graph.add(
-                (name, VCARD.givenName, Literal(parsed_user["person"]["firstname"]))
-            )
-            if not parsed_user["person"]["middlename"]:
-                middlename_text = ""
-            else:
-                middlename_text = parsed_user["person"]["middlename"]
-            graph.add((name, VIVO.middleName, Literal(middlename_text)))
-            graph.add(
-                (name, VCARD.familyName, Literal(parsed_user["person"]["lastname"]))
-            )
-
-        bio = parsed_user["person"]["bio"]
-        if bio:
-            graph.add((fac, VIVO.overview, Literal(bio)))
-        teaching_interests = parsed_user["person"]["teaching_interests"]
-        if teaching_interests:
-            graph.add((fac, VIVO.teachingOverview, Literal(teaching_interests)))
-        research_interests = parsed_user["person"]["research_interests"]
-        if research_interests:
-            graph.add((fac, VIVO.researchOverview, Literal(research_interests)))
-
-    for presentation in parsed_user["presentations"]:
-        add_presentations_to_graph(graph, presentation, fac)
-
-    for intellcont in parsed_user["intellconts"]:
-        add_intellcont_to_graph(graph, intellcont, fac)
-
-    best_coll_depts = find_best_coll_depts(parsed_user)
-    if best_coll_depts:
-        for num, best_coll_dept in enumerate(best_coll_depts):
-            rank = find_rank_in_dept(parsed_user, best_coll_dept["dept_name"])
-            pos = NS[f"{parsed_user['userId']}p{num}"]
-            coll_uid = NS[best_coll_dept["coll_uid"]]
-            dept = NS[best_coll_dept["dept_uid"]]
-            graph.add((pos, RDF.type, VIVO.Position))
-            graph.add((pos, RDFS.label, Literal(rank)))
-            graph.add((pos, VIVO.relates, dept))
-            graph.add((dept, VIVO.relatedBy, pos))
-            graph.add((pos, VIVO.relates, fac))
-            graph.add((fac, VIVO.relatedBy, pos))
-            graph.add((individual, VCARD.hasTitle, title))
-            graph.add((title, RDF.type, VCARD.Title))
-            graph.add((title, VCARD.title, Literal(rank)))
+    add_person_info_to_graph(graph, parsed_user, fac, individual)
+    add_personal_interests_to_graph(graph, parsed_user, fac)
+    add_job_positions_to_graph(
+        graph, parsed_user, fac, individual, likely_coll_dept_assignment
+    )
 
     for admin_assignment in parsed_user["admin_assignments"]:
-        add_admin_assignment_to_graph(graph, admin_assignment, fac, best_coll_depts)
+        add_admin_assignment_to_graph(
+            graph, admin_assignment, fac, likely_coll_dept_assignment
+        )
+    for presentation in parsed_user["presentations"]:
+        add_presentations_to_graph(graph, presentation, fac)
+    for intellcont in parsed_user["intellconts"]:
+        add_intellcont_to_graph(graph, intellcont, fac)
     for perform_exhibit in parsed_user["perform_exhibits"]:
         add_perform_exhibit_to_graph(graph, perform_exhibit, fac)
     for intellprop in parsed_user["intellprops"]:
@@ -147,14 +94,76 @@ def add_user_to_graph(graph, parsed_user):
         add_congrant_to_graph(graph, congrant)
 
 
-def find_best_coll_depts(parsed_user):
+def add_job_positions_to_graph(
+    graph, parsed_user, fac, individual, likely_coll_dept_assignment
+):
+    if parsed_user["adminperm"] and parsed_user["adminperm"]["id"]:
+        title = NS[parsed_user["adminperm"]["id"]]
+    else:
+        title = NS[f"{parsed_user['userId']}t"]
+
+    for num, best_coll_dept in enumerate(likely_coll_dept_assignment):
+        rank = find_rank_in_dept(parsed_user, best_coll_dept["dept_name"])
+        pos = NS[f"{parsed_user['userId']}p{num}"]
+        dept = NS[best_coll_dept["dept_uid"]]
+        graph.add((pos, RDF.type, VIVO.Position))
+        graph.add((pos, RDFS.label, Literal(rank)))
+        graph.add((pos, VIVO.relates, dept))
+        graph.add((dept, VIVO.relatedBy, pos))
+        graph.add((pos, VIVO.relates, fac))
+        graph.add((fac, VIVO.relatedBy, pos))
+        # VCARD.Title maps to 'Preferred Title' Vivo subheader
+        graph.add((individual, VCARD.hasTitle, title))
+        graph.add((title, RDF.type, VCARD.Title))
+        graph.add((title, VCARD.title, Literal(rank)))
+
+
+def add_person_info_to_graph(graph, parsed_user, fac, individual):
+    name = NS[parsed_user["person"]["id"]]
+    lastname = parsed_user["person"]["lastname"]
+    firstname = parsed_user["person"]["firstname"]
+    if parsed_user["person"]["middlename"]:
+        middlename = parsed_user["person"]["middlename"]
+        display_name = f"{lastname}, {firstname} {middlename}"
+    else:
+        middlename = ""
+        display_name = f"{lastname}, {firstname}"
+
+    graph.add((fac, RDF.type, VIVO.FacultyMember))
+    graph.add((fac, RDFS.label, Literal(display_name)))
+
+    graph.add((fac, OBO.ARG_2000028, individual))
+    graph.add((individual, OBO.ARG_2000029, fac))
+    graph.add((individual, RDF.type, VCARD.Individual))
+
+    graph.add((individual, VCARD.hasName, name))
+    graph.add((name, RDF.type, VCARD.Name))
+    graph.add((name, VCARD.givenName, Literal(firstname)))
+    graph.add((name, VIVO.middleName, Literal(middlename)))
+    graph.add((name, VCARD.familyName, Literal(lastname)))
+
+
+def add_personal_interests_to_graph(graph, parsed_user, fac):
+    bio = parsed_user["person"]["bio"]
+    if bio:
+        graph.add((fac, VIVO.overview, Literal(bio)))
+    teaching_interests = parsed_user["person"]["teaching_interests"]
+    if teaching_interests:
+        graph.add((fac, VIVO.teachingOverview, Literal(teaching_interests)))
+    research_interests = parsed_user["person"]["research_interests"]
+    if research_interests:
+        graph.add((fac, VIVO.researchOverview, Literal(research_interests)))
+
+
+def conjure_coll_dept_assignment(parsed_user):
+    # Users are not entering accurate data.
+    # There is no dept of Randall Library within the college of Business.
+    # This magic wand is only necessary while the digitalmeasure data is incorrect.
     dmd_depts = parsed_user.get("current_depts")
     college_depts_info = [
         match_college(dept) for dept in dmd_depts if (dept and match_college(dept))
     ]
-    if college_depts_info:
-        return college_depts_info
-    return None
+    return college_depts_info
 
 
 def find_rank_in_dept(parsed_user, dept):
@@ -419,13 +428,16 @@ def map_contypes(contype):
     return contypes_pubtypes.get(contype)
 
 
-def add_admin_assignment_to_graph(graph, admin_assignment, fac, best_coll_depts):
+def add_admin_assignment_to_graph(
+    graph, admin_assignment, fac, likely_coll_dept_assignment
+):
     position = NS[admin_assignment["id"]]
+
     scope = admin_assignment.get("scope")
     if scope == "Department":
-        org = NS[best_coll_depts[0]["dept_uid"]]
+        org = NS[likely_coll_dept_assignment[0]["dept_uid"]]
     elif scope == "College":
-        org = NS[best_coll_depts[0]["coll_uid"]]
+        org = NS[likely_coll_dept_assignment[0]["coll_uid"]]
     elif scope == "University":
         org = NS[UNIVERSITY["uid"]]
     else:
