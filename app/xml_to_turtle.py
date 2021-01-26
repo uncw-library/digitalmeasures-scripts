@@ -28,8 +28,8 @@ def make_graph():
     for filename in sorted(os.listdir(USERFILES_DIR)):
         username = filename.split(".")[0]
 
-        # if not include_while_developing(username):
-        #     continue
+        if not include_while_developing(username):
+            continue
 
         if username in preignored_users:
             continue
@@ -38,7 +38,7 @@ def make_graph():
         if is_excluded_user(parsed_user, driver):
             continue
 
-        add_user_to_graph(parsed_user, graph)
+        add_user_to_graph(graph, parsed_user)
     driver.close()
     return graph
 
@@ -57,9 +57,16 @@ def include_while_developing(username):
     #     return True
     # if has_INTELLPROP(username):
     #     return True
-    if has_CONGRANT(username):
+    # if has_CONGRANT(username):
+    #     return True
+    # if has_BIO(username):
+    #     return True
+    if has_active_ADMIN_ASSIGNMENTS(username):
+        return True
+    if has_mismatched_titles(username):
         return True
     return False
+
 
 def has_coauthor(username):
     # With co-authors
@@ -102,6 +109,25 @@ def has_CONGRANT(username):
     if username in ("turrises", "bovel", "carrollr"):
         return True
     return False
+
+
+def has_BIO(username):
+    if username in ("struckelle",):
+        return True
+    return False
+
+
+def has_mismatched_titles(username):
+    if username in ("schnorrc", "andrewsm", "bergh", "biehnerb"):
+        return True
+    return False
+
+
+def has_active_ADMIN_ASSIGNMENTS(username):
+    if username in ("ahernn", "chandlerb", "cathorallm", "calhound", "buffingtond"):
+        return True
+    return False
+
 
 if __name__ == "__main__":
     # scrape_digitalmeasures()

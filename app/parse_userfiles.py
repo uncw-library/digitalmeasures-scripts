@@ -31,6 +31,7 @@ def get_child_text(elem, child, ns="a"):
 
 def parse_userfile(file):
     # userID is what links an individual across the digitalmeasures dataset
+    print(file)
     etree = ET.parse(file)
     data_elem = etree.xpath("/a:Data", namespaces=NSMAP)[0]
     record_elem = data_elem.xpath("a:Record", namespaces=NSMAP)[0]
@@ -90,8 +91,11 @@ def get_admin_assignments(record_elem):
     admin_assignments = [
         parse_assignment(i)
         for i in assignment_elems
-        if i.get("date_end") == "" and i.get("role")
+        if parse_assignment(i).get("date_end") == ""
+        and parse_assignment(i).get("role")
     ]
+    if admin_assignments:
+        print("active ADMIN_ASSIGNMENTS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
     return admin_assignments
 
 
@@ -290,6 +294,10 @@ def get_person(record_elem):
         "suffix": get_child_text(PCI_elem, "SUFFIX"),
         "photo": get_child_text(PCI_elem, "UPLOAD_PHOTO"),
         "endpos": get_child_text(PCI_elem, "ENDPOS"),
+        "bio": get_child_text(PCI_elem, "BIO"),
+        "teaching_interests": get_child_text(PCI_elem, "TEACHING_INTERESTS"),
+        "research_interests": get_child_text(PCI_elem, "RESEARCH_INTERESTS"),
+        "photo_url": get_child_text(PCI_elem, "UPLOAD_PHOTO"),
     }
     return person
 
