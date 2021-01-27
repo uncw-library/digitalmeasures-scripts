@@ -60,7 +60,7 @@ def add_user_to_graph(graph, parsed_user):
     user_id = parsed_user["userId"]
     fac = NS[user_id]
     individual = NS[f"{user_id}a"]
-    likely_coll_dept_assignment = conjure_coll_dept_assignment(parsed_user)
+    coll_dept_guess = conjure_coll_dept_assignment(parsed_user)
 
     """
     Abort processing any person's record if it lacks a userId + person.id + department assignment
@@ -69,19 +69,15 @@ def add_user_to_graph(graph, parsed_user):
         return
     if not (parsed_user["person"] and parsed_user["person"]["id"]):
         return
-    if not likely_coll_dept_assignment:
+    if not coll_dept_guess:
         return
 
     add_person_info_to_graph(graph, parsed_user, fac, individual)
     add_personal_interests_to_graph(graph, parsed_user, fac)
-    add_job_positions_to_graph(
-        graph, parsed_user, fac, individual, likely_coll_dept_assignment
-    )
+    add_job_positions_to_graph(graph, parsed_user, fac, individual, coll_dept_guess)
 
     for admin_assignment in parsed_user["admin_assignments"]:
-        add_admin_assignment_to_graph(
-            graph, admin_assignment, fac, likely_coll_dept_assignment
-        )
+        add_admin_assignment_to_graph(graph, admin_assignment, fac, coll_dept_guess)
     for presentation in parsed_user["presentations"]:
         add_presentations_to_graph(graph, presentation, fac)
     for intellcont in parsed_user["intellconts"]:
@@ -92,30 +88,6 @@ def add_user_to_graph(graph, parsed_user):
         add_intellprop_to_graph(graph, intellprop)
     for congrant in parsed_user["congrants"]:
         add_congrant_to_graph(graph, congrant)
-
-
-def add_job_positions_to_graph(
-    graph, parsed_user, fac, individual, likely_coll_dept_assignment
-):
-    if parsed_user["adminperm"] and parsed_user["adminperm"]["id"]:
-        title = NS[parsed_user["adminperm"]["id"]]
-    else:
-        title = NS[f"{parsed_user['userId']}t"]
-
-    for num, best_coll_dept in enumerate(likely_coll_dept_assignment):
-        rank = find_rank_in_dept(parsed_user, best_coll_dept["dept_name"])
-        pos = NS[f"{parsed_user['userId']}p{num}"]
-        dept = NS[best_coll_dept["dept_uid"]]
-        graph.add((pos, RDF.type, VIVO.Position))
-        graph.add((pos, RDFS.label, Literal(rank)))
-        graph.add((pos, VIVO.relates, dept))
-        graph.add((dept, VIVO.relatedBy, pos))
-        graph.add((pos, VIVO.relates, fac))
-        graph.add((fac, VIVO.relatedBy, pos))
-        # VCARD.Title maps to 'Preferred Title' Vivo subheader
-        graph.add((individual, VCARD.hasTitle, title))
-        graph.add((title, RDF.type, VCARD.Title))
-        graph.add((title, VCARD.title, Literal(rank)))
 
 
 def add_person_info_to_graph(graph, parsed_user, fac, individual):
@@ -155,71 +127,66 @@ def add_personal_interests_to_graph(graph, parsed_user, fac):
         graph.add((fac, VIVO.researchOverview, Literal(research_interests)))
 
 
-def conjure_coll_dept_assignment(parsed_user):
-    # Users are not entering accurate data.
-    # There is no dept of Randall Library within the college of Business.
-    # This magic wand is only necessary while the digitalmeasure data is incorrect.
-    dmd_depts = parsed_user.get("current_depts")
-    college_depts_info = [
-        match_college(dept) for dept in dmd_depts if (dept and match_college(dept))
-    ]
-    return college_depts_info
+def add_job_positions_to_graph(graph, parsed_user, fac, individual, coll_dept_guess):
+    if parsed_user["adminperm"] and parsed_user["adminperm"]["id"]:
+        title = NS[parsed_user["adminperm"]["id"]]
+    else:
+        title = NS[f"{parsed_user['userId']}t"]
+
+    for num, best_coll_dept in enumerate(coll_dept_guess):
+        rank = find_rank_in_dept(parsed_user, best_coll_dept["dept_name"])
+        pos = NS[f"{parsed_user['userId']}p{num}"]
+        dept = NS[best_coll_dept["dept_uid"]]
+        graph.add((pos, RDF.type, VIVO.Position))
+        graph.add((pos, RDFS.label, Literal(rank)))
+        graph.add((pos, VIVO.relates, dept))
+        graph.add((dept, VIVO.relatedBy, pos))
+        graph.add((pos, VIVO.relates, fac))
+        graph.add((fac, VIVO.relatedBy, pos))
+        # VCARD.Title maps to 'Preferred Title' Vivo subheader
+        graph.add((individual, VCARD.hasTitle, title))
+        graph.add((title, RDF.type, VCARD.Title))
+        graph.add((title, VCARD.title, Literal(rank)))
 
 
-def find_rank_in_dept(parsed_user, dept):
-    # in the source data, each user has a dozen or so 'admin' elems,
-    # each admin elem has data on a year's work at one department
-    # We need to find the most recent 'admin' elem with 'rank' data for a given dept.
-    # So, First select only the admin elems matching the dept
-    # Then order the dept elems by most recent academic year, 'ac_year'
-    # Finally spit out the first elem with any 'rank' data
-    dept_matches = [
-        admin for admin in parsed_user.get("admins") if dept in admin.get("depts")
-    ]
-    latest_dept_rank = sorted(
-        dept_matches, key=lambda x: x.get("ac_year"), reverse=True
+def add_admin_assignment_to_graph(graph, admin_assignment, fac, coll_dept_guess):
+    position = NS[admin_assignment["id"]]
+
+    scope = admin_assignment.get("scope")
+    if scope == "Department":
+        org = NS[coll_dept_guess[0]["dept_uid"]]
+    elif scope == "College":
+        org = NS[coll_dept_guess[0]["coll_uid"]]
+    elif scope == "University":
+        org = NS[UNIVERSITY["uid"]]
+    else:
+        org = None
+
+    datetime_interval = NS[f"{admin_assignment['id']}a"]
+    datetime_start = NS[f"{admin_assignment['id']}b"]
+    datetime_end = NS[f"{admin_assignment['id']}c"]
+
+    graph.add((position, RDF.type, VIVO.FacultyAdministrativePosition))
+    graph.add((position, RDFS.label, Literal(admin_assignment["role"])))
+    graph.add((position, VIVO.description, Literal(admin_assignment["desc"])))
+    graph.add((position, VIVO.dateTimeInterval, datetime_interval))
+    if org:
+        graph.add((position, VIVO.relates, org))
+    graph.add((position, VIVO.relates, fac))
+
+    graph.add((datetime_interval, RDF.type, VIVO.DateTimeInterval))
+    graph.add((datetime_interval, VIVO.start, datetime_start))
+    graph.add((datetime_interval, VIVO.end, datetime_end))
+
+    graph.add((datetime_start, RDF.type, VIVO.DateTimeValue))
+    graph.add(
+        (
+            datetime_start,
+            VIVO.dateTime,
+            Literal(admin_assignment["date_start"], datatype=XSD.date),
+        )
     )
-    for i in latest_dept_rank:
-        rank = i.get("rank")
-        if rank:
-            return i.get("rank").strip()
-
-    # But some users leave their rank empty in the 'admin' elements
-    # So we next try to get it from their 'admin_perm' element.
-    # the source data is less accurate for adminperm/srank than for admin/rank.
-    try:
-        rank = parsed_user["adminperm"]["srank"]
-    except TypeError:
-        rank = None
-    if rank:
-        return rank
-
-    # We could look through their 'past_hist' elems for a clue, but signal/noise is low
-    # So we just default to no 'rank'
-    return ""
-
-
-def match_college(dept):
-    # because users entered the wrong college for their dept in 10% of files
-    # we have to assume they got the dept correct, and manually lookup the coll.
-    # we also hardcoded the uid for college & for dept, for consistency
-    for coll, bundle in COLL_DEPT.items():
-        if dept in bundle.get("depts"):
-            return {
-                "coll_name": coll,
-                "coll_uid": bundle.get("uid"),
-                "dept_name": dept,
-                "dept_uid": bundle["depts"][dept],
-            }
-    # if dept not in COLL_DEPT, check if it's in Academic Affairs
-    if dept in ACADEMIC_AFFAIRS.get("depts"):
-        return {
-            "coll_name": ACADEMIC_AFFAIRS["name"],
-            "coll_uid": ACADEMIC_AFFAIRS["uid"],
-            "dept_name": dept,
-            "dept_uid": ACADEMIC_AFFAIRS["depts"][dept],
-        }
-    return None
+    graph.add((datetime_start, VIVO.dateTimePrecision, VIVO.yearPrecision))
 
 
 def add_presentations_to_graph(graph, presentation, fac):
@@ -354,122 +321,6 @@ def add_intellcont_to_graph(graph, intellcont, fac):
         graph.add((other_authorship, VIVO.relates, person_elem))
 
 
-def split_pages(text):
-    if not text:
-        startpage, endpage = None, None
-    elif "-" in text:
-        startpage = text.split("-")[0].strip()
-        endpage = text.split("-")[1].strip()
-    else:
-        startpage = text.strip()
-        endpage = None
-    return startpage, endpage
-
-
-def map_contypes(contype):
-    contypes_pubtypes = {
-        None: BIBO.Document,
-        "": BIBO.Document,
-        "Book Review": BIBO.Document,
-        "Book, Chapter in Non-Scholarly Book-New": BIBO.Chapter,
-        "Book, Chapter in Non-Scholarly Book-Revised": BIBO.Chapter,
-        "Book, Chapter in Scholarly Book-New": BIBO.Chapter,
-        "Book, Chapter in Scholarly Book-Revised": BIBO.Chapter,
-        "Book, Chapter in Textbook-New": BIBO.Chapter,
-        "Book, Chapter in Textbook-Revised": BIBO.Chapter,
-        "Book, Non-Scholarly-New": BIBO.Book,
-        "Book, Non-Scholarly-Revised": BIBO.Book,
-        "Book, Scholarly-New": BIBO.Book,
-        "Book, Scholarly-Revised": BIBO.Book,
-        "Book, Textbook-New": BIBO.Book,
-        "Book, Textbook-Revised": BIBO.Book,
-        "Broadcast Media": BIBO.AudioVisualDocument,
-        "Cited Research": BIBO.Document,
-        "Conference Proceeding": BIBO.ConferencePaper,
-        "Instructor's Manual": BIBO.Manual,
-        "Journal Article, Academic Journal": BIBO.AcademicArticle,
-        "Journal Article, In-House Journal": BIBO.AcademicArticle,
-        "Journal Article, Professional Journal": BIBO.AcademicArticle,
-        "Journal Article, Public or Trade Journal": BIBO.AcademicArticle,
-        "Law Review": BIBO.AcademicArticle,
-        "Magazine/Trade Publication": BIBO.AcademicArticle,
-        "Manuscript": BIBO.Manuscript,
-        "Map": BIBO.Map,
-        "Material Regarding New Courses/Curricula": BIBO.Document,
-        "Monograph": BIBO.Document,
-        "Newsletter": VIVO.Newsletter,
-        "Newspaper": BIBO.Newspaper,
-        "Nonfiction - Anthology": BIBO.Book,
-        "Nonfiction - Book": BIBO.Book,
-        "Nonfiction - Online Journal": BIBO.Article,
-        "Nonfiction - Print Journal": BIBO.Article,
-        "Novel": BIBO.Book,
-        "Other": BIBO.Document,
-        "Poetry - Anthology": BIBO.Document,
-        "Poetry - Book": BIBO.Document,
-        "Poetry - Online Journal": BIBO.Document,
-        "Poetry - Print Journal": BIBO.Document,
-        "Poster Session": VIVO.ConferencePoster,
-        "Recording": BIBO.AudioVisualDocument,
-        "Regular Column in Journal or Newspaper": BIBO.Article,
-        "Research Report": BIBO.Report,
-        "Short Fiction - Anthology": BIBO.Document,
-        "Short Fiction - Book": BIBO.Document,
-        "Short Fiction - Online Journal": BIBO.Document,
-        "Short Fiction - Print Journal": BIBO.Document,
-        "Software": OBO.ERO_0000071,
-        "Software, Instructional": OBO.ERO_0000071,
-        "Study Guide": BIBO.Document,
-        "Technical Report": BIBO.Report,
-        "Translation or Transcription": BIBO.Document,
-        "Working Paper": VIVO.WorkingPaper,
-        "Written Case with Instructional Material": BIBO.Document,
-    }
-    return contypes_pubtypes.get(contype)
-
-
-def add_admin_assignment_to_graph(
-    graph, admin_assignment, fac, likely_coll_dept_assignment
-):
-    position = NS[admin_assignment["id"]]
-
-    scope = admin_assignment.get("scope")
-    if scope == "Department":
-        org = NS[likely_coll_dept_assignment[0]["dept_uid"]]
-    elif scope == "College":
-        org = NS[likely_coll_dept_assignment[0]["coll_uid"]]
-    elif scope == "University":
-        org = NS[UNIVERSITY["uid"]]
-    else:
-        org = None
-
-    datetime_interval = NS[f"{admin_assignment['id']}a"]
-    datetime_start = NS[f"{admin_assignment['id']}b"]
-    datetime_end = NS[f"{admin_assignment['id']}c"]
-
-    graph.add((position, RDF.type, VIVO.FacultyAdministrativePosition))
-    graph.add((position, RDFS.label, Literal(admin_assignment["role"])))
-    graph.add((position, VIVO.description, Literal(admin_assignment["desc"])))
-    graph.add((position, VIVO.dateTimeInterval, datetime_interval))
-    if org:
-        graph.add((position, VIVO.relates, org))
-    graph.add((position, VIVO.relates, fac))
-
-    graph.add((datetime_interval, RDF.type, VIVO.DateTimeInterval))
-    graph.add((datetime_interval, VIVO.start, datetime_start))
-    graph.add((datetime_interval, VIVO.end, datetime_end))
-
-    graph.add((datetime_start, RDF.type, VIVO.DateTimeValue))
-    graph.add(
-        (
-            datetime_start,
-            VIVO.dateTime,
-            Literal(admin_assignment["date_start"], datatype=XSD.date),
-        )
-    )
-    graph.add((datetime_start, VIVO.dateTimePrecision, VIVO.yearPrecision))
-
-
 def add_perform_exhibit_to_graph(graph, perform_exhibit, fac):
     perf_id = perform_exhibit["id"]
     performance = NS[perf_id]
@@ -555,7 +406,7 @@ def add_intellprop_to_graph(graph, intellprop):
         graph.add((intellprop_node, VIVO.dateIssued, time_issued_node))
         graph.add((time_issued_node, RDF.type, VIVO.DateTimeValue))
         graph.add(
-            (time_issued_node, VIVO.dateTime, Literal(date_filed, datatype=XSD.date))
+            (time_issued_node, VIVO.dateTime, Literal(date_issued, datatype=XSD.date))
         )
         graph.add((time_issued_node, VIVO.dateTimePrecision, VIVO.yearPrecision))
 
@@ -640,3 +491,144 @@ def add_congrant_to_graph(graph, congrant):
         fac_node = NS[person_id]
         graph.add((grant_node, VIVO.fundingVehicleFor, fac_node))
         graph.add((fac_node, VIVO.hasFundingVehicle, grant_node))
+
+
+def find_rank_in_dept(parsed_user, dept):
+    # in the source data, each user has a dozen or so 'admin' elems,
+    # each admin elem has data on a year's work at one department
+    # We need to find the most recent 'admin' elem with 'rank' data for a given dept.
+    # So, First select only the admin elems matching the dept
+    # Then order the dept elems by most recent academic year, 'ac_year'
+    # Finally spit out the first elem with any 'rank' data
+    dept_matches = [
+        admin for admin in parsed_user.get("admins") if dept in admin.get("depts")
+    ]
+    latest_dept_rank = sorted(
+        dept_matches, key=lambda x: x.get("ac_year"), reverse=True
+    )
+    for i in latest_dept_rank:
+        rank = i.get("rank")
+        if rank:
+            return i.get("rank").strip()
+
+    # But some users leave their rank empty in the 'admin' elements
+    # So we next try to get it from their 'admin_perm' element.
+    # the source data is less accurate for adminperm/srank than for admin/rank.
+    try:
+        rank = parsed_user["adminperm"]["srank"]
+    except TypeError:
+        rank = None
+    if rank:
+        return rank
+
+    # We could look through their 'past_hist' elems for a clue, but signal/noise is low
+    # So we just default to no 'rank'
+    return ""
+
+
+def conjure_coll_dept_assignment(parsed_user):
+    # Users are not entering accurate data.
+    # There is no dept of Randall Library within the college of Business.
+    # This magic wand is only necessary while the digitalmeasure data is incorrect.
+    dmd_depts = parsed_user.get("current_depts")
+    college_depts_info = [
+        match_college(dept) for dept in dmd_depts if (dept and match_college(dept))
+    ]
+    return college_depts_info
+
+
+def match_college(dept):
+    # because users entered the wrong college for their dept in 10% of files
+    # we have to assume they got the dept correct, and manually lookup the coll.
+    # we also hardcoded the uid for college & for dept, for consistency
+    for coll, bundle in COLL_DEPT.items():
+        if dept in bundle.get("depts"):
+            return {
+                "coll_name": coll,
+                "coll_uid": bundle["uid"],
+                "dept_name": dept,
+                "dept_uid": bundle["depts"][dept],
+            }
+    # if dept not in COLL_DEPT, check if it's in Academic Affairs
+    if dept in ACADEMIC_AFFAIRS.get("depts"):
+        return {
+            "coll_name": ACADEMIC_AFFAIRS["name"],
+            "coll_uid": ACADEMIC_AFFAIRS["uid"],
+            "dept_name": dept,
+            "dept_uid": ACADEMIC_AFFAIRS["depts"][dept],
+        }
+    return None
+
+
+def split_pages(text):
+    if not text:
+        startpage, endpage = None, None
+    elif "-" in text:
+        startpage = text.split("-")[0].strip()
+        endpage = text.split("-")[1].strip()
+    else:
+        startpage = text.strip()
+        endpage = None
+    return startpage, endpage
+
+
+def map_contypes(contype):
+    contypes_pubtypes = {
+        None: BIBO.Document,
+        "": BIBO.Document,
+        "Book Review": BIBO.Document,
+        "Book, Chapter in Non-Scholarly Book-New": BIBO.Chapter,
+        "Book, Chapter in Non-Scholarly Book-Revised": BIBO.Chapter,
+        "Book, Chapter in Scholarly Book-New": BIBO.Chapter,
+        "Book, Chapter in Scholarly Book-Revised": BIBO.Chapter,
+        "Book, Chapter in Textbook-New": BIBO.Chapter,
+        "Book, Chapter in Textbook-Revised": BIBO.Chapter,
+        "Book, Non-Scholarly-New": BIBO.Book,
+        "Book, Non-Scholarly-Revised": BIBO.Book,
+        "Book, Scholarly-New": BIBO.Book,
+        "Book, Scholarly-Revised": BIBO.Book,
+        "Book, Textbook-New": BIBO.Book,
+        "Book, Textbook-Revised": BIBO.Book,
+        "Broadcast Media": BIBO.AudioVisualDocument,
+        "Cited Research": BIBO.Document,
+        "Conference Proceeding": BIBO.ConferencePaper,
+        "Instructor's Manual": BIBO.Manual,
+        "Journal Article, Academic Journal": BIBO.AcademicArticle,
+        "Journal Article, In-House Journal": BIBO.AcademicArticle,
+        "Journal Article, Professional Journal": BIBO.AcademicArticle,
+        "Journal Article, Public or Trade Journal": BIBO.AcademicArticle,
+        "Law Review": BIBO.AcademicArticle,
+        "Magazine/Trade Publication": BIBO.AcademicArticle,
+        "Manuscript": BIBO.Manuscript,
+        "Map": BIBO.Map,
+        "Material Regarding New Courses/Curricula": BIBO.Document,
+        "Monograph": BIBO.Document,
+        "Newsletter": VIVO.Newsletter,
+        "Newspaper": BIBO.Newspaper,
+        "Nonfiction - Anthology": BIBO.Book,
+        "Nonfiction - Book": BIBO.Book,
+        "Nonfiction - Online Journal": BIBO.Article,
+        "Nonfiction - Print Journal": BIBO.Article,
+        "Novel": BIBO.Book,
+        "Other": BIBO.Document,
+        "Poetry - Anthology": BIBO.Document,
+        "Poetry - Book": BIBO.Document,
+        "Poetry - Online Journal": BIBO.Document,
+        "Poetry - Print Journal": BIBO.Document,
+        "Poster Session": VIVO.ConferencePoster,
+        "Recording": BIBO.AudioVisualDocument,
+        "Regular Column in Journal or Newspaper": BIBO.Article,
+        "Research Report": BIBO.Report,
+        "Short Fiction - Anthology": BIBO.Document,
+        "Short Fiction - Book": BIBO.Document,
+        "Short Fiction - Online Journal": BIBO.Document,
+        "Short Fiction - Print Journal": BIBO.Document,
+        "Software": OBO.ERO_0000071,
+        "Software, Instructional": OBO.ERO_0000071,
+        "Study Guide": BIBO.Document,
+        "Technical Report": BIBO.Report,
+        "Translation or Transcription": BIBO.Document,
+        "Working Paper": VIVO.WorkingPaper,
+        "Written Case with Instructional Material": BIBO.Document,
+    }
+    return contypes_pubtypes.get(contype)
