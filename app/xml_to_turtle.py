@@ -26,18 +26,15 @@ def make_graph():
     add_orgs_to_graph(graph)
 
     for filename in sorted(os.listdir(USERFILES_DIR)):
+        filepath = os.path.join(USERFILES_DIR, filename)
         username = filename.split(".")[0]
-
-        if not include_while_developing(username):
-            continue
-
+        # if not include_while_developing(username):
+        #     continue
         if username in preignored_users:
             continue
-        filepath = os.path.join(USERFILES_DIR, filename)
         parsed_user = parse_userfile(filepath)
         if is_excluded_user(parsed_user, driver):
             continue
-
         add_user_to_graph(graph, parsed_user)
     driver.close()
     return graph
