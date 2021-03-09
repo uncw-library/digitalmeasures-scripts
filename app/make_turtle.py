@@ -1,5 +1,7 @@
 # make_turtle.py
 
+import random
+
 import rdflib
 from rdflib import Literal
 from rdflib.namespace import RDF, RDFS, XSD
@@ -87,7 +89,7 @@ def add_user_to_graph(graph, parsed_user):
     for intellprop in parsed_user["intellprops"]:
         add_intellprop_to_graph(graph, intellprop)
     for congrant in parsed_user["congrants"]:
-        add_congrant_to_graph(graph, congrant)
+        add_congrant_to_graph(graph, congrant, user_id)
 
 
 def add_person_info_to_graph(graph, parsed_user, fac, individual):
@@ -422,7 +424,7 @@ def add_intellprop_to_graph(graph, intellprop):
         graph.add((fac_node, VIVO.assignee, intellprop_node))
 
 
-def add_congrant_to_graph(graph, congrant):
+def add_congrant_to_graph(graph, congrant, user_id):
     if congrant["status"] not in {"Funded"}:
         return
     grant_id = congrant["id"]
@@ -485,12 +487,28 @@ def add_congrant_to_graph(graph, congrant):
         graph.add((grant_node, VIVO.dateTimeInterval, date_issued_interval_node))
 
     for num, person in enumerate(congrant["persons_involved"]):
+        print(person)
+        # Preventing investigator_nodes from clobbering or duplicating is hard when
+        # each person's source file names the other investigators.  We prevent it
+        # by only adding a node when grant person_id == the file's user_id.
         person_id = person["id"]
-        if not person_id:
+        if person_id != user_id:
             continue
         fac_node = NS[person_id]
-        graph.add((grant_node, VIVO.fundingVehicleFor, fac_node))
-        graph.add((fac_node, VIVO.hasFundingVehicle, grant_node))
+        graph.add((grant_node, VIVO.relates, fac_node))
+        graph.add((fac_node, VIVO.relatedBy, grant_node))
+        # a unique investigator_node value for each pi role held by a person.
+        random_num = ''.join(str(ord(i)) for i in person['lastname'])
+        investigator_node = NS[f"{person_id}{grant_id}"]
+        if person["role"] == "Principal":
+            graph.add((investigator_node, RDF.type, VIVO.PrincipalInvestigatorRole))
+        else:
+            graph.add((investigator_node, RDF.type, VIVO.InvestigatorRole))
+        graph.add((investigator_node, OBO.RO_0000052, fac_node))
+        graph.add((fac_node, OBO.RO_0000053, investigator_node))
+        graph.add((investigator_node, VIVO.relatedBy, grant_node))
+        graph.add((grant_node, VIVO.relates, investigator_node))
+
 
 
 def find_rank_in_dept(parsed_user, dept):
