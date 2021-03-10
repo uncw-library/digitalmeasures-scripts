@@ -494,16 +494,19 @@ def add_congrant_to_graph(graph, congrant, user_id):
         person_id = person["id"]
         if person_id != user_id:
             continue
+
         fac_node = NS[person_id]
         graph.add((grant_node, VIVO.relates, fac_node))
         graph.add((fac_node, VIVO.relatedBy, grant_node))
-        # a unique investigator_node value for each pi role held by a person.
-        random_num = ''.join(str(ord(i)) for i in person['lastname'])
+
         investigator_node = NS[f"{person_id}{grant_id}"]
         if person["role"] == "Principal":
             graph.add((investigator_node, RDF.type, VIVO.PrincipalInvestigatorRole))
+        elif person["role"] == "Co-Principal":
+            graph.add((investigator_node, RDF.type, VIVO.CoPrincipalInvestigatorRole))
         else:
             graph.add((investigator_node, RDF.type, VIVO.InvestigatorRole))
+
         graph.add((investigator_node, OBO.RO_0000052, fac_node))
         graph.add((fac_node, OBO.RO_0000053, investigator_node))
         graph.add((investigator_node, VIVO.relatedBy, grant_node))

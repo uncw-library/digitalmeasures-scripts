@@ -28,8 +28,8 @@ def make_graph():
     for filename in sorted(os.listdir(USERFILES_DIR)):
         filepath = os.path.join(USERFILES_DIR, filename)
         username = filename.split(".")[0]
-        # if not include_while_developing(username):
-        #     continue
+        if not include_while_developing(username):
+            continue
         if username in preignored_users:
             continue
         parsed_user = parse_userfile(filepath)
@@ -54,14 +54,14 @@ def include_while_developing(username):
     #     return True
     # if has_INTELLPROP(username):
     #     return True
-    # if has_CONGRANT(username):
-    #     return True
+    if has_CONGRANT(username):
+        return True
     # if has_BIO(username):
     #     return True
-    if has_active_ADMIN_ASSIGNMENTS(username):
-        return True
-    if has_mismatched_titles(username):
-        return True
+    # if has_active_ADMIN_ASSIGNMENTS(username):
+    #     return True
+    # if has_mismatched_titles(username):
+    #     return True
     return False
 
 
