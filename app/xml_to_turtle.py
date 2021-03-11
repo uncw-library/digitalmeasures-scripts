@@ -51,8 +51,8 @@ def write_turtle(graph):
 def include_while_developing(username):
     # if has_coauthor(username):
     #     return True
-    # if has_PERFORM_EXHIBIT(username):
-    #     return True
+    if has_PERFORM_EXHIBIT(username):
+        return True
     if has_PRESENT(username):
         return True
     # if has_INTELLPROP(username):
