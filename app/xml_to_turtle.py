@@ -6,7 +6,8 @@ from datetime import datetime
 import getpass
 
 from exclude_users import preignored_users, is_excluded_user
-from make_turtle import init_graph, add_orgs_to_graph, add_user_to_graph
+from make_turtle import init_graph, add_user_to_graph
+from add_orgs import add_orgs_to_graph
 from parse_userfiles import parse_userfile
 from scrape_directory import driver
 import scrape_userrecords
@@ -52,10 +53,12 @@ def include_while_developing(username):
     #     return True
     # if has_PERFORM_EXHIBIT(username):
     #     return True
+    if has_PRESENT(username):
+        return True
     # if has_INTELLPROP(username):
     #     return True
-    if has_CONGRANT(username):
-        return True
+    # if has_CONGRANT(username):
+    #     return True
     # if has_BIO(username):
     #     return True
     # if has_active_ADMIN_ASSIGNMENTS(username):
@@ -92,6 +95,12 @@ def has_PERFORM_EXHIBIT(username):
         "kaylorj",
         "kingn",
     ):
+        return True
+    return False
+
+
+def has_PRESENT(username):
+    if username in ("covij", "rocknessh", "seidmanm", "devitacochranec", "sackleyw"):
         return True
     return False
 
