@@ -8,7 +8,7 @@ def add_perform_exhibit_to_graph(graph, perform_exhibit, user_id):
     perf_id = perform_exhibit["id"]
     performance_node = NS[perf_id]
     conference = NS[f"{perf_id}a"]
-    performer_node = NS[f"{perf_id}b"]
+    performer_node = NS[f"{perf_id}{user_id}"]
 
     datetime_interval = NS[f"{perf_id}c"]
     datetime_start = NS[f"{perf_id}d"]
@@ -23,7 +23,7 @@ def add_perform_exhibit_to_graph(graph, perform_exhibit, user_id):
     graph.add((conference, OBO.BFO_0000051, performance_node))
     graph.add((performance_node, OBO.BFO_0000050, conference))
 
-    graph.add((performance_node, RDF.type, BIBO.Performance))
+    graph.add((performance_node, RDF.type, VIVO.Presentation))
     graph.add((performance_node, RDFS.label, Literal(perform_exhibit["title"])))
     graph.add((performance_node, VIVO.description, Literal(perform_exhibit["desc"])))
     graph.add((performance_node, VIVO.dateTimeInterval, datetime_interval))
@@ -41,13 +41,13 @@ def add_perform_exhibit_to_graph(graph, perform_exhibit, user_id):
         # so we check for empty 'id' and skip them
         if not person_id:
             continue
-        other_performer_node = NS[f"{perf_id}b{num}"]
-        graph.add((other_performer_node, OBO.BFO_0000054, performance_node))
-        graph.add((performance_node, OBO.BFO_0000055, other_performer_node))
-        graph.add((other_performer_node, RDF.type, VIVO.AttendeeRole))
-        graph.add((other_performer_node, VIVO.dateTimeInterval, datetime_interval))
-        graph.add((other_performer_node, OBO.RO_0000052, fac_node))
-        graph.add((fac_node, OBO.RO_0000053, other_performer_node))
+        graph.add((performer_node, RDF.type, VIVO.PresenterRole))
+        graph.add((performer_node, RDFS.label, Literal(person["role"])))
+        graph.add((performer_node, VIVO.dateTimeInterval, datetime_interval))
+        graph.add((performer_node, OBO.BFO_0000054, performance_node))
+        graph.add((performance_node, OBO.BFO_0000055, performer_node))
+        graph.add((performer_node, OBO.RO_0000052, fac_node))
+        graph.add((fac_node, OBO.RO_0000053, performer_node))
 
     start_date = perform_exhibit["start_start"] or perform_exhibit["start_end"]
     end_date = perform_exhibit["end_start"] or perform_exhibit["end_end"]
