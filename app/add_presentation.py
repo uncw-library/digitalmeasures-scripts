@@ -38,11 +38,11 @@ def add_presentation_to_graph(graph, presentation, user_id):
         # so we check for empty 'id' and skip them
         if not person_id:
             continue
-        graph.add((presenter_node, OBO.BFO_0000054, presentation_node))
-        graph.add((presentation_node, OBO.BFO_0000055, presenter_node))
         graph.add((presenter_node, RDF.type, VIVO.PresenterRole))
         graph.add((presenter_node, RDFS.label, Literal(person["role"])))
         graph.add((presenter_node, VIVO.dateTimeInterval, datetime_interval))
+        graph.add((presenter_node, OBO.BFO_0000054, presentation_node))
+        graph.add((presentation_node, OBO.BFO_0000055, presenter_node))
         graph.add((presenter_node, OBO.RO_0000052, fac_node))
         graph.add((fac_node, OBO.RO_0000053, presenter_node))
 
