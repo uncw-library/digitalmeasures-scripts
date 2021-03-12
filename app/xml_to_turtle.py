@@ -94,6 +94,8 @@ def has_PERFORM_EXHIBIT(username):
         "haddadl",
         "kaylorj",
         "kingn",
+        "waddellm",
+        "ainspacp"
     ):
         return True
     return False

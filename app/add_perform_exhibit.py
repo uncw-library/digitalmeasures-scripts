@@ -18,14 +18,18 @@ def add_perform_exhibit_to_graph(graph, perform_exhibit, user_id):
     # also, the assignments may be incorrect
 
     graph.add((conference, RDF.type, BIBO.Conference))
-    graph.add((conference, RDFS.label, Literal(perform_exhibit["name"])))
-    graph.add((conference, BIBO.organizer, Literal(perform_exhibit["sponsor"])))
+    if perform_exhibit["name"]:
+        graph.add((conference, RDFS.label, Literal(perform_exhibit["name"])))
+    if perform_exhibit["sponsor"]:
+        graph.add((conference, BIBO.organizer, Literal(perform_exhibit["sponsor"])))
     graph.add((conference, OBO.BFO_0000051, performance_node))
     graph.add((performance_node, OBO.BFO_0000050, conference))
 
     graph.add((performance_node, RDF.type, VIVO.Presentation))
-    graph.add((performance_node, RDFS.label, Literal(perform_exhibit["title"])))
-    graph.add((performance_node, VIVO.description, Literal(perform_exhibit["desc"])))
+    if perform_exhibit["title"]:
+        graph.add((performance_node, RDFS.label, Literal(perform_exhibit["title"])))
+    if perform_exhibit["desc"]:
+        graph.add((performance_node, VIVO.description, Literal(perform_exhibit["desc"])))
     graph.add((performance_node, VIVO.dateTimeInterval, datetime_interval))
 
     for num, person in enumerate(perform_exhibit.get("persons_involved")):
