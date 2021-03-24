@@ -1,7 +1,7 @@
 from rdflib import Literal
 from rdflib.namespace import RDF, RDFS, XSD
 
-from globals import NS, VIVO
+from globals import NS, VIVO, UNIVERSITY
 
 
 def add_admin_assignment_to_graph(graph, admin_assignment, fac, coll_dept_guess):

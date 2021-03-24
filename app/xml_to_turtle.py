@@ -49,22 +49,22 @@ def write_turtle(graph):
 
 
 def include_while_developing(username):
-    # if has_coauthor(username):
-    #     return True
+    if has_coauthor(username):
+        return True
     if has_PERFORM_EXHIBIT(username):
         return True
     if has_PRESENT(username):
         return True
-    # if has_INTELLPROP(username):
-    #     return True
-    # if has_CONGRANT(username):
-    #     return True
-    # if has_BIO(username):
-    #     return True
-    # if has_active_ADMIN_ASSIGNMENTS(username):
-    #     return True
-    # if has_mismatched_titles(username):
-    #     return True
+    if has_INTELLPROP(username):
+        return True
+    if has_CONGRANT(username):
+        return True
+    if has_BIO(username):
+        return True
+    if has_active_ADMIN_ASSIGNMENTS(username):
+        return True
+    if has_mismatched_titles(username):
+        return True
     return False
 
 
