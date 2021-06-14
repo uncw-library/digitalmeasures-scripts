@@ -7,3 +7,5 @@ geckodriver.log
 extracting/geckodriver.log
 extracting/output/*
 extracting/userpass.*
+
+.DS_Store
