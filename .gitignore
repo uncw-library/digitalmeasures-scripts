@@ -9,3 +9,4 @@ extracting/output/*
 extracting/userpass.*
 
 .DS_Store
+userpass.txt
