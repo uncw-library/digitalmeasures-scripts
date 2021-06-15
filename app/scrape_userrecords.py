@@ -26,11 +26,11 @@ def get_usernames(creds):
 
 
 def do_userfiles(usernames, creds, output_dir):
-    shutil.rmtree(output_dir, ignore_errors=True)
+    # shutil.rmtree(output_dir, ignore_errors=True)
     os.makedirs(output_dir, exist_ok=True)
     existing_files = os.listdir(output_dir)
 
-    for username in usernames:
+    for username in sorted(usernames):
         if f"{username}.xml" in existing_files:
             continue
         # students have numeric username ending, and are excluded

@@ -29,7 +29,9 @@ def add_perform_exhibit_to_graph(graph, perform_exhibit, user_id):
     if perform_exhibit["title"]:
         graph.add((performance_node, RDFS.label, Literal(perform_exhibit["title"])))
     if perform_exhibit["desc"]:
-        graph.add((performance_node, VIVO.description, Literal(perform_exhibit["desc"])))
+        graph.add(
+            (performance_node, VIVO.description, Literal(perform_exhibit["desc"]))
+        )
     graph.add((performance_node, VIVO.dateTimeInterval, datetime_interval))
 
     for num, person in enumerate(perform_exhibit.get("persons_involved")):
