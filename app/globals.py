@@ -8,7 +8,7 @@ NSMAP = {
     "dmd": "http://www.digitalmeasures.com/schema/data-metadata",
 }
 
-NS = Namespace("http://vivo.uncw.edu/individual/")
+NS = Namespace("http://scholars.uncw.edu/individual/")
 BIBO = Namespace("http://purl.org/ontology/bibo/")
 OBO = Namespace("http://purl.obolibrary.org/obo/")
 VIVO = Namespace("http://vivoweb.org/ontology/core#")
