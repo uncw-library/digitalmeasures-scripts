@@ -104,7 +104,7 @@ def write_turtle(graph):
 
 
 if __name__ == "__main__":
-    # scrape_digitalmeasures()
+    scrape_digitalmeasures()
     # hack_move_non_selected_from_source_folder()
     graph = make_graph()
     # write_turtle(graph)
