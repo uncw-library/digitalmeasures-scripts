@@ -173,7 +173,7 @@ def hack_move_non_selected_from_source_folder():
 
 
 if __name__ == "__main__":
-    # scrape_digitalmeasures()
-    hack_move_non_selected_from_source_folder()
+    scrape_digitalmeasures()
+    # hack_move_non_selected_from_source_folder()
     graph = make_graph()
-    write_turtle(graph)
+    # write_turtle(graph)
