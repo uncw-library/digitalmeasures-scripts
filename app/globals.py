@@ -33,7 +33,7 @@ ACADEMIC_AFFAIRS = {
         # "Office of Diversity and Inclusion": "161986113537",
         # "Office of the Dean, College of Arts and Sciences": "168541734913",
         # "Office of International Programs": "161984303106",
-        # "Office of the Honors College": "14241826817",
+        "Office of the Honors College": "14241826817",
         # "Womens Resource Center": "161984301058",
         # "Office of Undergraduate Studies": "161984296962",
         # "Office of Cultural Arts": "161984299010",
@@ -103,7 +103,7 @@ COLL_DEPT = {
             "School of Nursing": "161982855170",
             "School of Health and Applied Human Sciences": "161982857218",
             "School of Social Work": "161982859266",
-            "Office of the Dean, College of Health and Human Services": "161982859266",
+            "Office of the Dean, College of Health and Human Services": "185862473729",
         },
     },
     # "Watson College of Education": {

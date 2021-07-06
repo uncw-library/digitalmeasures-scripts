@@ -32,8 +32,6 @@ def hack_move_non_selected_from_source_folder():
     os.makedirs(EXCLUDE_DIR, exist_ok=True)
     for filename in sorted(os.listdir(USERFILES_DIR)):
         username = filename.split(".")[0]
-        print(username)
-
         if username in preignored_users:
             os.rename(
                 os.path.join(USERFILES_DIR, filename),
@@ -92,7 +90,7 @@ def make_graph():
             f.write(prettytext)
         if is_excluded_user(parsed_user, driver):
             continue
-        # add_user_to_graph(graph, parsed_user)
+        add_user_to_graph(graph, parsed_user)
     driver.close()
     return graph
 
@@ -104,7 +102,7 @@ def write_turtle(graph):
 
 
 if __name__ == "__main__":
-    scrape_digitalmeasures()
+    # scrape_digitalmeasures()
     # hack_move_non_selected_from_source_folder()
     graph = make_graph()
-    # write_turtle(graph)
+    write_turtle(graph)

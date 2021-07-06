@@ -60,11 +60,11 @@ def is_in_directory(parsed_user, driver):
     # same for some one with no firstname.
 
     # DEV CODE !!!!!!!!
-    with open("exclude_users/not_in_directory.txt", "r") as f:
-        directory_results = [i.strip() for i in f.readlines()]
-    if parsed_user.get("username") in directory_results:
-        return False
-    return True
+    # with open("exclude_users/not_in_directory.txt", "r") as f:
+    #     directory_results = [i.strip() for i in f.readlines()]
+    # if parsed_user.get("username") in directory_results:
+    #     return False
+    # return True
 
     # production code !!!!!!!!!
     try:
@@ -85,6 +85,7 @@ def is_in_directory(parsed_user, driver):
         firstname=firstname, lastname=lastname, driver=driver
     )
     if not directory_results:
+        print(parsed_user.get("username"))
         return False
 
     return True
