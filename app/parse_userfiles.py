@@ -1,5 +1,7 @@
 # parse_userfiles.py
 
+import os
+import pprint
 
 from lxml import etree as ET
 
@@ -24,6 +26,19 @@ def get_child_text(elem, child, ns="a"):
     if not text:
         return ""
     return text
+
+
+def parse_and_pretty_print(source_dir):
+    output_dir = os.path.join("output", "test_parsed_users")
+    os.makedirs(output_dir, exist_ok=True)
+    all_filenames = sorted(os.listdir(source_dir))
+    for filename in all_filenames:
+        parsed_user = parse_userfile(os.path.join(source_dir, filename))
+        file, ext = os.path.splitext(filename)
+        dest_filepath = os.path.join(output_dir, f"{file}.txt")
+        with open(dest_filepath, "w") as f:
+            prettytext = pprint.pformat(parsed_user, width=120, sort_dicts=False)
+            f.write(prettytext)
 
 
 ## Actual code
