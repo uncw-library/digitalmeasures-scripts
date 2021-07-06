@@ -1,3 +1,0 @@
-
-https://wiki.lyrasis.org/display/VIVO/A+Generalizable%2C+XSLT+Based+RDF+Ingest+Example
-
