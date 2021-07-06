@@ -28,9 +28,7 @@ def get_child_text(elem, child, ns="a"):
     return text
 
 
-def parse_and_pretty_print(source_dir):
-    output_dir = os.path.join("output", "test_parsed_users")
-    os.makedirs(output_dir, exist_ok=True)
+def parse_and_pretty_print(source_dir, output_dir):
     all_filenames = sorted(os.listdir(source_dir))
     for filename in all_filenames:
         parsed_user = parse_userfile(os.path.join(source_dir, filename))

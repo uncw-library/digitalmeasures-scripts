@@ -10,8 +10,6 @@ def add_congrant_to_graph(graph, congrant, user_id):
     grant_id = congrant["id"]
     grant_node = NS[grant_id]
     time_filed_node = NS[f"{grant_id}a"]
-    time_issued_node = NS[f"{grant_id}b"]
-    funding_org_node = NS[f"{grant_id}c"]
 
     title = congrant["title"].strip()
     abstract = congrant["abstract"].strip()

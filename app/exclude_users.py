@@ -26,24 +26,17 @@ office_staff = {
 preignored_users = set().union(generic_users, office_staff, IRP)
 
 
-def split_include_exclude(source_dir):
-    include_dir = os.path.join("output", "included_users")
-    exclude_dir = os.path.join("output", "excluded_users")
-    os.makedirs(include_dir, exist_ok=True)
-    os.makedirs(exclude_dir, exist_ok=True)
-
+def split_include_exclude(source_dir, include_dir, exclude_dir):
     excluded_files = {i for i in os.listdir(exclude_dir)}
     included_files = {i for i in os.listdir(include_dir)}
     already_processed = excluded_files.union(included_files)
 
-    all_filenames = sorted(os.listdir(source_dir))
-
     selenium_driver = SeleniumDriver()
 
+    all_filenames = sorted(os.listdir(source_dir))
     for filename in all_filenames:
         if filename in already_processed:
             continue
-
         if is_exclude(source_dir, filename, selenium_driver):
             copy(source_dir, exclude_dir, filename)
         else:

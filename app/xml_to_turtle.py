@@ -3,6 +3,7 @@
 
 import os
 import getpass
+import shutil
 from datetime import datetime
 
 import scrape_userrecords
@@ -11,6 +12,15 @@ from exclude_users import split_include_exclude
 from graph_builder.make_graph import make_graph
 
 USERFILES_DIR = os.path.join("output", "users")
+INCLUDE_DIR = os.path.join("output", "included_users")
+EXCLUDE_DIR = os.path.join("output", "excluded_users")
+TEST_PARSED_USERS = os.path.join("output", "test_parsed_users")
+
+
+def hard_refresh(USERFILES_DIR, INCLUDE_DIR, EXCLUDE_DIR):
+    for folder in (USERFILES_DIR, INCLUDE_DIR, EXCLUDE_DIR, TEST_PARSED_USERS):
+        shutil.rmtree(folder, ignore_errors=True)
+        os.makedirs(folder, exist_ok=True)
 
 
 def scrape_digitalmeasures():
@@ -27,8 +37,9 @@ def write_turtle(graph):
 
 
 if __name__ == "__main__":
-    # scrape_digitalmeasures()
-    # parse_and_pretty_print(USERFILES_DIR)
-    include_dir, exclude_dir = split_include_exclude(USERFILES_DIR)
-    graph = make_graph(include_dir)
+    hard_refresh(USERFILES_DIR, INCLUDE_DIR, EXCLUDE_DIR)
+    scrape_digitalmeasures()
+    parse_and_pretty_print(USERFILES_DIR, TEST_PARSED_USERS)
+    split_include_exclude(USERFILES_DIR, INCLUDE_DIR, EXCLUDE_DIR)
+    graph = make_graph(INCLUDE_DIR)
     write_turtle(graph)
