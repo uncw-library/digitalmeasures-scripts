@@ -5,8 +5,6 @@ from globals import NS, OBO, VIVO, VCARD
 from parse_userfiles import parse_userfile
 from conjure_dept import conjure_coll_dept_assignment
 
-from .include_while_developing import include_while_developing
-
 from .add_orgs import add_orgs_to_graph
 from .add_congrant import add_congrant_to_graph
 from .add_presentation import add_presentation_to_graph
@@ -16,6 +14,8 @@ from .add_admin_assignment import add_admin_assignment_to_graph
 from .add_intellprop import add_intellprop_to_graph
 from .add_job_positions import add_job_positions_to_graph
 from .add_person import add_person_info_to_graph, add_personal_interests_to_graph
+
+from .include_while_developing import include_while_developing
 
 
 def make_graph(include_dir):

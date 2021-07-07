@@ -2,9 +2,7 @@
 
 import getpass
 import os
-import shutil
 import unicodedata
-from io import StringIO
 
 from lxml import etree as ET
 import requests
@@ -26,7 +24,6 @@ def get_usernames(creds):
 
 
 def do_userfiles(usernames, creds, output_dir):
-    # shutil.rmtree(output_dir, ignore_errors=True)
     os.makedirs(output_dir, exist_ok=True)
     existing_files = os.listdir(output_dir)
 

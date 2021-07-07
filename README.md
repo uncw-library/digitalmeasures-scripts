@@ -1,5 +1,13 @@
-###
+## Digital Measures to Turtle
 
-Scripts for parsing & transforming the Digital Measures source data.
+#### Folders
 
-Currently using jupyter notebook.
+- app/
+    python code for creating a turtle file from DigitalMeasures (DM) repo
+    Turtle file can be imported into Vivo
+- exploring/
+    jupyter notebooks to analyze the DM output
+- ontologies/
+    ontology files used by Vivo
+- ontology_maps/
+    possibly obsolete diagrams for mapping data to Vivo ontologies

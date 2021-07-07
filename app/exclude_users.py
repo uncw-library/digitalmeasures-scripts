@@ -23,7 +23,12 @@ office_staff = {
     "ramadanik",
     "wrightlk",
 }
-preignored_users = set().union(generic_users, office_staff, IRP)
+nonfac = {
+    "sartarellij",
+    "powells",
+    "tirrelld",
+}
+preignored_users = set().union(generic_users, office_staff, IRP, nonfac)
 
 
 def split_include_exclude(source_dir, include_dir, exclude_dir):
