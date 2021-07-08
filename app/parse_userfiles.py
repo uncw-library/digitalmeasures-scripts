@@ -307,6 +307,10 @@ def get_person(record_elem):
         "teaching_interests": get_child_text(PCI_elem, "TEACHING_INTERESTS"),
         "research_interests": get_child_text(PCI_elem, "RESEARCH_INTERESTS"),
         "photo_url": get_child_text(PCI_elem, "UPLOAD_PHOTO"),
+        "ophone1": get_child_text(PCI_elem, "OPHONE1"),
+        "ophone2": get_child_text(PCI_elem, "OPHONE2"),
+        "ophone3": get_child_text(PCI_elem, "OPHONE3"),
+        "email": get_child_text(PCI_elem, "EMAIL"),    
     }
     return person
 
