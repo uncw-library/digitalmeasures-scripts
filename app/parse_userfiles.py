@@ -135,6 +135,7 @@ def get_adminperm(record_elem):
     adminperm = {
         "id": adminperm_elem.attrib.get("id"),
         "srank": get_child_text(adminperm_elem, "SRANK"),
+        "dty_separation": get_child_text(adminperm_elem, "DTY_SEPARATION"),
     }
     return adminperm
 
