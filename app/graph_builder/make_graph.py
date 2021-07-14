@@ -65,7 +65,7 @@ def add_user_to_graph(graph, parsed_user):
     for presentation in parsed_user["presentations"]:
         add_presentation_to_graph(graph, presentation, user_id)
     for intellcont in parsed_user["intellconts"]:
-        add_intellcont_to_graph(graph, intellcont, fac)
+        add_intellcont_to_graph(graph, intellcont)
     for perform_exhibit in parsed_user["perform_exhibits"]:
         add_perform_exhibit_to_graph(graph, perform_exhibit, user_id)
     for intellprop in parsed_user["intellprops"]:
