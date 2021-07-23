@@ -11,8 +11,10 @@ NSMAP = {
 NS = Namespace("http://scholars.uncw.edu/individual/")
 BIBO = Namespace("http://purl.org/ontology/bibo/")
 OBO = Namespace("http://purl.obolibrary.org/obo/")
-VIVO = Namespace("http://vivoweb.org/ontology/core#")
 VCARD = Namespace("http://www.w3.org/2006/vcard/ns#")
+VIVO = Namespace("http://vivoweb.org/ontology/core#")
+VITRO = Namespace("http://vitro.mannlib.cornell.edu/ns/vitro/public#")
+
 
 UNIVERSITY = {
     # same logic as EXPECTED_COLL regarding hardcoded uid
