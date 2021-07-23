@@ -40,6 +40,7 @@ if __name__ == "__main__":
     # hard_refresh(USERFILES_DIR, INCLUDE_DIR, EXCLUDE_DIR)
     # scrape_digitalmeasures()
     # put images in ./output/profile_images/
+    scrape_profile_images()
     parse_and_pretty_print(USERFILES_DIR, TEST_PARSED_USERS)
     split_include_exclude(USERFILES_DIR, INCLUDE_DIR, EXCLUDE_DIR)
     graph = make_graph(INCLUDE_DIR)
