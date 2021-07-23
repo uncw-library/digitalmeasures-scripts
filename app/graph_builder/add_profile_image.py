@@ -28,16 +28,16 @@ def add_profile_image(graph, user_id, fac_node):
     """
     If the user_id == "1234567890":
         and we make the image FileByteStream node == "1234567890999"
-            with directDownloadUrl == "/file/n1234567890999/ImageName.jpg"
+            with directDownloadUrl == "/file/n1234567890999/1234567890.jpg"
         and the background image FileByteStream node == "1234567890333"
-            with directDownloadUrl == "/file/n1234567890333/thumbnail_ImageName.jpg"
+            with directDownloadUrl == "/file/n1234567890333/1234567890.jpg"
     then:
 	Vivo wants main image in:
-		/usr/local/VIVO/home/uploads/file_storage_root/a~n/123/456/789/099/9/ImageName.jpg
-		which can be accessed at http://localhost:8080/file/n1234567890999/ImageName.jpg
+		/usr/local/VIVO/home/uploads/file_storage_root/a~n/123/456/789/099/9/1234567890.jpg
+		which can be accessed at http://localhost:8080/file/n1234567890999/1234567890.jpg
 	and thumbnail image in:
-		/usr/local/VIVO/home/uploads/file_storage_root/a~n/123/456/789/033/3/thumbnail_ImageName.jpg
-		which can be accessed at http://localhost:8080/file/n1234567890333/thumbnail_ImageName.jpg
+		/usr/local/VIVO/home/uploads/file_storage_root/a~n/123/456/789/033/3/1234567890.jpg
+		which can be accessed at http://localhost:8080/file/n1234567890333/1234567890.jpg
 	"""
 
     file_id = f"n{user_id}"  # n7074
@@ -48,7 +48,7 @@ def add_profile_image(graph, user_id, fac_node):
     file_node = NS[file_id]
     filepath_node = NS[filepath_id]
     thumbnail_node = NS[thumbnail_id]
-    thumbnail_filepath_node = NS[thumbnail_filepath_node]
+    thumbnail_filepath_node = NS[thumbnail_filepath_id]
 
     now = datetime.now().isoformat(timespec="seconds")
 

@@ -10,6 +10,7 @@ import scrape_userrecords
 from parse_userfiles import parse_and_pretty_print
 from exclude_users import split_include_exclude
 from graph_builder.make_graph import make_graph
+from scrape_profile_images import scrape_profile_images
 
 USERFILES_DIR = os.path.join("output", "users")
 INCLUDE_DIR = os.path.join("output", "included_users")
@@ -39,9 +40,8 @@ def write_turtle(graph):
 if __name__ == "__main__":
     # hard_refresh(USERFILES_DIR, INCLUDE_DIR, EXCLUDE_DIR)
     # scrape_digitalmeasures()
-    # put images in ./output/profile_images/
     scrape_profile_images()
-    parse_and_pretty_print(USERFILES_DIR, TEST_PARSED_USERS)
-    split_include_exclude(USERFILES_DIR, INCLUDE_DIR, EXCLUDE_DIR)
+    # parse_and_pretty_print(USERFILES_DIR, TEST_PARSED_USERS)
+    # split_include_exclude(USERFILES_DIR, INCLUDE_DIR, EXCLUDE_DIR)
     graph = make_graph(INCLUDE_DIR)
     write_turtle(graph)
