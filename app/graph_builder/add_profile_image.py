@@ -19,7 +19,6 @@ def add_profile_image(graph, user_id, fac_node):
     # if not has_image(user_id):
     #     return
 
-
     """
 	Maybe connect the thumbnail generator here
 	Maybe do some logic renaming & moving the files to where vivo wants them
@@ -41,10 +40,10 @@ def add_profile_image(graph, user_id, fac_node):
 		which can be accessed at http://localhost:8080/file/n1234567890333/thumbnail_ImageName.jpg
 	"""
 
-    file_id = f"n{user_id}"                                 #n7074
-    filepath_id = f"n{user_id}999"                          #n4443
-    thumbnail_id = f"n{user_id}666"                         #n637
-    thumbnail_filepath_id = f"n{user_id}333"                #n5645
+    file_id = f"n{user_id}"  # n7074
+    filepath_id = f"n{user_id}999"  # n4443
+    thumbnail_id = f"n{user_id}666"  # n637
+    thumbnail_filepath_id = f"n{user_id}333"  # n5645
 
     file_node = NS[file_id]
     filepath_node = NS[filepath_id]
@@ -52,7 +51,6 @@ def add_profile_image(graph, user_id, fac_node):
     thumbnail_filepath_node = NS[thumbnail_filepath_node]
 
     now = datetime.now().isoformat(timespec="seconds")
-
 
     graph.add((fac_node, VITRO.mainImage, file_node))
 
@@ -65,7 +63,13 @@ def add_profile_image(graph, user_id, fac_node):
 
     graph.add((filepath_node, RDF.type, VITRO.FileByteStream))
     graph.add((filepath_node, VITRO.modTime, Literal(now, datatype=XSD.dateTime)))
-    graph.add((filepath_node, VITRO.directDownloadUrl, Literal(f"/file/{filepath_id}/{user_id}.jpg")))
+    graph.add(
+        (
+            filepath_node,
+            VITRO.directDownloadUrl,
+            Literal(f"/file/{filepath_id}/{user_id}.jpg"),
+        )
+    )
 
     graph.add((thumbnail_node, RDF.type, VITRO.File))
     graph.add((thumbnail_node, VITRO.filename, Literal(f"{user_id}.jpg")))
@@ -74,12 +78,22 @@ def add_profile_image(graph, user_id, fac_node):
     graph.add((thumbnail_node, VITRO.downloadLocation, thumbnail_filepath_node))
 
     graph.add((thumbnail_filepath_node, RDF.type, VITRO.FileByteStream))
-    graph.add((thumbnail_filepath_node, VITRO.modTime, Literal(now, datatype=XSD.dateTime)))
-    graph.add((thumbnail_filepath_node, VITRO.directDownloadUrl, Literal(f"/file/{thumbnail_filepath_id}/{user_id}.jpg")))
+    graph.add(
+        (thumbnail_filepath_node, VITRO.modTime, Literal(now, datatype=XSD.dateTime))
+    )
+    graph.add(
+        (
+            thumbnail_filepath_node,
+            VITRO.directDownloadUrl,
+            Literal(f"/file/{thumbnail_filepath_id}/{user_id}.jpg"),
+        )
+    )
 
 
 def has_image(user_id):
-    expected_imagepath = os.path.join("output", "profile_images", os.path.join(user_id, ".jpg"))
+    expected_imagepath = os.path.join(
+        "output", "profile_images", os.path.join(user_id, ".jpg")
+    )
     if not os.path.isfile(expected_imagepath):
         return False
     return True

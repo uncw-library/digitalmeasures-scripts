@@ -23,13 +23,7 @@ office_staff = {
     "ramadanik",
     "wrightlk",
 }
-nonfac = {
-    "sartarellij",
-    "powells",
-    "tirrelld",
-    "ndoyea",
-    "winebrakej",
-}
+nonfac = {"sartarellij", "powells", "tirrelld", "ndoyea", "winebrakej"}
 preignored_users = set().union(generic_users, office_staff, IRP, nonfac)
 
 

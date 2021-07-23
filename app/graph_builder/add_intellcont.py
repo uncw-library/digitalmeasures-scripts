@@ -29,10 +29,7 @@ def add_intellcont_to_graph(graph, intellcont):
         VIVO.Newsletter,
     }
     # bookish types are using the book publisher as publisher
-    bookish_types = {
-        BIBO.Book,
-        BIBO.Chapter,
-    }
+    bookish_types = {BIBO.Book, BIBO.Chapter}
 
     if content_type in bookish_types:
         add_book(graph, intellcont)
@@ -189,7 +186,6 @@ def add_book(graph, intellcont):
     page_nums = intellcont["page_nums"].strip()
     startpage, endpage = split_pages(page_nums)
     content_type = map_contypes(intellcont["contype"])
-
 
     graph.add((publisher_node, RDF.type, BIBO.Publisher))
     graph.add((publisher_node, RDFS.label, Literal(publisher)))

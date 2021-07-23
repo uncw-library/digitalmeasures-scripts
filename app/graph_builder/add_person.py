@@ -47,11 +47,13 @@ def add_person_info_to_graph(graph, parsed_user):
     graph.add((phoneNS, RDF.type, VCARD.Telephone))
     graph.add((phoneNS, VCARD.telephone, Literal(phone)))
 
+
 def build_phone_num(person):
     ophone1 = person["ophone1"]
     ophone2 = person["ophone2"]
     ophone3 = person["ophone3"]
     return f"{ophone1}.{ophone2}.{ophone3}"
+
 
 def add_personal_interests_to_graph(graph, parsed_user):
     user_id = parsed_user["userId"]

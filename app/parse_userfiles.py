@@ -311,7 +311,7 @@ def get_person(record_elem):
         "ophone1": get_child_text(PCI_elem, "OPHONE1"),
         "ophone2": get_child_text(PCI_elem, "OPHONE2"),
         "ophone3": get_child_text(PCI_elem, "OPHONE3"),
-        "email": get_child_text(PCI_elem, "EMAIL"),    
+        "email": get_child_text(PCI_elem, "EMAIL"),
     }
     return person
 
