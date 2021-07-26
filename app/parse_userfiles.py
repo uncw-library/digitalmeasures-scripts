@@ -361,6 +361,7 @@ def parse_intellcont(intellcont_elem):
         "contype": get_child_text(intellcont_elem, "CONTYPE"),
         "status": get_child_text(intellcont_elem, "STATUS"),
         "title": get_child_text(intellcont_elem, "TITLE"),
+        "title_secondary": get_child_text(intellcont_elem, "TITLE_SECONDARY"),
         "publisher": get_child_text(intellcont_elem, "PUBLISHER"),
         "date_published": get_child_text(intellcont_elem, "PUB_START"),
         "doi": get_child_text(intellcont_elem, "DOI"),
