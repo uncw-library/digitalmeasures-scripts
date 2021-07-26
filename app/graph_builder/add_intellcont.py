@@ -180,7 +180,7 @@ def add_book(graph, intellcont):
     publisher_node = NS[f"{book_id}b"]
 
     publisher = intellcont["publisher"].strip()
-    title = intellcont["title"].strip()
+    title = f"{intellcont['title'].strip()} -- {intellcont['title_secondary'].strip()}"
     abstract = intellcont["abstract"].strip()
     doi = intellcont["doi"].strip()
     volume = intellcont["volume"].strip()
