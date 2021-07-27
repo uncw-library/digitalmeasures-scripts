@@ -13,5 +13,6 @@ def scrape_image(userfile):
     parsed = parse_userfile(userfile)
     # photo_identifier = parsed['some_identifier']
     # scrape photo from somewhere
-    # put photo in PERSON_IMAGES_DIR
-    # possibly split filepath in /nnn/nnn/nn/filename.jpg as vivo file_storage_root expects
+    # put photo in PERSON_IMAGES_DIR/nnn/nnn/nn9/99/nnnnnnnn.jpg as vivo file_storage_root expects
+    # make thumbnail image
+    # put thumbnail in PERSON_IMAGES_DIR/nnn/nnn/nn3/33/nnnnnnnn.jpg
