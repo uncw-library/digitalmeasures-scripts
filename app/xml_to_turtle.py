@@ -16,6 +16,7 @@ USERFILES_DIR = os.path.join("output", "users")
 INCLUDE_DIR = os.path.join("output", "included_users")
 EXCLUDE_DIR = os.path.join("output", "excluded_users")
 TEST_PARSED_USERS = os.path.join("output", "test_parsed_users")
+PERSON_IMAGES_DIR = os.path.join("output", "person_images")
 
 
 def hard_refresh(USERFILES_DIR, INCLUDE_DIR, EXCLUDE_DIR):
@@ -38,10 +39,10 @@ def write_turtle(graph):
 
 
 if __name__ == "__main__":
-    # hard_refresh(USERFILES_DIR, INCLUDE_DIR, EXCLUDE_DIR)
-    # scrape_digitalmeasures()
-    scrape_profile_images()
-    # parse_and_pretty_print(USERFILES_DIR, TEST_PARSED_USERS)
-    # split_include_exclude(USERFILES_DIR, INCLUDE_DIR, EXCLUDE_DIR)
+    hard_refresh(USERFILES_DIR, INCLUDE_DIR, EXCLUDE_DIR)
+    scrape_digitalmeasures()
+    scrape_profile_images(USERFILES_DIR, PERSON_IMAGES_DIR)
+    parse_and_pretty_print(USERFILES_DIR, TEST_PARSED_USERS)
+    split_include_exclude(USERFILES_DIR, INCLUDE_DIR, EXCLUDE_DIR)
     graph = make_graph(INCLUDE_DIR)
     write_turtle(graph)

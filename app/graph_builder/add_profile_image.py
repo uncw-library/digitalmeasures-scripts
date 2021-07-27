@@ -92,7 +92,7 @@ def add_profile_image(graph, user_id, fac_node):
 
 def has_image(user_id):
     expected_imagepath = os.path.join(
-        "output", "profile_images", os.path.join(user_id, ".jpg")
+        "output", "person_images", os.path.join(user_id, ".jpg")
     )
     if not os.path.isfile(expected_imagepath):
         return False
