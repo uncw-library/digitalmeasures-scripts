@@ -23,7 +23,7 @@ The output folder includes:
         DM files for users we are currently including
     profile_images\
         placeholder for when we implement photo feature
-    test_parsed_users\
+    parsed_users\
         human-readable files for each user.  parsed DM files
     turtles\
         turtle files created by xml_to_turtle.  Each turtle file is a complete Vivo dataset.  Only one should be imported into Vivo.  The filename includes creation date, to help identify the most recent one.

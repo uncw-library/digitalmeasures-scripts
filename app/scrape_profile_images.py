@@ -2,6 +2,7 @@ import os
 
 from parse_userfiles import parse_userfile
 
+
 def scrape_profile_images(USERFILES_DIR, PERSON_IMAGES_DIR):
     os.makedirs(PERSON_IMAGES_DIR, exist_ok=True)
     for file in os.listdir(USERFILES_DIR):
