@@ -24,9 +24,10 @@ office_staff = {
     "wrightlk",
 }
 nonfac = {"sartarellij", "powells", "tirrelld", "ndoyea", "winebrakej"}
-preignored_users = set().union(generic_users, office_staff, IRP, nonfac)
+exclude_bad_data = {"battenk", }
+force_exclude = set().union(generic_users, office_staff, IRP, nonfac, exclude_bad_data)
 
-force_include = {""}
+force_include = {"crowes", "fritzlerp", "saundersn"}
 
 
 def split_include_exclude(source_dir, include_dir, exclude_dir):
@@ -38,7 +39,8 @@ def split_include_exclude(source_dir, include_dir, exclude_dir):
 
     all_filenames = sorted(os.listdir(source_dir))
     for filename in all_filenames:
-        if filename in force_include:
+        username = filename.split(".")[0]
+        if username in force_include:
             copy(source_dir, include_dir, filename)
             continue
         if filename in already_processed:
@@ -55,7 +57,7 @@ def split_include_exclude(source_dir, include_dir, exclude_dir):
 
 def is_exclude(source_dir, filename, selenium_driver):
     username = filename.split(".")[0]
-    if username in preignored_users:
+    if username in force_exclude:
         return True
 
     filepath = os.path.join(source_dir, filename)

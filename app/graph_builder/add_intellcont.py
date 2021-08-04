@@ -110,7 +110,10 @@ def add_journal_article(graph, intellcont):
     journal = NS[f"{article_id}b"]
 
     publisher = intellcont["publisher"].strip()
-    title = intellcont["title"].strip()
+    if intellcont['title_secondary']:
+        title = f"{intellcont['title'].strip()} -- {intellcont['title_secondary'].strip()}"
+    else:
+        title = intellcont["title"].strip()
     abstract = intellcont["abstract"].strip()
     doi = intellcont["doi"].strip()
     volume = intellcont["volume"].strip()
@@ -177,7 +180,10 @@ def add_book(graph, intellcont):
     publisher_node = NS[f"{book_id}b"]
 
     publisher = intellcont["publisher"].strip()
-    title = f"{intellcont['title'].strip()} -- {intellcont['title_secondary'].strip()}"
+    if intellcont['title_secondary']:
+        title = f"{intellcont['title'].strip()} -- {intellcont['title_secondary'].strip()}"
+    else:
+        title = intellcont["title"].strip()
     abstract = intellcont["abstract"].strip()
     doi = intellcont["doi"].strip()
     volume = intellcont["volume"].strip()
