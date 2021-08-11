@@ -1,0 +1,12 @@
+version: '3.7'
+
+services:
+  xml-to-turtle:
+    build: .
+    container_name: xml-to-turtle
+    image: libapps-admin.uncw.edu:8000/randall-dev/digitalmeasures-scripts/xml-to-turtle
+    env_file: .env
+    volumes:
+      - ./app:/app
+    restart: always
+

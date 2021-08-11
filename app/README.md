@@ -61,4 +61,9 @@ The output folder includes:
         However, all of these photos in app/profile_photos must be then synced to the vivo server or dev box.
         Doing this in a painless manner is valuable.
 
+- Automatic vivo update:
+    - Move app/output/turtles/userdata.ttl to vivo's vivo/home/rdf/abox/filegraph/ folder.
+    - (use a script or symlink to move the userdata.ttl file)
+    - Then restart vivo.
+
 

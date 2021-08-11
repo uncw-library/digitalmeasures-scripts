@@ -11,3 +11,4 @@ extracting/userpass.*
 .DS_Store
 userpass.txt
 app/test_parsed_users/
+.env

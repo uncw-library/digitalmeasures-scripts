@@ -1,0 +1,4 @@
+#run python script every minute
+SHELL=/bin/bash
+BASH_ENV=/container.env
+15 16 * * * python3 /app/xml_to_turtle.py > /proc/1/fd/1 2>/proc/1/fd/2

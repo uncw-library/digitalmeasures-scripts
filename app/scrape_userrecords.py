@@ -51,6 +51,8 @@ def get_response(endpoint, creds, limiter=""):
     return response
 
 
+# The following section allows this file to be run with `python scrap_userrecords.py`,
+# but normally another script will directly call get_usernames() and do_userfiles()
 if __name__ == "__main__":
     creds = {"user": "uncw/web_services_vivo", "password": getpass.getpass()}
     usernames = get_usernames(creds)

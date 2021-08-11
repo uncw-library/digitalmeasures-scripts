@@ -24,7 +24,7 @@ office_staff = {
     "wrightlk",
 }
 nonfac = {"sartarellij", "powells", "tirrelld", "ndoyea", "winebrakej"}
-exclude_bad_data = {"battenk", }
+exclude_bad_data = {"battenk"}
 force_exclude = set().union(generic_users, office_staff, IRP, nonfac, exclude_bad_data)
 
 force_include = {"crowes", "fritzlerp", "saundersn"}
