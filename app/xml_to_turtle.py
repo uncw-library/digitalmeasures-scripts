@@ -12,12 +12,12 @@ from exclude_users import split_include_exclude
 from graph_builder.make_graph import make_graph
 from scrape_profile_images import scrape_profile_images
 
-USERFILES_DIR = os.path.join("output", "users")
-INCLUDE_DIR = os.path.join("output", "included_users")
-EXCLUDE_DIR = os.path.join("output", "excluded_users")
-PARSED_USERS_DIR = os.path.join("output", "parsed_users")
-PERSON_IMAGES_DIR = os.path.join("output", "person_images")
-TURTLES_DIR = os.path.join("output", "turtles")
+USERFILES_DIR = os.path.join("..", "output", "users")
+INCLUDE_DIR = os.path.join("..", "output", "included_users")
+EXCLUDE_DIR = os.path.join("..", "output", "excluded_users")
+PARSED_USERS_DIR = os.path.join("..", "output", "parsed_users")
+PERSON_IMAGES_DIR = os.path.join("..", "output", "person_images")
+TURTLES_DIR = os.path.join("..", "output", "turtles")
 
 
 def hard_refresh(USERFILES_DIR, INCLUDE_DIR, EXCLUDE_DIR, PARSED_USERS_DIR):
@@ -47,6 +47,8 @@ if __name__ == "__main__":
     dm_user, dm_pass = os.getenv("DMUSER"), os.getenv("DMPASS")
     if not (dm_user and dm_pass):
         print("please create a file .env with DMUSER and DMPASS")
+        exit()
+
     # hard_refresh(USERFILES_DIR, INCLUDE_DIR, EXCLUDE_DIR, PARSED_USERS_DIR)
     scrape_digitalmeasures(dm_user, dm_pass)
     scrape_profile_images(USERFILES_DIR, PERSON_IMAGES_DIR)

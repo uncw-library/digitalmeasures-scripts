@@ -36,12 +36,10 @@ RUN /usr/bin/crontab /etc/cron.d/crontab
 
 WORKDIR /app
 COPY app/ .
+RUN chown -R root:root /app
 
 COPY docker-entrypoint.sh /
-ENTRYPOINT ["/docker-entrypoint.sh"]
 RUN chmod +x /docker-entrypoint.sh
 
-RUN ls -la /
-
+ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["/docker-entrypoint.sh"]
-
