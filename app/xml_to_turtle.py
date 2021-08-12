@@ -56,11 +56,11 @@ def write_turtle(TURTLES_DIR, graph):
 
 
 def change_permissions(OUTPUT_ROOT):
-    for root, dirs, files in os.walk(path):  
-        for momo in dirs:  
-            os.chmod(os.path.join(root, momo), 770)
-    for momo in files:
-        os.chmod(os.path.join(root, momo), 660)
+    for root, dirs, files in os.walk(OUTPUT_ROOT):  
+        for dir in dirs:
+            os.chmod(os.path.join(root, dir), 770)
+    for file in files:
+        os.chmod(os.path.join(root, file), 660)
 
 
 if __name__ == "__main__":
@@ -78,5 +78,5 @@ if __name__ == "__main__":
     split_include_exclude(USERFILES_DIR, INCLUDE_DIR, EXCLUDE_DIR)
     graph = make_graph(INCLUDE_DIR)
     write_turtle(TURTLES_DIR, graph)
-    change_permissions(OUTPUT_ROOT)
+    # change_permissions(OUTPUT_ROOT)
 
