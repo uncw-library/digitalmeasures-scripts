@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # xml_to_turtle.py
 
 import os
@@ -12,12 +12,13 @@ from exclude_users import split_include_exclude
 from graph_builder.make_graph import make_graph
 from scrape_profile_images import scrape_profile_images
 
-USERFILES_DIR = os.path.join("..", "output", "users")
-INCLUDE_DIR = os.path.join("..", "output", "included_users")
-EXCLUDE_DIR = os.path.join("..", "output", "excluded_users")
-PARSED_USERS_DIR = os.path.join("..", "output", "parsed_users")
-PERSON_IMAGES_DIR = os.path.join("..", "output", "person_images")
-TURTLES_DIR = os.path.join("..", "output", "turtles")
+OUTPUT_ROOT = os.path.join("..", "output")
+USERFILES_DIR = os.path.join(OUTPUT_ROOT, "users")
+INCLUDE_DIR = os.path.join(OUTPUT_ROOT, "included_users")
+EXCLUDE_DIR = os.path.join(OUTPUT_ROOT, "excluded_users")
+PARSED_USERS_DIR = os.path.join(OUTPUT_ROOT, "parsed_users")
+PERSON_IMAGES_DIR = os.path.join(OUTPUT_ROOT, "person_images")
+TURTLES_DIR = os.path.join(OUTPUT_ROOT, "turtles")
 
 
 # removes the source data, so new data can be pull
@@ -27,8 +28,8 @@ def hard_reset(USERFILES_DIR, INCLUDE_DIR, EXCLUDE_DIR, PARSED_USERS_DIR):
         shutil.rmtree(folder, ignore_errors=True)
 
 # non-destructive folder creation
-def make_output_dirs(USERFILES_DIR, INCLUDE_DIR, EXCLUDE_DIR, PARSED_USERS_DIR):
-    for folder in (USERFILES_DIR, INCLUDE_DIR, EXCLUDE_DIR, PARSED_USERS_DIR):
+def make_output_dirs(USERFILES_DIR, INCLUDE_DIR, EXCLUDE_DIR, PARSED_USERS_DIR, TURTLES_DIR):
+    for folder in (USERFILES_DIR, INCLUDE_DIR, EXCLUDE_DIR, PARSED_USERS_DIR, TURTLES_DIR):
         os.makedirs(folder, exist_ok=True)
 
 
@@ -51,6 +52,14 @@ def write_turtle(TURTLES_DIR, graph):
     print(f"latest version copied to {latest}")
 
 
+def change_permissions(OUTPUT_ROOT):
+    for root, dirs, files in os.walk(path):  
+        for momo in dirs:  
+            os.chmod(os.path.join(root, momo), 777)
+    for momo in files:
+        os.chmod(os.path.join(root, momo), 666)
+
+
 if __name__ == "__main__":
     dm_user, dm_pass = os.getenv("DMUSER"), os.getenv("DMPASS")
     if not (dm_user and dm_pass):
@@ -58,10 +67,11 @@ if __name__ == "__main__":
         exit()
 
     hard_reset(USERFILES_DIR, INCLUDE_DIR, EXCLUDE_DIR, PARSED_USERS_DIR)
-    make_output_dirs(USERFILES_DIR, INCLUDE_DIR, EXCLUDE_DIR, PARSED_USERS_DIR)
+    make_output_dirs(USERFILES_DIR, INCLUDE_DIR, EXCLUDE_DIR, PARSED_USERS_DIR, TURTLES_DIR)
     scrape_digitalmeasures(dm_user, dm_pass)
     scrape_profile_images(USERFILES_DIR, PERSON_IMAGES_DIR)
     parse_and_pretty_print(USERFILES_DIR, PARSED_USERS_DIR)
     split_include_exclude(USERFILES_DIR, INCLUDE_DIR, EXCLUDE_DIR)
     graph = make_graph(INCLUDE_DIR)
     write_turtle(TURTLES_DIR, graph)
+    change_permissions(OUTPUT_ROOT)
