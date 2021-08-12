@@ -8,5 +8,5 @@ services:
     env_file: .env
     volumes:
       - ./app:/app
+      - ./output:/output
     restart: always
-

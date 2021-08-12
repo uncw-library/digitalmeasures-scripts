@@ -18,11 +18,16 @@ EXCLUDE_DIR = os.path.join("..", "output", "excluded_users")
 PARSED_USERS_DIR = os.path.join("..", "output", "parsed_users")
 PERSON_IMAGES_DIR = os.path.join("..", "output", "person_images")
 TURTLES_DIR = os.path.join("..", "output", "turtles")
+VIVO_MOUNTED_FOLDER = os.path.join("..", "output", "vivo_shared")
 
 
 def hard_refresh(USERFILES_DIR, INCLUDE_DIR, EXCLUDE_DIR, PARSED_USERS_DIR):
     for folder in (USERFILES_DIR, INCLUDE_DIR, EXCLUDE_DIR, PARSED_USERS_DIR):
         shutil.rmtree(folder, ignore_errors=True)
+
+
+def make_output_dirs(USERFILES_DIR, INCLUDE_DIR, EXCLUDE_DIR, PARSED_USERS_DIR, VIVO_MOUNTED_FOLDER):
+    for folder in (USERFILES_DIR, INCLUDE_DIR, EXCLUDE_DIR, PARSED_USERS_DIR, VIVO_MOUNTED_FOLDER):
         os.makedirs(folder, exist_ok=True)
 
 
@@ -32,15 +37,20 @@ def scrape_digitalmeasures(dm_user, dm_pass):
     scrape_userrecords.do_userfiles(usernames, creds, USERFILES_DIR)
 
 
-def write_turtle(graph):
-    filetext = graph.serialize(format="turtle").decode("utf-8")
-
-    os.makedirs(TURTLES_DIR, exist_ok=True)
+def write_turtle(TURTLES_DIR, graph):
+    filetext = graph.serialize(format="turtle")
     turtle_files = [os.path.join(TURTLES_DIR, i) for i in os.listdir(TURTLES_DIR)]
     for i in turtle_files:
         os.remove(i)
     with open(os.path.join(TURTLES_DIR, "userdata.ttl"), "w") as f:
         f.write(filetext)
+    print(f"userdata.ttl written to {TURTLES_DIR}")
+
+
+def share_userturtle_to_vivo(TURTLES_DIR, VIVO_MOUNTED_FOLDER):
+    source = os.path.join(TURTLES_DIR, "userdata.ttl")
+    dest = os.path.join(VIVO_MOUNTED_FOLDER, "userdata.ttl")
+    shutil.copy2(source, dest)
 
 
 if __name__ == "__main__":
@@ -50,9 +60,11 @@ if __name__ == "__main__":
         exit()
 
     # hard_refresh(USERFILES_DIR, INCLUDE_DIR, EXCLUDE_DIR, PARSED_USERS_DIR)
+    make_output_dirs(USERFILES_DIR, INCLUDE_DIR, EXCLUDE_DIR, PARSED_USERS_DIR, VIVO_MOUNTED_FOLDER)
     scrape_digitalmeasures(dm_user, dm_pass)
     scrape_profile_images(USERFILES_DIR, PERSON_IMAGES_DIR)
     parse_and_pretty_print(USERFILES_DIR, PARSED_USERS_DIR)
     split_include_exclude(USERFILES_DIR, INCLUDE_DIR, EXCLUDE_DIR)
     graph = make_graph(INCLUDE_DIR)
-    write_turtle(graph)
+    write_turtle(TURTLES_DIR, graph)
+    share_userturtle_to_vivo(TURTLES_DIR, VIVO_MOUNTED_FOLDER)

@@ -24,7 +24,6 @@ def get_usernames(creds):
 
 
 def do_userfiles(usernames, creds, output_dir):
-    os.makedirs(output_dir, exist_ok=True)
     existing_files = os.listdir(output_dir)
 
     for username in sorted(usernames):
