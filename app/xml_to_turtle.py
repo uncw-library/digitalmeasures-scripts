@@ -79,3 +79,4 @@ if __name__ == "__main__":
     graph = make_graph(INCLUDE_DIR)
     write_turtle(TURTLES_DIR, graph)
     change_permissions(OUTPUT_ROOT)
+
