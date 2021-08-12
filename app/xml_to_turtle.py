@@ -5,6 +5,7 @@ import os
 import getpass
 import shutil
 from datetime import datetime
+from dotenv import load_dotenv
 
 import scrape_userrecords
 from parse_userfiles import parse_and_pretty_print
@@ -61,6 +62,7 @@ def change_permissions(OUTPUT_ROOT):
 
 
 if __name__ == "__main__":
+    load_dotenv()
     dm_user, dm_pass = os.getenv("DMUSER"), os.getenv("DMPASS")
     if not (dm_user and dm_pass):
         print("please create a file .env with DMUSER and DMPASS")
