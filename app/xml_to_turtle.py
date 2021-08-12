@@ -18,16 +18,17 @@ EXCLUDE_DIR = os.path.join("..", "output", "excluded_users")
 PARSED_USERS_DIR = os.path.join("..", "output", "parsed_users")
 PERSON_IMAGES_DIR = os.path.join("..", "output", "person_images")
 TURTLES_DIR = os.path.join("..", "output", "turtles")
-VIVO_MOUNTED_FOLDER = os.path.join("..", "output", "vivo_shared")
 
 
-def hard_refresh(USERFILES_DIR, INCLUDE_DIR, EXCLUDE_DIR, PARSED_USERS_DIR):
+# removes the source data, so new data can be pull
+# for dev, you may wish to comment out the hard_reset step
+def hard_reset(USERFILES_DIR, INCLUDE_DIR, EXCLUDE_DIR, PARSED_USERS_DIR):
     for folder in (USERFILES_DIR, INCLUDE_DIR, EXCLUDE_DIR, PARSED_USERS_DIR):
         shutil.rmtree(folder, ignore_errors=True)
 
-
-def make_output_dirs(USERFILES_DIR, INCLUDE_DIR, EXCLUDE_DIR, PARSED_USERS_DIR, VIVO_MOUNTED_FOLDER):
-    for folder in (USERFILES_DIR, INCLUDE_DIR, EXCLUDE_DIR, PARSED_USERS_DIR, VIVO_MOUNTED_FOLDER):
+# non-destructive folder creation
+def make_output_dirs(USERFILES_DIR, INCLUDE_DIR, EXCLUDE_DIR, PARSED_USERS_DIR):
+    for folder in (USERFILES_DIR, INCLUDE_DIR, EXCLUDE_DIR, PARSED_USERS_DIR):
         os.makedirs(folder, exist_ok=True)
 
 
@@ -39,18 +40,15 @@ def scrape_digitalmeasures(dm_user, dm_pass):
 
 def write_turtle(TURTLES_DIR, graph):
     filetext = graph.serialize(format="turtle")
-    turtle_files = [os.path.join(TURTLES_DIR, i) for i in os.listdir(TURTLES_DIR)]
-    for i in turtle_files:
-        os.remove(i)
-    with open(os.path.join(TURTLES_DIR, "userdata.ttl"), "w") as f:
+    now = datetime.now().timestamp()
+    now_file = os.path.join(TURTLES_DIR, f"vivo_import_{now}.ttl")
+    with open(now_file, "w") as f:
         f.write(filetext)
-    print(f"userdata.ttl written to {TURTLES_DIR}")
+    print(f"New turtle written to {now_file}")
 
-
-def share_userturtle_to_vivo(TURTLES_DIR, VIVO_MOUNTED_FOLDER):
-    source = os.path.join(TURTLES_DIR, "userdata.ttl")
-    dest = os.path.join(VIVO_MOUNTED_FOLDER, "userdata.ttl")
-    shutil.copy2(source, dest)
+    latest = os.path.join(TURTLES_DIR, "userdata.ttl") 
+    shutil.copy2(now_file, latest)
+    print(f"latest version copied to {latest}")
 
 
 if __name__ == "__main__":
@@ -59,12 +57,11 @@ if __name__ == "__main__":
         print("please create a file .env with DMUSER and DMPASS")
         exit()
 
-    # hard_refresh(USERFILES_DIR, INCLUDE_DIR, EXCLUDE_DIR, PARSED_USERS_DIR)
-    make_output_dirs(USERFILES_DIR, INCLUDE_DIR, EXCLUDE_DIR, PARSED_USERS_DIR, VIVO_MOUNTED_FOLDER)
+    hard_reset(USERFILES_DIR, INCLUDE_DIR, EXCLUDE_DIR, PARSED_USERS_DIR)
+    make_output_dirs(USERFILES_DIR, INCLUDE_DIR, EXCLUDE_DIR, PARSED_USERS_DIR)
     scrape_digitalmeasures(dm_user, dm_pass)
     scrape_profile_images(USERFILES_DIR, PERSON_IMAGES_DIR)
     parse_and_pretty_print(USERFILES_DIR, PARSED_USERS_DIR)
     split_include_exclude(USERFILES_DIR, INCLUDE_DIR, EXCLUDE_DIR)
     graph = make_graph(INCLUDE_DIR)
     write_turtle(TURTLES_DIR, graph)
-    share_userturtle_to_vivo(TURTLES_DIR, VIVO_MOUNTED_FOLDER)

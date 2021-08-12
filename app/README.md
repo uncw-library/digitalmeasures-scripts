@@ -26,7 +26,7 @@ The output folder includes:
     parsed_users\
         human-readable files for each user.  parsed DM files
     turtles\
-        turtle files created by xml_to_turtle.  Each turtle file is a complete Vivo dataset.  Only one should be imported into Vivo.  The filename includes creation date, to help identify the most recent one.
+        turtle files created by xml_to_turtle.  Each turtle file is a complete Vivo dataset.  Only one should be imported into Vivo.  The filename includes creation date, to help identify the most recent one.  The latest output is userdata.ttl
     users\
         all DM files, both those we are including and those we are excluding.
     
