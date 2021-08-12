@@ -42,6 +42,8 @@ def scrape_digitalmeasures(dm_user, dm_pass):
 
 def write_turtle(TURTLES_DIR, graph):
     filetext = graph.serialize(format="turtle")
+    if type(filetext) != str:
+        filetext = filetext.decode("utf-8")
     now = datetime.now().timestamp()
     now_file = os.path.join(TURTLES_DIR, f"vivo_import_{now}.ttl")
     with open(now_file, "w") as f:
