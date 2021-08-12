@@ -35,7 +35,7 @@ def parse_and_pretty_print(source_dir, output_dir):
         file, ext = os.path.splitext(filename)
         dest_filepath = os.path.join(output_dir, f"{file}.txt")
         with open(dest_filepath, "w") as f:
-            prettytext = pprint.pformat(parsed_user, width=120, sort_dicts=False)
+            prettytext = pprint.pformat(parsed_user, width=120)
             f.write(prettytext)
 
 
