@@ -2,7 +2,7 @@
 
 A turtle file contains all the DM user data that we wish to import into Vivo.  A single turtle file holds all the users.
 
-### How to use it (non-docker approach):
+### How to dev box (non-docker approach):
 
 install python3, lxml, selenium, and geckodriver
 
@@ -15,7 +15,7 @@ from a python3 venv:
 
 it will ask for your DM password.
 
-### How to use it (docker approach):
+### How to dev box (docker approach):
 
 - create a file digitalmeasures-scripts/.env with contents:
 
@@ -92,3 +92,7 @@ The output folder includes:
         However, all of these photos in app/profile_photos must be then synced to the vivo server or dev box.
         Doing this in a painless manner is valuable.
 
+#### How to production (non-docker)
+
+Vivo is at randall-vivo.uncw.edu:/usr/local/VIVO.  digitalmeasures-scripts is at randall-vivo.uncw.edu:/usr/local/digitalmeasures-scripts.  I recommend git push/pull to the production rather than editing the code on production.
+There are a few cron jobs at `sudo crontab -e` that run xml_to_turtle.py, then copy the file to Vivo, then restart vivo. 

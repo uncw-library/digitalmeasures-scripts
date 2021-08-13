@@ -13,7 +13,8 @@ from exclude_users import split_include_exclude
 from graph_builder.make_graph import make_graph
 from scrape_profile_images import scrape_profile_images
 
-OUTPUT_ROOT = os.path.join("..", "output")
+APP_ROOT = os.path.split(os.path.realpath(__file__))[0]
+OUTPUT_ROOT = os.path.join(APP_ROOT, "..", "output")
 USERFILES_DIR = os.path.join(OUTPUT_ROOT, "users")
 INCLUDE_DIR = os.path.join(OUTPUT_ROOT, "included_users")
 EXCLUDE_DIR = os.path.join(OUTPUT_ROOT, "excluded_users")
