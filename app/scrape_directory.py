@@ -1,5 +1,7 @@
 # scrape_directory.py
 
+import os
+
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
@@ -7,12 +9,14 @@ from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
+APP_ROOT = os.path.split(os.path.realpath(__file__))[0]
+LOG_FILE = os.path.join(APP_ROOT, "geckodriver.log")
 
 class SeleniumDriver:
     def __init__(self):
         options = Options()
         options.add_argument("-headless")
-        self.driver = webdriver.Firefox(executable_path="geckodriver", options=options)
+        self.driver = webdriver.Firefox(executable_path="geckodriver", options=options, service_log_path=LOG_FILE)
 
     def lookup_directory(self, firstname="", lastname=""):
         self.driver.get("https://itsappserv01.uncw.edu/directory/")

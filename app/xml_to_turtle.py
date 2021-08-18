@@ -70,7 +70,7 @@ if __name__ == "__main__":
     if not (dm_user and dm_pass):
         print("please create a file .env with DMUSER and DMPASS")
         exit()
-
+    
     hard_reset(USERFILES_DIR, INCLUDE_DIR, EXCLUDE_DIR, PARSED_USERS_DIR)
     make_output_dirs(USERFILES_DIR, INCLUDE_DIR, EXCLUDE_DIR, PARSED_USERS_DIR, TURTLES_DIR)
     scrape_digitalmeasures(dm_user, dm_pass)
