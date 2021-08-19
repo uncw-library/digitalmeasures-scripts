@@ -78,11 +78,7 @@ def change_permissions(OUTPUT_ROOT):
         os.chmod(os.path.join(root, file), 660)
 
 
-if __name__ == "__main__":
-    setup_logging(APP_ROOT)
-    args = parse_args()
-
-    load_dotenv()
+def main_loop(flags):
     dm_user, dm_pass = os.getenv("DMUSER"), os.getenv("DMPASS")
     if not (dm_user and dm_pass):
         logging.warning("")
@@ -90,7 +86,7 @@ if __name__ == "__main__":
         logging.warning("")
         exit()
 
-    if not "no_reset" in args:
+    if not "no_reset" in flags:
         hard_reset(USERFILES_DIR, INCLUDE_DIR, EXCLUDE_DIR, PARSED_USERS_DIR)
     else:
         logging.info("skipping hard refresh of dm data")
@@ -105,3 +101,12 @@ if __name__ == "__main__":
     graph = make_graph(INCLUDE_DIR)
     write_turtle(TURTLES_DIR, graph)
     # change_permissions(OUTPUT_ROOT)
+
+if __name__ == "__main__":
+    setup_logging(APP_ROOT)
+    flags = parse_args()
+    load_dotenv()
+    try:
+        main_loop(flags)
+    except Exception:
+        logging.warning("Uncaught fatal error", exc_info=True)
