@@ -92,6 +92,7 @@ if __name__ == "__main__":
 
     if not "no_reset" in args:
         hard_reset(USERFILES_DIR, INCLUDE_DIR, EXCLUDE_DIR, PARSED_USERS_DIR)
+    else:
         logging.info("skipping hard refresh of dm data")
 
     make_output_dirs(
