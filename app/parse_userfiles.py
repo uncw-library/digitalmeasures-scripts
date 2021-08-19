@@ -2,6 +2,7 @@
 
 import os
 import pprint
+import logging
 
 from lxml import etree as ET
 
@@ -37,6 +38,7 @@ def parse_and_pretty_print(source_dir, output_dir):
         with open(dest_filepath, "w") as f:
             prettytext = pprint.pformat(parsed_user, width=120)
             f.write(prettytext)
+    logging.info("parse and prettyprint complete")
 
 
 ## Actual code

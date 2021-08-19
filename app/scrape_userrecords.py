@@ -3,6 +3,7 @@
 import getpass
 import os
 import unicodedata
+import logging
 
 from lxml import etree as ET
 import requests
@@ -13,9 +14,8 @@ def get_usernames(creds):
     endpoint = "/login/service/v4/User"
     response = get_response(endpoint, creds)
     if response.status_code != 200:
-        print(
-            f"non-200 status code from {endpoint}\nIs the user/password correct?  Is the server down?"
-        )
+        logging.warning(f"non-200 status code from {endpoint}")
+        logging.warning("Is the user/password correct?  Is the server down?")
         exit()
     usersEtree = ET.fromstring(response.content)
     users = usersEtree.findall(".//User")
@@ -35,7 +35,8 @@ def do_userfiles(usernames, creds, output_dir):
         endpoint = f"/login/service/v4/SchemaData/INDIVIDUAL-ACTIVITIES-University/USERNAME:{username}"
         response = get_response(endpoint, creds)
         if response.status_code != 200:
-            print(f"non-200 status code from {endpoint}\n\tfile not downloaded")
+            logging.info(f"non-200 status code from {endpoint}")
+            logging.info(f"skipped {username}")
             continue
         with open(f"{output_dir}/{username}.xml", "w", encoding="utf8") as f:
             f.write(unicodedata.normalize("NFKC", response.content.decode("utf-8")))

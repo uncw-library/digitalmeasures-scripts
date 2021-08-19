@@ -2,6 +2,7 @@
 
 import os
 import shutil
+import logging
 
 from scrape_directory import SeleniumDriver
 from parse_userfiles import parse_userfile
@@ -51,8 +52,7 @@ def split_include_exclude(source_dir, include_dir, exclude_dir):
             copy(source_dir, include_dir, filename)
 
     selenium_driver.driver.quit()
-
-    return include_dir, exclude_dir
+    logging.info("split include exclude complete")
 
 
 def is_exclude(source_dir, filename, selenium_driver):
@@ -147,7 +147,6 @@ def is_in_directory(parsed_user, selenium_driver):
         firstname=firstname, lastname=lastname
     )
     if not directory_results:
-        # print(parsed_user.get("username"))
         return False
 
     return True
