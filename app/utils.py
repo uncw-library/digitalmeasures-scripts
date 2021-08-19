@@ -1,6 +1,7 @@
 import io
 import logging
 import os
+import argparse
 
 
 def setup_logging(APP_ROOT):
@@ -21,3 +22,17 @@ def setup_logging(APP_ROOT):
     string_handler.setFormatter(formatter)
     logging.getLogger("").addHandler(string_handler)
     return logging_string
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="fetch digitalmeasure and convert into turtle"
+    )
+    parser.add_argument(
+        "--no_reset",
+        action='store_true',
+        default=argparse.SUPPRESS,
+        help="prevents full reset of dm data (dev use)"
+    )
+    args = parser.parse_args()
+    return args

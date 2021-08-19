@@ -1,14 +1,18 @@
 ## Digital Measures to Turtle
 
+Flags:
+  - help 
+  --no_reset  (prevents deletion of local dm folder.  dev timesaver)
+
 #### Folders
 
 - app/
     python code for creating a turtle file from DigitalMeasures (DM) repo
-    Turtle file can be imported into Vivo
 - experiments/
     jupyter notebooks for investigating the DM output
 - output/
     non-git-committed folder holding output of app/xml_to_turtle.py
+    you can import the userdata.ttl turtle file into Vivo
 
 #### Files that support all approaches
 

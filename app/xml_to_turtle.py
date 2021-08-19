@@ -13,7 +13,7 @@ from parse_userfiles import parse_and_pretty_print
 from exclude_users import split_include_exclude
 from graph_builder.make_graph import make_graph
 from scrape_profile_images import scrape_profile_images
-from utils import setup_logging
+from utils import setup_logging, parse_args
 
 
 APP_ROOT = os.path.split(os.path.realpath(__file__))[0]
@@ -80,6 +80,7 @@ def change_permissions(OUTPUT_ROOT):
 
 if __name__ == "__main__":
     setup_logging(APP_ROOT)
+    args = parse_args()
 
     load_dotenv()
     dm_user, dm_pass = os.getenv("DMUSER"), os.getenv("DMPASS")
@@ -89,7 +90,10 @@ if __name__ == "__main__":
         logging.warning("")
         exit()
 
-    # hard_reset(USERFILES_DIR, INCLUDE_DIR, EXCLUDE_DIR, PARSED_USERS_DIR)
+    if not "no_reset" in args:
+        hard_reset(USERFILES_DIR, INCLUDE_DIR, EXCLUDE_DIR, PARSED_USERS_DIR)
+        logging.info("skipping hard refresh of dm data")
+
     make_output_dirs(
         USERFILES_DIR, INCLUDE_DIR, EXCLUDE_DIR, PARSED_USERS_DIR, TURTLES_DIR
     )
