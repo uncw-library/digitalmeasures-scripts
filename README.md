@@ -2,7 +2,9 @@
 
 Flags:
   - help 
-  --no_reset  (prevents deletion of local dm folder.  dev timesaver)
+  --no_reset  (prevents reset of local dm folder.)
+
+i.e., `python3 app/xml_to_turtle.py --no-reset` will skip the DM data pull & use the previously pulled DM data.  This saves a ton of time during dev work.
 
 #### Folders
 
