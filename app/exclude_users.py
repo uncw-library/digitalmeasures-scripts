@@ -16,6 +16,7 @@ office_staff = {
     "baileyj",
     "beaudoinh",
     "deltsi",
+    "depompeisd",
     "grays",
     "hartmanc",
     "lindgrens",
