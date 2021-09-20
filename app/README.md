@@ -2,6 +2,14 @@
 
 A turtle file contains all the DM user data that we wish to import into Vivo.  A single turtle file holds all the users.
 
+### Flags
+
+    --help
+
+    --no-reset
+
+        Skip the data refresh step.  Use the previously pulled DM data.  For saving time during dev.
+
 ### How to dev box (non-docker approach):
 
 install python3, lxml, selenium, and geckodriver

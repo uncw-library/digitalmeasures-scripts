@@ -26,13 +26,13 @@ def setup_logging(APP_ROOT):
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description="fetch digitalmeasure and convert into turtle"
+        description="fetch digitalmeasure data, then convert into turtle"
     )
     parser.add_argument(
         "--no_reset",
-        action='store_true',
+        action="store_true",
         default=argparse.SUPPRESS,
-        help="prevents full reset of dm data (dev use)"
+        help="prevents full reset of dm data (dev use)",
     )
     args = parser.parse_args()
     return args
