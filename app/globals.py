@@ -59,7 +59,6 @@ COLL_DEPT = {
             "Business Analytics, Information Systems, and Supply Chain": "195135006723",
             "Accountancy and Business Law": "195135006722",
             "Marketing": "195135006721",
-            "Office of the Dean, Cameron School of Business": "168540397570",
         },
     },
     # "Chancellor's Office": {

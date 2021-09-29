@@ -4,7 +4,7 @@ Flags:
   - help 
   --no_reset  (prevents reset of local dm folder.)
 
-i.e., `python3 app/xml_to_turtle.py --no-reset` will skip the DM data pull & use the previously pulled DM data.  This saves a ton of time during dev work.
+i.e., `python3 app/xml_to_turtle.py --no_reset` will skip the DM data pull & use the previously pulled DM data.  This saves a ton of time during dev work.
 
 
 Python venv:  This is the hardest part of python development.  If you use Anaconda or Conda, then they automatically start a python venv (good thing).  Otherwise you'll have to create/start one manually.  Python venv manages your python dependencies so that you don't pollute your system python with weird packages.  I recommend Anaconda or Miniconda or Conda for python dev, because it does this tricky part automatically.
