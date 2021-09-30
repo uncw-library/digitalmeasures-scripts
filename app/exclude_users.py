@@ -24,6 +24,7 @@ office_staff = {
     "murrayd",
     "ramadanik",
     "wrightlk",
+    "helmsc",
 }
 nonfac = {"sartarellij", "powells", "tirrelld", "ndoyea", "winebrakej"}
 exclude_bad_data = {"battenk"}
