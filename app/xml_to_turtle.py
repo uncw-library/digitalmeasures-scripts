@@ -78,6 +78,21 @@ def change_permissions(OUTPUT_ROOT):
         os.chmod(os.path.join(root, file), 660)
 
 
+def remove_old_turtles(TURTLES_DIR):
+    turtles = [
+        os.path.join(root, file)
+        for root, dirs, files in os.walk(TURTLES_DIR)
+        for file in files
+        if "vivo_import_" in file
+    ]
+    # exclude most recent one, then delete the rest
+    for_deletion = sorted(turtles)
+    for_deletion.pop()
+    for filepath in for_deletion:
+        os.remove(filepath)
+    logging.info(f"deleted old turtle files: {for_deletion}")
+
+
 def main_loop(flags):
     dm_user, dm_pass = os.getenv("DMUSER"), os.getenv("DMPASS")
     if not (dm_user and dm_pass):
@@ -100,6 +115,7 @@ def main_loop(flags):
     split_include_exclude(USERFILES_DIR, INCLUDE_DIR, EXCLUDE_DIR)
     graph = make_graph(INCLUDE_DIR)
     write_turtle(TURTLES_DIR, graph)
+    remove_old_turtles(TURTLES_DIR)
     # change_permissions(OUTPUT_ROOT)
 
 if __name__ == "__main__":
