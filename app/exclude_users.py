@@ -24,6 +24,7 @@ office_staff = {
     "murrayd",
     "ramadanik",
     "wrightlk",
+    "helmsc",
 }
 nonfac = {"sartarellij", "powells", "tirrelld", "ndoyea", "winebrakej"}
 exclude_bad_data = {"battenk"}
@@ -107,8 +108,12 @@ def is_in_excluded_dept(parsed_user):
     # each user may have multiple likely_coll_dept.
     # loop through them all, and unflag if any match.
     exclude = True
+    included_colls = (
+        "College of Health and Human Services",
+        "Cameron School of Business",
+    )
     for i in likely_coll_dept:
-        if i["coll_name"] == "College of Health and Human Services":
+        if i["coll_name"] in included_colls:
             exclude = False
         if i["dept_name"] == "Randall Library":
             exclude = False

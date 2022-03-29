@@ -50,18 +50,17 @@ COLL_DEPT = {
     # but the ADMIN_DEP uid's are guarenteed to never equal a uid we may carry over.
     # Essentially, trying to hardcode a uid that could never collide with another element's uid.
     # Each org will need to change these uids.  I suggest using id values from the source ADMIN_DEP elements.
-    # "Cameron School of Business": {
-    #     "uid": "168540397569",
-    #     "depts": {
-    #         "Management": "168541353987",
-    #         "Economics and Finance": "168541353984",
-    #         "Office of the Dean, Cameron School of Business": "168541353986",
-    #         "Business Analytics, Information Systems, and Supply Chain": "195135006723",
-    #         "Accountancy and Business Law": "195135006722",
-    #         "Marketing": "195135006721",
-    #         "Office of the Dean, Cameron School of Business": "168540397570",
-    #     },
-    # },
+    "Cameron School of Business": {
+        "uid": "168540397569",
+        "depts": {
+            "Management": "168541353987",
+            "Economics and Finance": "168541353984",
+            "Office of the Dean, Cameron School of Business": "168541353986",
+            "Business Analytics, Information Systems, and Supply Chain": "195135006723",
+            "Accountancy and Business Law": "195135006722",
+            "Marketing": "195135006721",
+        },
+    },
     # "Chancellor's Office": {
     #     "uid": "195210027010",
     #     "depts": {
