@@ -372,6 +372,7 @@ def parse_intellcont(intellcont_elem):
         "volume": get_child_text(intellcont_elem, "VOLUME"),
         "issue": get_child_text(intellcont_elem, "ISSUE"),
         "page_nums": get_child_text(intellcont_elem, "PAGENUM"),
+        "public_avail": get_child_text(intellcont_elem, "PUBLICAVAIL")
     }
     return intellcont
 

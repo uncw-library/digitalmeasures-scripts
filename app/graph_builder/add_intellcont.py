@@ -7,6 +7,8 @@ from globals import NS, BIBO, OBO, VIVO
 def add_intellcont_to_graph(graph, intellcont):
     if intellcont["status"] != "Published":
         return
+    if intellcont["public_avail"] == "No":
+        return
 
     content_type = map_contypes(intellcont["contype"])
     undecided_types = {
