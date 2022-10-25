@@ -60,10 +60,7 @@ def add_user_to_graph(graph, parsed_user):
     add_person_info_to_graph(graph, parsed_user)
     add_personal_interests_to_graph(graph, parsed_user)
     add_job_positions_to_graph(graph, parsed_user, coll_dept_guess)
-
-    # When profile images are wired up, uncomment this line:
-
-    # add_profile_image(graph, user_id, fac)
+    add_profile_image(graph, user_id, fac)
 
     for admin_assignment in parsed_user["admin_assignments"]:
         add_admin_assignment_to_graph(graph, admin_assignment, fac, coll_dept_guess)

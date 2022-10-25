@@ -40,10 +40,10 @@ def add_profile_image(graph, user_id, fac_node):
 		which can be accessed at http://localhost:8080/file/n1234567890333/1234567890.jpg
 	"""
 
-    file_id = f"n{user_id}"  # n7074
-    filepath_id = f"n{user_id}999"  # n4443
-    thumbnail_id = f"n{user_id}666"  # n637
-    thumbnail_filepath_id = f"n{user_id}333"  # n5645
+    file_id = f"n{user_id}"  # n5800
+    filepath_id = f"n{user_id}999"  # n5093
+    thumbnail_id = f"n{user_id}666"  # n2332
+    thumbnail_filepath_id = f"n{user_id}333"  # n3632
 
     file_node = NS[file_id]
     filepath_node = NS[filepath_id]
@@ -72,7 +72,7 @@ def add_profile_image(graph, user_id, fac_node):
     )
 
     graph.add((thumbnail_node, RDF.type, VITRO.File))
-    graph.add((thumbnail_node, VITRO.filename, Literal(f"{user_id}.jpg")))
+    graph.add((thumbnail_node, VITRO.filename, Literal(f"thumbnail_{user_id}.jpg")))
     graph.add((thumbnail_node, VITRO.mimeType, Literal("image/jpeg")))
     graph.add((thumbnail_node, VITRO.modTime, Literal(now, datatype=XSD.dateTime)))
     graph.add((thumbnail_node, VITRO.downloadLocation, thumbnail_filepath_node))
@@ -85,15 +85,15 @@ def add_profile_image(graph, user_id, fac_node):
         (
             thumbnail_filepath_node,
             VITRO.directDownloadUrl,
-            Literal(f"/file/{thumbnail_filepath_id}/{user_id}.jpg"),
+            Literal(f"/file/{thumbnail_filepath_id}/thumbnail_{user_id}.jpg"),
         )
     )
 
 
-def has_image(user_id):
-    expected_imagepath = os.path.join(
-        "output", "person_images", os.path.join(user_id, ".jpg")
-    )
-    if not os.path.isfile(expected_imagepath):
-        return False
-    return True
+# def has_image(user_id):
+#     expected_imagepath = os.path.join(
+#         "output", "image", "a~n", , os.path.join(user_id, ".jpg")
+#     )
+#     if not os.path.isfile(expected_imagepath):
+#         return False
+#     return True

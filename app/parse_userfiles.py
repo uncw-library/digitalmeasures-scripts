@@ -304,7 +304,6 @@ def get_person(record_elem):
         "middlename": get_child_text(PCI_elem, "MNAME"),
         "lastname": get_child_text(PCI_elem, "LNAME"),
         "suffix": get_child_text(PCI_elem, "SUFFIX"),
-        "photo": get_child_text(PCI_elem, "UPLOAD_PHOTO"),
         "endpos": get_child_text(PCI_elem, "ENDPOS"),
         "bio": get_child_text(PCI_elem, "BIO"),
         "teaching_interests": get_child_text(PCI_elem, "TEACHING_INTERESTS"),
@@ -372,7 +371,7 @@ def parse_intellcont(intellcont_elem):
         "volume": get_child_text(intellcont_elem, "VOLUME"),
         "issue": get_child_text(intellcont_elem, "ISSUE"),
         "page_nums": get_child_text(intellcont_elem, "PAGENUM"),
-        "public_avail": get_child_text(intellcont_elem, "PUBLICAVAIL")
+        "public_avail": get_child_text(intellcont_elem, "PUBLICAVAIL"),
     }
     return intellcont
 

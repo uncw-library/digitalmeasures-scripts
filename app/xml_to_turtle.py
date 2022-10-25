@@ -94,7 +94,7 @@ def remove_old_turtles(TURTLES_DIR):
 
 
 def main_loop(flags):
-    dm_user, dm_pass = os.getenv("DMUSER"), os.getenv("DMPASS")
+    dm_user, dm_pass = os.getenv("DM_API_USER"), os.getenv("DM_API_PASS")
     if not (dm_user and dm_pass):
         logging.warning("")
         logging.warning("please create a file .env with DMUSER= and DMPASS=")
@@ -110,13 +110,14 @@ def main_loop(flags):
         USERFILES_DIR, INCLUDE_DIR, EXCLUDE_DIR, PARSED_USERS_DIR, TURTLES_DIR
     )
     scrape_digitalmeasures(dm_user, dm_pass)
-    scrape_profile_images(USERFILES_DIR, PERSON_IMAGES_DIR)
     parse_and_pretty_print(USERFILES_DIR, PARSED_USERS_DIR)
     split_include_exclude(USERFILES_DIR, INCLUDE_DIR, EXCLUDE_DIR)
+    scrape_profile_images(INCLUDE_DIR)
     graph = make_graph(INCLUDE_DIR)
     write_turtle(TURTLES_DIR, graph)
     remove_old_turtles(TURTLES_DIR)
     # change_permissions(OUTPUT_ROOT)
+
 
 if __name__ == "__main__":
     setup_logging(APP_ROOT)
