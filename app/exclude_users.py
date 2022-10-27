@@ -1,17 +1,16 @@
 # exclude_users.py
 
-import os
-import shutil
+import json
 import logging
+import os
 
 from scrape_directory import SeleniumDriver
-from parse_userfiles import parse_userfile
 from graph_builder.make_graph import conjure_coll_dept_assignment
 
 
-generic_users = {"facultytest"}
+GENERIC_USERS = {"facultytest"}
 IRP = {"morristr"}
-office_staff = {
+OFFICE_STAFF = {
     "armstrongg",
     "baileyj",
     "beaudoinh",
@@ -27,46 +26,34 @@ office_staff = {
     "helmsc",
     "smithzr"
 }
-nonfac = {"sartarellij", "powells", "tirrelld", "ndoyea", "winebrakej"}
-exclude_bad_data = {"battenk"}
-force_exclude = set().union(generic_users, office_staff, IRP, nonfac, exclude_bad_data)
+NONFAC = {"sartarellij", "powells", "tirrelld", "ndoyea", "winebrakej"}
+OTHER_BAD_DATA = {"battenk"}
+FORCE_EXCLUDE = set().union(GENERIC_USERS, OFFICE_STAFF, IRP, NONFAC, OTHER_BAD_DATA)
 
-force_include = {"crowes", "fritzlerp", "saundersn"}
+FORCE_INCLUDE = {"crowes", "fritzlerp", "saundersn"}
 
 
-def split_include_exclude(source_dir, include_dir, exclude_dir):
-    excluded_files = {i for i in os.listdir(exclude_dir)}
-    included_files = {i for i in os.listdir(include_dir)}
-    already_processed = excluded_files.union(included_files)
-
+def remove_excluded_users(parsed_users_dir):
     selenium_driver = SeleniumDriver()
-
-    all_filenames = sorted(os.listdir(source_dir))
+    all_filenames = sorted(os.listdir(parsed_users_dir))
     for filename in all_filenames:
-        username = filename.split(".")[0]
-        if username in force_include:
-            copy(source_dir, include_dir, filename)
-            continue
-        if filename in already_processed:
-            continue
-        if is_exclude(source_dir, filename, selenium_driver):
-            copy(source_dir, exclude_dir, filename)
-        else:
-            copy(source_dir, include_dir, filename)
-
+        if is_exclude(parsed_users_dir, filename, selenium_driver):
+            os.remove(os.path.join(parsed_users_dir, filename))
+            print(f"removed {filename}")
     selenium_driver.driver.quit()
-    logging.info("split include exclude complete")
+    logging.info("removed excluded users from parsed_users dir")
 
 
-def is_exclude(source_dir, filename, selenium_driver):
-    username = filename.split(".")[0]
-    if username in force_exclude:
-        return True
-
-    filepath = os.path.join(source_dir, filename)
-    parsed_user = parse_userfile(filepath)
+def is_exclude(parsed_users_dir, filename, selenium_driver):
+    filepath = os.path.join(parsed_users_dir, filename)
+    with open(filepath, 'r') as f:
+        parsed_user = json.load(f)
 
     if not parsed_user:
+        return True
+    if is_force_include(parsed_user):
+        return False
+    if is_force_exclude(parsed_user):
         return True
     if is_only_do_not_use(parsed_user):
         return True
@@ -79,10 +66,20 @@ def is_exclude(source_dir, filename, selenium_driver):
 
     return False
 
+def is_force_include(parsed_user):
+    if parsed_user.get("username") in FORCE_INCLUDE:
+        return True
+    return False
+
+def is_force_exclude(parsed_user):
+    if parsed_user.get("username") in FORCE_EXCLUDE:
+        return True
+    return False
+
 
 def is_only_do_not_use(parsed_user):
-    # some users have a department name with the text "DO NOT USE"
-    # exclude the user if all their departments names are such
+    # some users have a department name with the text "DO NOT USE".
+    # exclude the user if all their departments names are such.
     listed_depts = [dept for dept in parsed_user.get("current_depts") if dept]
     minus_do_not_use_depts = [
         dept
@@ -107,7 +104,7 @@ def is_in_excluded_dept(parsed_user):
         return True
 
     # each user may have multiple likely_coll_dept.
-    # loop through them all, and unflag if any match.
+    # loop through them all, and make exclude == False if any match.
     exclude = True
     included_colls = (
         "College of Health and Human Services",
@@ -122,6 +119,8 @@ def is_in_excluded_dept(parsed_user):
     if exclude:
         return True
 
+    return False
+
 
 def is_in_directory(parsed_user, selenium_driver):
     # directory requires each namepart have 2+ characters.
@@ -129,14 +128,6 @@ def is_in_directory(parsed_user, selenium_driver):
     # same for some one with short firstname.
     # Erring on the side of including those with short names.
 
-    # DEV CODE !!!!!!!!
-    # with open("exclude_users/not_in_directory.txt", "r") as f:
-    #     directory_results = [i.strip() for i in f.readlines()]
-    # if parsed_user.get("username") in directory_results:
-    #     return False
-    # return True
-
-    # production code !!!!!!!!!
     try:
         firstname = parsed_user.get("person").get("firstname")
     except AttributeError:
@@ -158,9 +149,3 @@ def is_in_directory(parsed_user, selenium_driver):
         return False
 
     return True
-
-
-def copy(source_dir, dest_dir, filename):
-    source = os.path.join(source_dir, filename)
-    dest = os.path.join(dest_dir, filename)
-    shutil.copy2(source, dest)

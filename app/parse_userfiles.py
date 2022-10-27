@@ -1,8 +1,9 @@
 # parse_userfiles.py
 
+import json
+import logging
 import os
 import pprint
-import logging
 
 from lxml import etree as ET
 
@@ -34,10 +35,10 @@ def parse_and_pretty_print(source_dir, output_dir):
     for filename in all_filenames:
         parsed_user = parse_userfile(os.path.join(source_dir, filename))
         file, ext = os.path.splitext(filename)
-        dest_filepath = os.path.join(output_dir, f"{file}.txt")
+        dest_filepath = os.path.join(output_dir, f"{file}.json")
+        json_text = json.dumps(parsed_user, indent=2, sort_keys=True)
         with open(dest_filepath, "w") as f:
-            prettytext = pprint.pformat(parsed_user, width=120)
-            f.write(prettytext)
+            f.write(json_text)
     logging.info("parse and prettyprint complete")
 
 
