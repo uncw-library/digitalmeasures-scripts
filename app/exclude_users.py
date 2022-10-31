@@ -24,7 +24,7 @@ OFFICE_STAFF = {
     "ramadanik",
     "wrightlk",
     "helmsc",
-    "smithzr"
+    "smithzr",
 }
 NONFAC = {"sartarellij", "powells", "tirrelld", "ndoyea", "winebrakej"}
 OTHER_BAD_DATA = {"battenk"}
@@ -46,7 +46,7 @@ def remove_excluded_users(parsed_users_dir):
 
 def is_exclude(parsed_users_dir, filename, selenium_driver):
     filepath = os.path.join(parsed_users_dir, filename)
-    with open(filepath, 'r') as f:
+    with open(filepath, "r") as f:
         parsed_user = json.load(f)
 
     if not parsed_user:
@@ -66,10 +66,12 @@ def is_exclude(parsed_users_dir, filename, selenium_driver):
 
     return False
 
+
 def is_force_include(parsed_user):
     if parsed_user.get("username") in FORCE_INCLUDE:
         return True
     return False
+
 
 def is_force_exclude(parsed_user):
     if parsed_user.get("username") in FORCE_EXCLUDE:
@@ -109,7 +111,7 @@ def is_in_excluded_dept(parsed_user):
     included_colls = (
         "College of Health and Human Services",
         "Cameron School of Business",
-        "College of Arts and Sciences",
+        # "College of Arts and Sciences",
     )
     for i in likely_coll_dept:
         if i["coll_name"] in included_colls:
