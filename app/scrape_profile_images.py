@@ -1,68 +1,83 @@
+import json
 import os
+
 from smbclient import open_file
 
-from parse_userfiles import parse_userfile
+
+def scrape_profile_images(PARSED_USERS_DIR, PERSON_IMAGES_DIR):
+    for file in os.listdir(PARSED_USERS_DIR):
+        filepath = os.path.join(PARSED_USERS_DIR, file)
+        with open(filepath, "r") as f:
+            parsed_user = json.load(f)
+        scrape_succeeded = scrape_image(parsed_user, PERSON_IMAGES_DIR)
+        add_photo_metadata(filepath, parsed_user, scrape_succeeded)
 
 
-def scrape_profile_images(INCLUDE_DIR):
-    for file in os.listdir(INCLUDE_DIR):
-        scrape_image(os.path.join(INCLUDE_DIR, file))
-
-
-def scrape_image(userfile):
-    print(userfile)
-    parsed = parse_userfile(userfile)
-    if not parsed or not parsed.get('person'):
-        return
-    photo_url = parsed.get("person", {}).get("photo_url")
-    userid = parsed.get("userId")
-    print(type(photo_url), len(photo_url), photo_url, type(userid), len(userid), userid)
-    can_proceed = photo_url and userid
-    if not can_proceed:
-        return
+def scrape_image(parsed_user, PERSON_IMAGES_DIR):
+    if not has_image_info(parsed_user):
+        print("not has_image_info:", parsed_user.get("userId"))
+        return False
+    photo_url = parsed_user.get("person", {}).get("photo_url")
+    userid = parsed_user.get("userId")
     photo = fetch_photo(photo_url, userid)
     if not photo:
-        return
-    write_main_image(photo, userid)
-    write_thumb_image(photo, userid)
+        print("not photo")
+        return False
+    write_main_image(photo, userid, PERSON_IMAGES_DIR)
+    write_thumb_image(photo, userid, PERSON_IMAGES_DIR)
+    return True
+
+
+def has_image_info(parsed_user):
+    if not parsed_user:
+        return False
+    if not parsed_user.get("userId"):
+        return False
+    if not parsed_user.get("person"):
+        return False
+    if not parsed_user.get("person", {}).get("photo_url"):
+        return False
+    return True
 
 
 def fetch_photo(photo_url, userid, skip_existing=False):
     *dirs, filename = photo_url.split("/")
     source = "//itsdigmes01/digitalmeasuresdata/{}/{}".format("/".join(dirs), filename)
     username, password = os.getenv("DM_SAMBA_USER"), os.getenv("DM_SAMBA_PASS")
+    print("source:", source)
     try:
         with open_file(source, username=username, password=password, mode="rb") as fd:
             photo = fd.read()
     except:
+        print("none found")
         return None
     return photo
 
 
-def write_main_image(photo, userid, skip_existing=False):
+def write_main_image(photo, userid, PERSON_IMAGES_DIR):
     # the tail matches what's in ./graph_builder/add_profile_images.py
     # '999' is the tail for main images & '333' for thumbnails
     threes = add_tail_and_break_into_threes(userid, "999")
-    dest_path = f"output/image/a~n/{threes}"
+    dest_path = f"{PERSON_IMAGES_DIR}/a~n/{threes}"
     dest = f"{dest_path}/{userid}.jpg"
+    print("writing to main:", dest)
     os.makedirs(dest_path, exist_ok=True)
-    if os.path.exists(dest) and skip_existing:
-        return
     with open(dest, "wb") as f:
         f.write(photo)
+        print("wrote")
 
 
-def write_thumb_image(photo, userid, skip_existing=False):
+def write_thumb_image(photo, userid, PERSON_IMAGES_DIR):
     # the tail matches what's in ./graph_builder/add_profile_images.py
     # '999' is the tail for main images & '333' for thumbnails
     threes = add_tail_and_break_into_threes(userid, "333")
-    dest_path = f"output/image/a~n/{threes}"
+    dest_path = f"{PERSON_IMAGES_DIR}/a~n/{threes}"
     dest = f"{dest_path}/thumbnail_{userid}.jpg"
+    print("writing to thumb:", dest)
     os.makedirs(dest_path, exist_ok=True)
-    if os.path.exists(dest) and skip_existing:
-        return
     with open(dest, "wb") as f:
         f.write(photo)
+        print("wrote")
 
 
 def add_tail_and_break_into_threes(userid, tail):
@@ -77,3 +92,12 @@ def add_tail_and_break_into_threes(userid, tail):
     if path[-1] == "/":
         path = path[:-1]
     return path
+
+
+def add_photo_metadata(filepath, parsed_user, scrape_succeeded):
+    if not parsed_user.get("local_metadata"):
+        parsed_user["local_metadata"] = dict()
+    parsed_user["local_metadata"]["image_scrape_succeeded"] = scrape_succeeded
+    json_text = json.dumps(parsed_user, indent=2, sort_keys=True)
+    with open(filepath, "w") as f:
+        f.write(json_text)

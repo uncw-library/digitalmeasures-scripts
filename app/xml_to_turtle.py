@@ -18,31 +18,20 @@ from utils import setup_logging, parse_args
 APP_ROOT = os.path.split(os.path.realpath(__file__))[0]
 OUTPUT_ROOT = os.path.join(APP_ROOT, "..", "output")
 USERFILES_DIR = os.path.join(OUTPUT_ROOT, "users")
-INCLUDE_DIR = os.path.join(OUTPUT_ROOT, "included_users")
 PARSED_USERS_DIR = os.path.join(OUTPUT_ROOT, "parsed_users")
 PERSON_IMAGES_DIR = os.path.join(OUTPUT_ROOT, "person_images")
 TURTLES_DIR = os.path.join(OUTPUT_ROOT, "turtles")
 
 
 # removes the source data, so new data can be pulled.
-# Running the app with --no_reset flag will skip this slow step
-def hard_reset(USERFILES_DIR, INCLUDE_DIR, PARSED_USERS_DIR, PERSON_IMAGES_DIR):
-    for folder in (USERFILES_DIR, INCLUDE_DIR, PARSED_USERS_DIR, PERSON_IMAGES_DIR):
+# --no_reset flag will skip this slow step
+def hard_reset(USERFILES_DIR, PARSED_USERS_DIR, PERSON_IMAGES_DIR):
+    for folder in (USERFILES_DIR, PARSED_USERS_DIR, PERSON_IMAGES_DIR):
         shutil.rmtree(folder, ignore_errors=True)
-    logging.info("hard reset complete")
 
 
-# non-destructive folder creation
-def make_output_dirs(
-    USERFILES_DIR, INCLUDE_DIR, PARSED_USERS_DIR, TURTLES_DIR, PERSON_IMAGES_DIR
-):
-    for folder in (
-        USERFILES_DIR,
-        INCLUDE_DIR,
-        PARSED_USERS_DIR,
-        TURTLES_DIR,
-        PERSON_IMAGES_DIR
-    ):
+def make_output_dirs(USERFILES_DIR, PARSED_USERS_DIR, PERSON_IMAGES_DIR, TURTLES_DIR):
+    for folder in (USERFILES_DIR, PARSED_USERS_DIR, PERSON_IMAGES_DIR, TURTLES_DIR):
         os.makedirs(folder, exist_ok=True)
     logging.info("output folders created")
 
@@ -82,7 +71,7 @@ def remove_old_turtles(TURTLES_DIR):
         os.path.join(root, file)
         for root, dirs, files in os.walk(TURTLES_DIR)
         for file in files
-        if "vivo_import_" in file
+        if file != "userdata.ttl"
     ]
     # exclude most recent one, then delete the rest
     for_deletion = sorted(turtles)
@@ -101,17 +90,19 @@ def main_loop(flags):
         exit()
 
     if not "no_reset" in flags:
-        hard_reset(USERFILES_DIR, INCLUDE_DIR, PARSED_USERS_DIR, PERSON_IMAGES_DIR)
+        hard_reset(USERFILES_DIR, PARSED_USERS_DIR, PERSON_IMAGES_DIR)
+        logging.info("hard reset complete")
     else:
         logging.info("skipping hard refresh of dm data")
 
-    make_output_dirs(USERFILES_DIR, INCLUDE_DIR, PARSED_USERS_DIR, TURTLES_DIR, PERSON_IMAGES_DIR)
+    make_output_dirs(USERFILES_DIR, PARSED_USERS_DIR, TURTLES_DIR, PERSON_IMAGES_DIR)
     # scrape_digitalmeasures(dm_user, dm_pass)
-    # parse_and_pretty_print(USERFILES_DIR, PARSED_USERS_DIR)
+    parse_and_pretty_print(USERFILES_DIR, PARSED_USERS_DIR)
     remove_excluded_users(PARSED_USERS_DIR)
-    # scrape_profile_images(INCLUDE_DIR, PERSON_IMAGES_DIR)
-    # graph = make_graph(INCLUDE_DIR)
-    # write_turtle(TURTLES_DIR, graph)
+    # uncomment this entrypoint when the code works
+    scrape_profile_images(PARSED_USERS_DIR, PERSON_IMAGES_DIR)
+    graph = make_graph(PARSED_USERS_DIR)
+    write_turtle(TURTLES_DIR, graph)
     # remove_old_turtles(TURTLES_DIR)
     # change_permissions(OUTPUT_ROOT)
 

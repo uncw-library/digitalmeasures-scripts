@@ -7,7 +7,7 @@ from rdflib.namespace import RDF, XSD
 from globals import NS, VITRO
 
 
-def add_profile_image(graph, user_id, fac_node):
+def add_profile_image(graph, parsed_user, fac_node):
 
     """
     If we do add a profile image node when there is no source image,
@@ -40,6 +40,11 @@ def add_profile_image(graph, user_id, fac_node):
 		which can be accessed at http://localhost:8080/file/n1234567890333/1234567890.jpg
 	"""
 
+    # quick exit if person's image was not scrapable
+    if not parsed_user.get("local_metadata", {}).get("image_scrape_succeeded"):
+        return
+
+    user_id = parsed_user["userId"]
     file_id = f"n{user_id}"  # n5800
     filepath_id = f"n{user_id}999"  # n5093
     thumbnail_id = f"n{user_id}666"  # n2332
@@ -88,12 +93,3 @@ def add_profile_image(graph, user_id, fac_node):
             Literal(f"/file/{thumbnail_filepath_id}/thumbnail_{user_id}.jpg"),
         )
     )
-
-
-# def has_image(user_id):
-#     expected_imagepath = os.path.join(
-#         "output", "image", "a~n", , os.path.join(user_id, ".jpg")
-#     )
-#     if not os.path.isfile(expected_imagepath):
-#         return False
-#     return True

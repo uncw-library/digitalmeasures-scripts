@@ -1,8 +1,8 @@
+import json
 import os
 import rdflib
 
 from globals import NS, OBO, VIVO, VCARD
-from parse_userfiles import parse_userfile
 from conjure_dept import conjure_coll_dept_assignment
 
 from .add_orgs import add_orgs_to_graph
@@ -19,17 +19,18 @@ from .add_profile_image import add_profile_image
 # from .include_while_developing import include_while_developing
 
 
-def make_graph(include_dir):
+def make_graph(PARSED_USERS_DIR):
     graph = init_graph()
     add_orgs_to_graph(graph)
 
-    for filename in sorted(os.listdir(include_dir)):
+    for filename in sorted(os.listdir(PARSED_USERS_DIR)):
         # -- Development shortcircuit, to exclude most members --
         # username = os.path.split(filename)[0]
         # if not include_while_developing(username):
         #    continue
-        filepath = os.path.join(include_dir, filename)
-        parsed_user = parse_userfile(filepath)
+        filepath = os.path.join(PARSED_USERS_DIR, filename)
+        with open(filepath, "r") as f:
+            parsed_user = json.load(f)
         add_user_to_graph(graph, parsed_user)
     return graph
 
@@ -60,7 +61,7 @@ def add_user_to_graph(graph, parsed_user):
     add_person_info_to_graph(graph, parsed_user)
     add_personal_interests_to_graph(graph, parsed_user)
     add_job_positions_to_graph(graph, parsed_user, coll_dept_guess)
-    add_profile_image(graph, user_id, fac)
+    add_profile_image(graph, parsed_user, fac)
 
     for admin_assignment in parsed_user["admin_assignments"]:
         add_admin_assignment_to_graph(graph, admin_assignment, fac, coll_dept_guess)
