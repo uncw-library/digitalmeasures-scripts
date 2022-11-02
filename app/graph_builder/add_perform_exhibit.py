@@ -55,19 +55,19 @@ def add_perform_exhibit_to_graph(graph, perform_exhibit, user_id):
         graph.add((performer_node, OBO.RO_0000052, fac_node))
         graph.add((fac_node, OBO.RO_0000053, performer_node))
 
-    start_date = perform_exhibit["start_start"] or perform_exhibit["start_end"]
-    end_date = perform_exhibit["end_start"] or perform_exhibit["end_end"]
-    if start_date:
+    date_start = perform_exhibit["date_start"]
+    date_end = perform_exhibit["date_end"]
+    if date_start:
         graph.add((datetime_interval, RDF.type, VIVO.DateTimeInterval))
         graph.add((datetime_interval, VIVO.start, datetime_start))
         graph.add((datetime_start, RDF.type, VIVO.DateTimeValue))
         graph.add(
-            (datetime_start, VIVO.dateTime, Literal(start_date, datatype=XSD.date))
+            (datetime_start, VIVO.dateTime, Literal(date_start, datatype=XSD.date))
         )
         graph.add((datetime_start, VIVO.dateTimePrecision, VIVO.yearPrecision))
-    if end_date:
+    if date_end:
         graph.add((datetime_interval, RDF.type, VIVO.DateTimeInterval))
         graph.add((datetime_interval, VIVO.end, datetime_end))
         graph.add((datetime_end, RDF.type, VIVO.DateTimeValue))
-        graph.add((datetime_end, VIVO.dateTime, Literal(end_date, datatype=XSD.date)))
+        graph.add((datetime_end, VIVO.dateTime, Literal(date_end, datatype=XSD.date)))
         graph.add((datetime_end, VIVO.dateTimePrecision, VIVO.yearPrecision))

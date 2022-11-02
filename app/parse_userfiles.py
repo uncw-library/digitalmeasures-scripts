@@ -42,6 +42,26 @@ def parse_and_pretty_print(source_dir, output_dir):
     logging.info("parse and prettyprint complete")
 
 
+def get_persons_involved(elem, subelem_name):
+    person_elems = elem.xpath(f"a:{subelem_name}", namespaces=NSMAP)
+    persons_involved = [parse_person(i) for i in person_elems]
+    return persons_involved
+
+
+def parse_person(person_elem):
+    person = {
+        "id": get_child_text(person_elem, "FACULTY_NAME"),
+        "role": get_child_text(person_elem, "ROLE")
+        or get_child_text(person_elem, "CONTRIBUTION"),
+        # "firstname": get_child_text(person_elem, "FNAME"),
+        # "middlename": get_child_text(person_elem, "MNAME"),
+        # "lastname": get_child_text(person_elem, "LNAME"),
+        # "student_level": get_child_text(person_elem, "STUDENT_LEVEL"),
+        # "institution": get_child_text(person_elem, "INSTITUTION"),
+    }
+    return person
+
+
 ## Actual code
 
 
@@ -77,12 +97,12 @@ def get_admins(record_elem):
 
 def parse_admin(admin_elem):
     admin = {
-        # "id": admin_elem.attrib.get("id"),
         "ac_year": get_child_text(admin_elem, "AC_YEAR"),
-        # "date_start": get_child_text(admin_elem, "YEAR_START"),
-        # "date_end": get_child_text(admin_elem, "YEAR_END"),
         "depts": parse_depts(admin_elem),
         "rank": get_child_text(admin_elem, "RANK"),
+        # "id": admin_elem.attrib.get("id"),
+        # "date_start": get_child_text(admin_elem, "YEAR_START"),
+        # "date_end": get_child_text(admin_elem, "YEAR_END"),
         # "tenure": get_child_text(admin_elem, "TENURE"),
     }
     return admin
@@ -119,12 +139,12 @@ def parse_assignment(assignment_elem):
         assignment_elem, "END_END"
     )
     assignment = {
+        "date_start": date_start,
+        "date_end": date_end,
+        "desc": get_child_text(assignment_elem, "DESC"),
         "id": assignment_elem.attrib.get("id"),
         "role": get_child_text(assignment_elem, "ROLE"),
         "scope": get_child_text(assignment_elem, "SCOPE"),
-        "desc": get_child_text(assignment_elem, "DESC"),
-        "date_start": date_start,
-        "date_end": date_end,
     }
     return assignment
 
@@ -150,10 +170,26 @@ def get_contgrants(record_elem):
 
 
 def parse_congrant(congrant_elem):
+    date_filed = get_child_text(congrant_elem, "SUB_START") or get_child_text(
+        congrant_elem, "SUB_END"
+    )
+    date_issued_start = get_child_text(congrant_elem, "START_START") or get_child_text(
+        congrant_elem, "START_START"
+    )
+    date_issued_end = get_child_text(congrant_elem, "END_START") or get_child_text(
+        congrant_elem, "END_END"
+    )
+
     congrant = {
         "id": congrant_elem.attrib.get("id"),
+        "date_filed": date_filed,
+        "date_issued_start": date_issued_start,
+        "date_issued_end": date_issued_end,
         "abstract": get_child_text(congrant_elem, "ABSTRACT"),
         "amount": get_child_text(congrant_elem, "AMOUNT"),
+        "persons_involved": get_persons_involved(congrant_elem, "CONGRANT_INVEST"),
+        "status": get_child_text(congrant_elem, "STATUS"),
+        "title": get_child_text(congrant_elem, "TITLE"),
         # "awardorg": get_child_text(congrant_elem, "AWARDORG"),
         # "classification": get_child_text(congrant_elem, "CLASSIFICATION"),
         # "dtd_end": get_child_text(congrant_elem, "DTD_END"),
@@ -165,18 +201,9 @@ def parse_congrant(congrant_elem):
         # "dty_end": get_child_text(congrant_elem, "DTY_END"),
         # "dty_start": get_child_text(congrant_elem, "DTY_START"),
         # "dty_sub": get_child_text(congrant_elem, "DTY_SUB"),
-        "end_end": get_child_text(congrant_elem, "END_END"),
-        "end_start": get_child_text(congrant_elem, "END_START"),
         # "partner": get_child_text(congrant_elem, "PARTNER"),
-        "persons_involved": get_persons_involved(congrant_elem, "CONGRANT_INVEST"),
         # "sponorg": get_child_text(congrant_elem, "SPONORG"),
-        "start_end": get_child_text(congrant_elem, "START_END"),
-        "start_start": get_child_text(congrant_elem, "START_START"),
-        "status": get_child_text(congrant_elem, "STATUS"),
-        "sub_end": get_child_text(congrant_elem, "SUB_END"),
-        "sub_start": get_child_text(congrant_elem, "SUB_START"),
         # "teaching_related": get_child_text(congrant_elem, "TEACHING_RELATED"),
-        "title": get_child_text(congrant_elem, "TITLE"),
         # "type": get_child_text(congrant_elem, "TYPE"),
         # "user_reference_creator": get_child_text(
         #     congrant_elem, "USER_REFERENCE_CREATOR"
@@ -214,6 +241,10 @@ def parse_intellprop(intellprop_elem):
         "application_start": get_child_text(intellprop_elem, "APPLICATION_START"),
         "approve_end": get_child_text(intellprop_elem, "APPROVE_END"),
         "approve_start": get_child_text(intellprop_elem, "APPROVE_START"),
+        "format": get_child_text(intellprop_elem, "FORMAT"),
+        "id_number": get_child_text(intellprop_elem, "ID_NUMBER"),
+        "persons_involved": get_persons_involved(intellprop_elem, "INTELLPROP_INVENT"),
+        "title": get_child_text(intellprop_elem, "TITLE"),
         # "dtd_application": get_child_text(intellprop_elem, "DTD_APPLICATION"),
         # "dtd_approve": get_child_text(intellprop_elem, "DTD_APPROVE"),
         # "dtd_license": get_child_text(intellprop_elem, "DTD_LICENSE"),
@@ -229,18 +260,14 @@ def parse_intellprop(intellprop_elem):
         # "dty_license": get_child_text(intellprop_elem, "DTY_LICENSE"),
         # "dty_renewal": get_child_text(intellprop_elem, "DTY_RENEWAL"),
         # "dty_submit": get_child_text(intellprop_elem, "DTY_SUBMIT"),
-        "format": get_child_text(intellprop_elem, "FORMAT"),
-        "id_number": get_child_text(intellprop_elem, "ID_NUMBER"),
         # "license_end": get_child_text(intellprop_elem, "LICENSE_END"),
         # "license_start": get_child_text(intellprop_elem, "LICENSE_START"),
         # "nationality": get_child_text(intellprop_elem, "NATIONALITY"),
         # "nations": get_child_text(intellprop_elem, "NATIONS"),
-        "persons_involved": get_persons_involved(intellprop_elem, "INTELLPROP_INVENT"),
         # "renewal_end": get_child_text(intellprop_elem, "RENEWAL_END"),
         # "renewal_start": get_child_text(intellprop_elem, "RENEWAL_START"),
         # "submit_end": get_child_text(intellprop_elem, "SUBMIT_END"),
         # "submit_start": get_child_text(intellprop_elem, "SUBMIT_START"),
-        "title": get_child_text(intellprop_elem, "TITLE"),
         # "type": get_child_text(intellprop_elem, "TYPE"),
         # "user_reference_creator": get_child_text(
         #     intellprop_elem, "USER_REFERENCE_CREATOR"
@@ -258,31 +285,36 @@ def get_perform_exhibits(record_elem):
 
 
 def parse_perform_exhibit(perform_exhibit_elem):
+    date_start = get_child_text(perform_exhibit_elem, "START_START") or get_child_text(
+        perform_exhibit_elem, "START_END"
+    )
+    date_end = get_child_text(perform_exhibit_elem, "END_START") or get_child_text(
+        perform_exhibit_elem, "END_END"
+    )
+
     perform_exhibit = {
         "id": perform_exhibit_elem.attrib.get("id"),
+        "date_start": date_start,
+        "date_end": date_end,
+        "desc": get_child_text(perform_exhibit_elem, "DESC"),
+        "name": get_child_text(perform_exhibit_elem, "NAME"),
+        "persons_involved": get_persons_involved(
+            perform_exhibit_elem, "PERFORM_EXHIBIT_CONTRIBUTERS"
+        ),
+        "sponsor": get_child_text(perform_exhibit_elem, "SPONSOR"),
+        "title": get_child_text(perform_exhibit_elem, "TITLE"),
         # "academic": get_child_text(perform_exhibit_elem, "ACADEMIC"),
         # "delivery_type": get_child_text(perform_exhibit_elem, "DELIVERY_TYPE"),
-        "desc": get_child_text(perform_exhibit_elem, "DESC"),
         # "dtd_end": get_child_text(perform_exhibit_elem, "DTD_END"),
         # "dtd_start": get_child_text(perform_exhibit_elem, "DTD_START"),
         # "dtm_end": get_child_text(perform_exhibit_elem, "DTM_END"),
         # "dtm_start": get_child_text(perform_exhibit_elem, "DTM_START"),
         # "dty_end": get_child_text(perform_exhibit_elem, "DTY_END"),
         # "dty_start": get_child_text(perform_exhibit_elem, "DTY_START"),
-        "end_end": get_child_text(perform_exhibit_elem, "END_END"),
-        "end_start": get_child_text(perform_exhibit_elem, "END_START"),
         # "invacc": get_child_text(perform_exhibit_elem, "INVACC"),
         # "location": get_child_text(perform_exhibit_elem, "LOCATION"),
-        "name": get_child_text(perform_exhibit_elem, "NAME"),
-        "persons_involved": get_persons_involved(
-            perform_exhibit_elem, "PERFORM_EXHIBIT_CONTRIBUTERS"
-        ),
         # "refereed": get_child_text(perform_exhibit_elem, "REFEREED"),
         # "scope": get_child_text(perform_exhibit_elem, "SCOPE"),
-        "sponsor": get_child_text(perform_exhibit_elem, "SPONSOR"),
-        "start_end": get_child_text(perform_exhibit_elem, "START_END"),
-        "start_start": get_child_text(perform_exhibit_elem, "START_START"),
-        "title": get_child_text(perform_exhibit_elem, "TITLE"),
         # "type": get_child_text(perform_exhibit_elem, "TYPE"),
         # "type_other": get_child_text(perform_exhibit_elem, "TYPE_OTHER"),
         # "user_reference_creator": get_child_text(
@@ -300,12 +332,9 @@ def get_person(record_elem):
 
     person = {
         "id": PCI_elem.attrib.get("id"),
-        # "prefix": get_child_text(PCI_elem, "PREFIX"),
         "firstname": get_child_text(PCI_elem, "FNAME"),
         "middlename": get_child_text(PCI_elem, "MNAME"),
         "lastname": get_child_text(PCI_elem, "LNAME"),
-        # "suffix": get_child_text(PCI_elem, "SUFFIX"),
-        # "endpos": get_child_text(PCI_elem, "ENDPOS"),
         "bio": get_child_text(PCI_elem, "BIO"),
         "teaching_interests": get_child_text(PCI_elem, "TEACHING_INTERESTS"),
         "research_interests": get_child_text(PCI_elem, "RESEARCH_INTERESTS"),
@@ -314,6 +343,9 @@ def get_person(record_elem):
         "ophone2": get_child_text(PCI_elem, "OPHONE2"),
         "ophone3": get_child_text(PCI_elem, "OPHONE3"),
         "email": get_child_text(PCI_elem, "EMAIL"),
+        # "prefix": get_child_text(PCI_elem, "PREFIX"),
+        # "suffix": get_child_text(PCI_elem, "SUFFIX"),
+        # "endpos": get_child_text(PCI_elem, "ENDPOS"),
     }
     return person
 
@@ -327,23 +359,23 @@ def get_presentations(record_elem):
 def parse_presentation(present_elem):
     presentation = {
         "id": present_elem.attrib.get("id"),
-        # "present_type": get_child_text(present_elem, "PRESENTATION_TYPE"),
+        "abstract": get_child_text(present_elem, "ABSTRACT"),
+        "date_start": get_child_text(present_elem, "DATE_START"),
+        "date_end": get_child_text(present_elem, "DATE_END"),
         "name": get_child_text(present_elem, "NAME"),
         "org": get_child_text(present_elem, "ORG"),
-        # "location": get_child_text(present_elem, "LOCATION"),
-        "title": get_child_text(present_elem, "TITLE"),
         "persons_involved": get_persons_involved(present_elem, "PRESENT_AUTH"),
+        "title": get_child_text(present_elem, "TITLE"),
         # "collab": get_child_text(present_elem, "COLLAB"),
+        # "location": get_child_text(present_elem, "LOCATION"),
         # "meettype": get_child_text(present_elem, "MEETTYPE"),
         # "scope": get_child_text(present_elem, "SCOPE"),
         # "refereed": get_child_text(present_elem, "REFEREED"),
+        # "present_type": get_child_text(present_elem, "PRESENTATION_TYPE"),
         # "pubproceed": get_child_text(present_elem, "PUBPROCEED"),
         # "pubelse": get_child_text(present_elem, "PUBELSE"),
         # "invacc": get_child_text(present_elem, "INVACC"),
         # "ceu_credit": get_child_text(present_elem, "CEU_CREDIT"),
-        "abstract": get_child_text(present_elem, "ABSTRACT"),
-        "date_start": get_child_text(present_elem, "DATE_START"),
-        "date_end": get_child_text(present_elem, "DATE_END"),
         # "user_reference_creator": get_child_text(
         #     present_elem, "USER_REFERENCE_CREATOR"
         # ),
@@ -360,38 +392,18 @@ def get_intellconts(record_elem):
 def parse_intellcont(intellcont_elem):
     intellcont = {
         "id": intellcont_elem.attrib.get("id"),
+        "abstract": get_child_text(intellcont_elem, "ABSTRACT"),
         "contype": get_child_text(intellcont_elem, "CONTYPE"),
+        "date_published": get_child_text(intellcont_elem, "PUB_START"),
+        "doi": get_child_text(intellcont_elem, "DOI"),
+        "issue": get_child_text(intellcont_elem, "ISSUE"),
+        "page_nums": get_child_text(intellcont_elem, "PAGENUM"),
+        "persons_involved": get_persons_involved(intellcont_elem, "INTELLCONT_AUTH"),
+        "public_avail": get_child_text(intellcont_elem, "PUBLICAVAIL"),
+        "publisher": get_child_text(intellcont_elem, "PUBLISHER"),
         "status": get_child_text(intellcont_elem, "STATUS"),
         "title": get_child_text(intellcont_elem, "TITLE"),
         "title_secondary": get_child_text(intellcont_elem, "TITLE_SECONDARY"),
-        "publisher": get_child_text(intellcont_elem, "PUBLISHER"),
-        "date_published": get_child_text(intellcont_elem, "PUB_START"),
-        "doi": get_child_text(intellcont_elem, "DOI"),
-        "persons_involved": get_persons_involved(intellcont_elem, "INTELLCONT_AUTH"),
-        "abstract": get_child_text(intellcont_elem, "ABSTRACT"),
         "volume": get_child_text(intellcont_elem, "VOLUME"),
-        "issue": get_child_text(intellcont_elem, "ISSUE"),
-        "page_nums": get_child_text(intellcont_elem, "PAGENUM"),
-        "public_avail": get_child_text(intellcont_elem, "PUBLICAVAIL"),
     }
     return intellcont
-
-
-def get_persons_involved(elem, subelem_name):
-    person_elems = elem.xpath(f"a:{subelem_name}", namespaces=NSMAP)
-    persons_involved = [parse_person(i) for i in person_elems]
-    return persons_involved
-
-
-def parse_person(person_elem):
-    person = {
-        "id": get_child_text(person_elem, "FACULTY_NAME"),
-        # "firstname": get_child_text(person_elem, "FNAME"),
-        # "middlename": get_child_text(person_elem, "MNAME"),
-        # "lastname": get_child_text(person_elem, "LNAME"),
-        "role": get_child_text(person_elem, "ROLE")
-            or get_child_text(person_elem, "CONTRIBUTION"),
-        # "student_level": get_child_text(person_elem, "STUDENT_LEVEL"),
-        # "institution": get_child_text(person_elem, "INSTITUTION"),
-    }
-    return person

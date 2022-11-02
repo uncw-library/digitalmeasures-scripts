@@ -15,13 +15,11 @@ def scrape_profile_images(PARSED_USERS_DIR, PERSON_IMAGES_DIR):
 
 def scrape_image(parsed_user, PERSON_IMAGES_DIR):
     if not has_image_info(parsed_user):
-        print("not has_image_info:", parsed_user.get("userId"))
         return False
     photo_url = parsed_user.get("person", {}).get("photo_url")
     userid = parsed_user.get("userId")
     photo = fetch_photo(photo_url, userid)
     if not photo:
-        print("not photo")
         return False
     write_main_image(photo, userid, PERSON_IMAGES_DIR)
     write_thumb_image(photo, userid, PERSON_IMAGES_DIR)
@@ -44,12 +42,10 @@ def fetch_photo(photo_url, userid, skip_existing=False):
     *dirs, filename = photo_url.split("/")
     source = "//itsdigmes01/digitalmeasuresdata/{}/{}".format("/".join(dirs), filename)
     username, password = os.getenv("DM_SAMBA_USER"), os.getenv("DM_SAMBA_PASS")
-    print("source:", source)
     try:
         with open_file(source, username=username, password=password, mode="rb") as fd:
             photo = fd.read()
     except:
-        print("none found")
         return None
     return photo
 
@@ -60,11 +56,9 @@ def write_main_image(photo, userid, PERSON_IMAGES_DIR):
     threes = add_tail_and_break_into_threes(userid, "999")
     dest_path = f"{PERSON_IMAGES_DIR}/a~n/{threes}"
     dest = f"{dest_path}/{userid}.jpg"
-    print("writing to main:", dest)
     os.makedirs(dest_path, exist_ok=True)
     with open(dest, "wb") as f:
         f.write(photo)
-        print("wrote")
 
 
 def write_thumb_image(photo, userid, PERSON_IMAGES_DIR):
@@ -73,11 +67,9 @@ def write_thumb_image(photo, userid, PERSON_IMAGES_DIR):
     threes = add_tail_and_break_into_threes(userid, "333")
     dest_path = f"{PERSON_IMAGES_DIR}/a~n/{threes}"
     dest = f"{dest_path}/thumbnail_{userid}.jpg"
-    print("writing to thumb:", dest)
     os.makedirs(dest_path, exist_ok=True)
     with open(dest, "wb") as f:
         f.write(photo)
-        print("wrote")
 
 
 def add_tail_and_break_into_threes(userid, tail):

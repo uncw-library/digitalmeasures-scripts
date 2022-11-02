@@ -14,9 +14,9 @@ def add_congrant_to_graph(graph, congrant, user_id):
     title = congrant["title"].strip()
     abstract = congrant["abstract"].strip()
     award_amount = congrant["amount"].strip()
-    date_filed = congrant["sub_start"] or congrant["sub_end"]
-    date_issued_start = congrant["start_start"] or congrant["start_end"]
-    date_issued_end = congrant["end_start"] or congrant["end_end"]
+    date_filed = congrant["date_filed"]
+    date_issued_start = congrant["date_issued_start"]
+    date_issued_end = congrant["date_issued_end"]
 
     graph.add((grant_node, RDF.type, VIVO.Grant))
     if title:
