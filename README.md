@@ -1,5 +1,7 @@
 ## Digital Measures to Turtle
 
+`python3 app/xml_to_turtle.py`
+
 Flags:
   - help 
   --no_reset  (prevents reset of local dm folder.)
@@ -17,7 +19,7 @@ Python venv:  This is the hardest part of python development.  If you use Anacon
     jupyter notebooks for investigating the DM output
 - output/
     non-git-committed folder holding output of app/xml_to_turtle.py
-    you can import the userdata.ttl turtle file into Vivo
+    output/turtles/userdata.ttl is the Vivo datafile
 
 #### Files that support all approaches
 
@@ -39,10 +41,12 @@ Python venv:  This is the hardest part of python development.  If you use Anacon
 #### Non-git-commited files
 
 - .env
-    DMUSER=changeme
-    DMPASS=changeme
+    DM_API_USER=changeme
+    DM_API_PASS=changeme
+    DM_SAMBA_USER=changeme
+    DM_SAMBA_PASS=changeme
 
-- geckodriver, which you'll need to download (each OS does this differently)
+- geckodriver, which you'll need to download and install (each OS does this differently)
 
 ### Bare-metal setup:
 
@@ -51,7 +55,8 @@ Python venv:  This is the hardest part of python development.  If you use Anacon
 ```
 # fetch data from digitalmeasures, write output to userfile.ttl, copy file to vivo, restart vivo
 0 23 * * * python3 /usr/local/digitalmeasures-scripts/app/xml_to_turtle.py
-0 0 * * * rsync --chown=tomcat:tomcat /usr/local/digitalmeasures-scripts/output/turtles/userdata.ttl /usr/local/VIVO/home/rdf/abox/filegraph/userdata.ttl
+0 0 * * * rsync -avz --chown=tomcat:tomcat /usr/local/digitalmeasures-scripts/output/turtles/userdata.ttl /usr/local/VIVO/home/rdf/abox/filegraph/userdata.ttl
+0 0 * * * rsync -avz --chown=tomcat:tomcat /usr/local/digitalmeasures-scripts/output/person_images /usr/local/VIVO/home/uploads/filestorage_root/
 10 0 * * * /bin/systemctl restart tomcat
 ```
 
