@@ -96,15 +96,15 @@ def main_loop(flags):
         logging.info("skipping hard refresh of dm data")
 
     make_output_dirs(USERFILES_DIR, PARSED_USERS_DIR, TURTLES_DIR, PERSON_IMAGES_DIR)
-    # scrape_digitalmeasures(dm_user, dm_pass)
+    scrape_digitalmeasures(dm_user, dm_pass)
     parse_and_pretty_print(USERFILES_DIR, PARSED_USERS_DIR)
     remove_excluded_users(PARSED_USERS_DIR)
     # uncomment this entrypoint when the code works
-    scrape_profile_images(PARSED_USERS_DIR, PERSON_IMAGES_DIR)
+    # scrape_profile_images(PARSED_USERS_DIR, PERSON_IMAGES_DIR)
     graph = make_graph(PARSED_USERS_DIR)
     write_turtle(TURTLES_DIR, graph)
-    # remove_old_turtles(TURTLES_DIR)
-    # change_permissions(OUTPUT_ROOT)
+    remove_old_turtles(TURTLES_DIR)
+    change_permissions(OUTPUT_ROOT)
 
 
 if __name__ == "__main__":
