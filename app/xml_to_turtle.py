@@ -100,11 +100,11 @@ def main_loop(flags):
     parse_and_pretty_print(USERFILES_DIR, PARSED_USERS_DIR)
     remove_excluded_users(PARSED_USERS_DIR)
     # uncomment this entrypoint when the code works
-    # scrape_profile_images(PARSED_USERS_DIR, PERSON_IMAGES_DIR)
+    scrape_profile_images(PARSED_USERS_DIR, PERSON_IMAGES_DIR)
     graph = make_graph(PARSED_USERS_DIR)
     write_turtle(TURTLES_DIR, graph)
     remove_old_turtles(TURTLES_DIR)
-    change_permissions(OUTPUT_ROOT)
+    # change_permissions(OUTPUT_ROOT)
 
 
 if __name__ == "__main__":
