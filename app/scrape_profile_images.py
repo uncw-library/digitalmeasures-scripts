@@ -40,7 +40,7 @@ def has_image_info(parsed_user):
 
 def fetch_photo(photo_url, userid, skip_existing=False):
     *dirs, filename = photo_url.split("/")
-    source = "//itsdigmes01/digitalmeasuresdata/{}/{}".format("/".join(dirs), filename)
+    source = "{}/{}/{}".format(os.getenv("DM_PHOTO_FOLDER"), "/".join(dirs), filename)
     username, password = os.getenv("DM_SAMBA_USER"), os.getenv("DM_SAMBA_PASS")
     try:
         with open_file(source, username=username, password=password, mode="rb") as fd:
