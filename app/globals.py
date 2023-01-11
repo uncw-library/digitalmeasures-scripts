@@ -17,7 +17,7 @@ VITRO = Namespace("http://vitro.mannlib.cornell.edu/ns/vitro/public#")
 
 
 UNIVERSITY = {
-    # same logic as EXPECTED_COLL regarding hardcoded uid
+    # same logic as COLL_DEPT regarding hardcoded uid
     "name": "University of North Carolina - Wilmington",
     "uid": "168540581888",
     "desc": "A description.",
