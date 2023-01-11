@@ -109,9 +109,11 @@ def is_in_excluded_dept(parsed_user):
     # loop through them all, and make exclude == False if any match.
     exclude = True
     included_colls = (
-        "College of Health and Human Services",
         "Cameron School of Business",
-        # "College of Arts and Sciences",
+        "College of Arts and Sciences",
+        "College of Health and Human Services",
+        "Watson College of Education",
+
     )
     for i in likely_coll_dept:
         if i["coll_name"] in included_colls:
