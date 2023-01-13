@@ -99,7 +99,6 @@ def main_loop(flags):
     scrape_digitalmeasures(dm_user, dm_pass)
     parse_and_pretty_print(USERFILES_DIR, PARSED_USERS_DIR)
     remove_excluded_users(PARSED_USERS_DIR)
-    # uncomment this entrypoint when the code works
     scrape_profile_images(PARSED_USERS_DIR, PERSON_IMAGES_DIR)
     graph = make_graph(PARSED_USERS_DIR)
     write_turtle(TURTLES_DIR, graph)
