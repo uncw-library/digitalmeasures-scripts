@@ -15,6 +15,13 @@ VCARD = Namespace("http://www.w3.org/2006/vcard/ns#")
 VIVO = Namespace("http://vivoweb.org/ontology/core#")
 VITRO = Namespace("http://vitro.mannlib.cornell.edu/ns/vitro/public#")
 
+# The uids are arbitrary, but must not overlap with any uids from the source dataset.
+# They also must remain unchanged across different runs of this script.
+# Since this is a hard problem, I've manually selected some uid's from ADMIN_DEP elems in the source data
+# because ADMIN_DEP uid's are not carried into the vivo import dataset
+# but the ADMIN_DEP uid's are guarenteed to never equal a uid we may carry over.
+# Essentially, trying to hardcode a uid that could never collide with another element's uid.
+# Each org will need to change these uids.  I suggest using id values from the source ADMIN_DEP elements.
 
 UNIVERSITY = {
     # same logic as COLL_DEPT regarding hardcoded uid
@@ -43,13 +50,6 @@ ACADEMIC_AFFAIRS = {
 }
 
 COLL_DEPT = {
-    # The uids are arbitrary, but must not overlap with any uids from the source dataset
-    # they also must remain unchanged across different runs of this script
-    # since this is a hard problem, I've manually selected some uid's from ADMIN_DEP elems in the source data
-    # because ADMIN_DEP uid's are not carried into the vivo import dataset
-    # but the ADMIN_DEP uid's are guarenteed to never equal a uid we may carry over.
-    # Essentially, trying to hardcode a uid that could never collide with another element's uid.
-    # Each org will need to change these uids.  I suggest using id values from the source ADMIN_DEP elements.
     "Cameron School of Business": {
         "uid": "168540397569",
         "depts": {
