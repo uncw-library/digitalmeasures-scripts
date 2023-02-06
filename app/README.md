@@ -28,8 +28,10 @@ it will ask for your DM password.
 - create a file digitalmeasures-scripts/.env with contents:
 
 ```
-DMUSER=changeme
-DMPASS=changeme
+DM_API_PASS=changeme
+DM_SAMBA_USER=changeme
+DM_SAMBA_PASS=changeme
+DM_PHOTO_FOLDER=changeme
 ```
 
 ```bash

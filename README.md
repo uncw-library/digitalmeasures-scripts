@@ -41,11 +41,12 @@ Python venv:  This is the hardest part of python development.  If you use Anacon
 #### Non-git-commited files
 
 - .env
-    DM_API_USER=changeme
-    DM_API_PASS=changeme
-    DM_SAMBA_USER=changeme
-    DM_SAMBA_PASS=changeme
-    DM_PHOTO_FOLDER=changeme
+```
+DM_API_PASS=changeme
+DM_SAMBA_USER=changeme
+DM_SAMBA_PASS=changeme
+DM_PHOTO_FOLDER=changeme
+```
 
 - geckodriver, which you'll need to download and install (each OS does this differently)
 
