@@ -5,7 +5,6 @@ import logging
 import os
 
 from scrape_directory import SeleniumDriver
-from graph_builder.make_graph import conjure_coll_dept_assignment
 
 
 GENERIC_USERS = {"facultytest"}
@@ -59,8 +58,6 @@ def is_exclude(parsed_users_dir, filename, selenium_driver):
         return True
     if is_student(parsed_user):
         return True
-    if is_in_excluded_dept(parsed_user):
-        return True
     if not is_in_directory(parsed_user, selenium_driver):
         return True
 
@@ -97,30 +94,6 @@ def is_student(parsed_user):
     username = parsed_user.get("username")
     if username[-4:].isnumeric():
         return True
-    return False
-
-
-def is_in_excluded_dept(parsed_user):
-    likely_coll_dept = conjure_coll_dept_assignment(parsed_user)
-    if not likely_coll_dept:
-        return True
-
-    # each user may have multiple likely_coll_dept.
-    # loop through them all, and make exclude == False if any match.
-    exclude = True
-    included_colls = (
-        "College of Health and Human Services",
-        "Cameron School of Business",
-        # "College of Arts and Sciences",
-    )
-    for i in likely_coll_dept:
-        if i["coll_name"] in included_colls:
-            exclude = False
-        if i["dept_name"] == "Randall Library":
-            exclude = False
-    if exclude:
-        return True
-
     return False
 
 

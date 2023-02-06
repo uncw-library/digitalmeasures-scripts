@@ -58,14 +58,6 @@ def write_turtle(TURTLES_DIR, graph):
     logging.info(f"latest version copied to {latest}")
 
 
-def change_permissions(OUTPUT_ROOT):
-    for root, dirs, files in os.walk(OUTPUT_ROOT):
-        for dir in dirs:
-            os.chmod(os.path.join(root, dir), 770)
-    for file in files:
-        os.chmod(os.path.join(root, file), 660)
-
-
 def remove_old_turtles(TURTLES_DIR):
     turtles = [
         os.path.join(root, file)
@@ -102,8 +94,7 @@ def main_loop(flags):
     scrape_profile_images(PARSED_USERS_DIR, PERSON_IMAGES_DIR)
     graph = make_graph(PARSED_USERS_DIR)
     write_turtle(TURTLES_DIR, graph)
-    remove_old_turtles(TURTLES_DIR)
-    # change_permissions(OUTPUT_ROOT)
+    # remove_old_turtles(TURTLES_DIR)
 
 
 if __name__ == "__main__":
