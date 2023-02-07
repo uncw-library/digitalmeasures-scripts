@@ -25,8 +25,8 @@ TURTLES_DIR = os.path.join(OUTPUT_ROOT, "turtles")
 
 # removes the source data, so new data can be pulled.
 # --no_reset flag will skip this slow step
-def hard_reset(USERFILES_DIR, PARSED_USERS_DIR, PERSON_IMAGES_DIR):
-    for folder in (USERFILES_DIR, PARSED_USERS_DIR, PERSON_IMAGES_DIR):
+def hard_reset(USERFILES_DIR, PARSED_USERS_DIR):
+    for folder in (USERFILES_DIR, PARSED_USERS_DIR):
         shutil.rmtree(folder, ignore_errors=True)
 
 
@@ -82,7 +82,7 @@ def main_loop(flags):
         exit()
 
     if not "no_reset" in flags:
-        hard_reset(USERFILES_DIR, PARSED_USERS_DIR, PERSON_IMAGES_DIR)
+        hard_reset(USERFILES_DIR, PARSED_USERS_DIR)
         logging.info("hard reset complete")
     else:
         logging.info("skipping hard refresh of dm data")
