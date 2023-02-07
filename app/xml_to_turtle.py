@@ -94,7 +94,7 @@ def main_loop(flags):
     scrape_profile_images(PARSED_USERS_DIR, PERSON_IMAGES_DIR)
     graph = make_graph(PARSED_USERS_DIR)
     write_turtle(TURTLES_DIR, graph)
-    # remove_old_turtles(TURTLES_DIR)
+    remove_old_turtles(TURTLES_DIR)
 
 
 if __name__ == "__main__":
