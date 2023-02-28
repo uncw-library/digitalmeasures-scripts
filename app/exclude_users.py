@@ -25,7 +25,7 @@ OFFICE_STAFF = {
     "helmsc",
     "smithzr",
 }
-NONFAC = {"sartarellij", "powells", "tirrelld", "ndoyea", "winebrakej"}
+NONFAC = {"sartarellij", "powells", "tirrelld", "ndoyea"}
 OTHER_BAD_DATA = {"battenk"}
 FORCE_EXCLUDE = set().union(GENERIC_USERS, OFFICE_STAFF, IRP, NONFAC, OTHER_BAD_DATA)
 
