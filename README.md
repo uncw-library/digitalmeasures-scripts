@@ -67,6 +67,6 @@ DM_PHOTO_FOLDER=changeme
 The userdata.ttl file is volume mounted onto the host filesystem.  The vivo container volume mounts that same file into its abox/filegraph/ path.  That path autoloads into Vivo on Vivo restart. 
 
 ```
-docker build --no-cache --platform linux/x86_64/v8 -t libapps-admin.uncw.edu:8000/randall-dev/digitalmeasures-scripts/xml-to-turtle .
+docker build --no-cache --platform linux/amd86 -t libapps-admin.uncw.edu:8000/randall-dev/digitalmeasures-scripts/xml-to-turtle .
 docker push libapps-admin.uncw.edu:8000/randall-dev/digitalmeasures-scripts/xml-to-turtle
 ```

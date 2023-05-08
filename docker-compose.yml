@@ -5,7 +5,7 @@ services:
     build: .
     container_name: xml-to-turtle
     image: libapps-admin.uncw.edu:8000/randall-dev/digitalmeasures-scripts/xml-to-turtle
-    platform: linux/x86_64/v8
+    platform: linux/amd64
     env_file: .env
     volumes:
       - ./app:/app
