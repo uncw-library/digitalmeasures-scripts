@@ -69,7 +69,7 @@ COLL_DEPT = {
             "Office of Athletics": "195128840193",
         },
     },
-    "College of Arts and Sciences": {
+    "College of Humanities, Social Sciences, and the Arts": {
         "uid": "195126493185",
         "depts": {
             "Anthropology": "161981390849",
