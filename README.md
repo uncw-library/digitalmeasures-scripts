@@ -47,10 +47,13 @@ i.e., `python3 app/xml_to_turtle.py --no_reset` will skip the DM data pull & use
 
 - .env
 ```
-DM_API_PASS=changeme
-DM_SAMBA_USER=changeme
-DM_SAMBA_PASS=changeme
-DM_PHOTO_FOLDER=changeme
+DM_API_PASS=CHANGEME
+DM_SAMBA_USER=CHANGEME
+DM_SAMBA_PASS=CHANGEME
+DM_PHOTO_FOLDER=CHANGEME
+JOBLOG_DB_HOST=CHANGEME
+JOBLOG_DB_USER=CHANGEME
+JOBLOG_DB_PASS=CHANGEME
 ```
 
 - geckodriver app.  Each OS installs this differently.  You'll need to search the web for this download and install it.
