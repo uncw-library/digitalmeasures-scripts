@@ -13,6 +13,7 @@ from exclude_users import remove_excluded_users
 from graph_builder.make_graph import make_graph
 from scrape_profile_images import scrape_profile_images
 from utils import setup_logging, parse_args
+from dbs.joblog import update_joblog 
 
 
 APP_ROOT = os.path.split(os.path.realpath(__file__))[0]
@@ -95,6 +96,7 @@ def main_loop(flags):
     graph = make_graph(PARSED_USERS_DIR)
     write_turtle(TURTLES_DIR, graph)
     remove_old_turtles(TURTLES_DIR)
+    update_joblog()
 
 
 if __name__ == "__main__":
