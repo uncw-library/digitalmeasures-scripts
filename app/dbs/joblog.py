@@ -1,7 +1,11 @@
 from datetime import datetime
+import os
 import psycopg2
 
 def update_joblog():
+    if os.getenv("APP_ENV") != 'production':
+        return
+
     query = f"""
         UPDATE daily_jobs
         SET last_ran = '{datetime.now().isoformat()[:10]}'

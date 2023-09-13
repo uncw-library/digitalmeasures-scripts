@@ -54,6 +54,7 @@ DM_PHOTO_FOLDER=CHANGEME
 JOBLOG_DB_HOST=CHANGEME
 JOBLOG_DB_USER=CHANGEME
 JOBLOG_DB_PASS=CHANGEME
+APP_ENV=production (or anything else == dev env)
 ```
 
 - geckodriver app.  Each OS installs this differently.  You'll need to search the web for this download and install it.
