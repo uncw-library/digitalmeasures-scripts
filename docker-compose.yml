@@ -1,10 +1,10 @@
 version: '3.7'
 
 services:
-  xml-to-turtle:
+  vivo-data-update:
     build: .
-    container_name: xml-to-turtle
-    image: libapps-admin.uncw.edu:8000/randall-dev/digitalmeasures-scripts/xml-to-turtle
+    container_name: vivo-data-update
+    image: libapps-admin.uncw.edu:8000/randall-dev/vivo-data-update
     platform: linux/amd64
     env_file: .env
     volumes:

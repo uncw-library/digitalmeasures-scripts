@@ -25,7 +25,7 @@ it will ask for your DM password.
 
 ### How to dev box (docker approach):
 
-- create a file digitalmeasures-scripts/.env with contents:
+- create a file vivo-data-update/.env with contents:
 
 ```
 DM_API_PASS=changeme
@@ -38,15 +38,15 @@ DM_PHOTO_FOLDER=changeme
 docker-compose up --build
 # script is not running yet.  The container is prepped & ready to run.
 # I usually start another terminal & leave this current one running in the background.
-# run inside container xml-to-turtle the program `python3 xml_to_turtle.py`: 
-docker-compose exec xml-to-turtle python3 xml_to_turtle.py
+# run inside container vivo-data-update the program `python3 xml_to_turtle.py`: 
+docker-compose exec vivo-data-update python3 xml_to_turtle.py
 ```
 
 Wait for 20 minutes for it to finish.
 
 To stop the python script: `docker-compose down` and `docker-compose up`
 
-To revise the app, (python script must be stopped, container can be running). `docker-compose up`  Then revise any file in the app/ folder, and rerun the `docker-compose exec xml-to-turtle python3 xml_to_turtle.py` command.
+To revise the app, (python script must be stopped, container can be running). `docker-compose up`  Then revise any file in the app/ folder, and rerun the `docker-compose exec vivo-data-update python3 xml_to_turtle.py` command.
 
 I like to comment out the function `hard_reset()` in xml_to_turtle.py after one successful run.  Otherwise, the app is designed to delete all the data you pulled from digital-measures and then repull all that data.  Pulling the data is the slowest step.  Remember to uncomment it before pushing to production, as the process requires a hard reset of the old data in order to pull in the latest data from digital-measures.
 
@@ -104,5 +104,5 @@ The output folder includes:
 
 #### How to production (non-docker)
 
-Vivo is at randall-vivo.uncw.edu:/usr/local/VIVO.  digitalmeasures-scripts is at randall-vivo.uncw.edu:/usr/local/digitalmeasures-scripts.  I recommend git push/pull to the production rather than editing the code on production.
+Vivo is at randall-vivo.uncw.edu:/usr/local/VIVO.  vivo-data-update is at randall-vivo.uncw.edu:/usr/local/vivo-data-update.  I recommend git push/pull to the production rather than editing the code on production.
 There are a few cron jobs at `sudo crontab -e` that run xml_to_turtle.py, then copy the file to Vivo, then restart vivo. 
