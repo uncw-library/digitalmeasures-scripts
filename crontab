@@ -1,4 +1,4 @@
 #run python script at 11:00pm daily
 SHELL=/bin/bash
 BASH_ENV=/container.env
-00 23 * * * python3 /app/xml_to_turtle.py > /proc/1/fd/1 2>/proc/1/fd/2
+00 19 * * * python3 /app/xml_to_turtle.py > /proc/1/fd/1 2>/proc/1/fd/2
