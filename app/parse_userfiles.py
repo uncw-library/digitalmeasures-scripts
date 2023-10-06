@@ -12,6 +12,7 @@ from globals import NSMAP
 
 ## Helpers
 
+DISPLAYING_INTELLCONTS_BUT_SHOULD_BE_HIDDEN = {'cardenasj', 'chenyj', 'choij', 'eshlemanm', 'framptona', 'freudemana', 'gambled', 'irvinen', 'kamels', 'kerrj', 'kongy', 'mcbrayerl', 'monahand', 'porcoa', 'rigginsa', 'sardinaa', 'sellonm', 'sutterl', 'turrises', 'vetterr', 'yopakk'}
 
 def parse_dmd_elems(elems):
     if not elems:
@@ -35,6 +36,13 @@ def parse_and_pretty_print(source_dir, output_dir):
     for filename in all_filenames:
         parsed_user = parse_userfile(os.path.join(source_dir, filename))
         file, ext = os.path.splitext(filename)
+
+        # WFS API is bugged.  Sending us garbled "PUBAVAIL" message.
+        # These faculty have NO on some records, so taking a sledgehammer approach by clearing out all their intellconts
+        if file in DISPLAYING_INTELLCONTS_BUT_SHOULD_BE_HIDDEN:
+            parsed_user["intellconts"] = []
+
+
         dest_filepath = os.path.join(output_dir, f"{file}.json")
         json_text = json.dumps(parsed_user, indent=2, sort_keys=True)
         with open(dest_filepath, "w") as f:
